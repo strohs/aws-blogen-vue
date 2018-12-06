@@ -1,52 +1,78 @@
-AWS Blogen
+AWS-Blogen-Vue.js
 ======================================================================================================
 This is a Amazon Web Services (AWS) version of my [Blogen](https://github.com/strohs/springboot-blogen) demo website. 
-  Blogen is a fictitious, micro-blogging site / message board, that lets users post short text "blurbs" along 
-  with a (optional) link to a image.  
+Blogen is a very simple, micro-blogging site / message board, that lets users post short text "blurbs" along 
+  with a (optional) link to a image. The site provides user sign-up/sign-in via AWS Cognito integration. Users can 
+  create new threads of discussion and perform CRUD ops on those threads, plus they can change their user profile 
+  information.  
  
 This version of Blogen uses Vue.js with Bootstrap 4 on the frontend, while the backend has been changed to use (mostly)
-AWS. Specifically, AWS Cognito is used to for user management, DynamoDB is used to store threads and post data, AWS
+AWS. Specifically, AWS Cognito is used to for user management, DynamoDB is used to store user messages, AWS
 Lambda is used to perform some post user registration steps. Spring Boot 2 is still used, but it mainly serves as the
 controller for the Blogen REST API. The Spring Boot servers are run on Elastic Beanstalk.
+
+
+## Blogen Project Directory Structure
+This is a Maven "multi-module" project, inspired by the wonderful blog post 
+[here](https://blog.codecentric.de/en/2018/04/spring-boot-vuejs/)  
+
+The folder structure is as follows:
+* **backend** module - contains the Spring Boot backend code. Spring Boot is used to run the Blogen REST API 
+that performs basic CRUD ops on the Blogen table in DynamoDB. Spring Boot is also used to validate Cognito 
+ID Tokens that must be sent with each request to the REST API. Additionally Spring Boot serves the initial 
+Vue.js index page and associated javascript files
+* **frontend** module - contains all the Vue.js code for the Blogen frontend
+* **lambdas** module - contains AWS lambda functions used by Blogen.
+* **aws** directory - this directory contains the CloudFormation templates for deploying Blogen onto AWS as well as some
+script files for bootstrapping data into dynamoDB (located at `/aws/dynamodb`)
+* **native-libs** - this folder contains the sql-lite libraries required by dynamodb-local. These are only used
+during development/testing
+* **.mvn** - contains maven wrapper .jar used by `mvnw` (*NIX) and `mvnw.cmd` (windows). Maven wrapper is a
+local version of Apache Maven for users that don't have maven installed on their machines. 
 
 
 ## Blogen Technology Stack Overview
 
 ### Vue.JS and Bootstrap4
-The Blogen frontend is a Single Page Application (SPA) and was written using Vue.JS and styled with 
-Bootstrap 4 (via the [BootstrapVue](https://bootstrap-vue.js.org/)) project.
+The Blogen frontend was written using Vue.js and styled with Bootstrap 4 
+(via the [BootstrapVue](https://bootstrap-vue.js.org/)) project. API call to Cognito are done using the
+[AWS Amplify API](https://aws-amplify.github.io/) and some occasional calls to 
+[AWS SDK for JavaScript](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/index.html).
+REST API calls are made (using axios) to the Blogen backend server (Spring Boot) to retrieve user threads and posts.
   
 ### AWS Cognito
-Amazon Cognito lets you add user sign-up, sign-in, and access control to your web and mobile apps. In previous 
-versions of Blogen, user management was done entirely with Spring Framework/Spring Security. It has been removed from
- Spring and is now done via frontend API calls to Cognito using AWS libraries, primarily 
- [AWS Amplify API](https://aws-amplify.github.io/) and some occasional calls to [AWS SDK for JavaScript](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/index.html)
+Amazon Cognito lets you add user sign-up, sign-in, and access control to your web and mobile apps. Blogen is using
+cognito for user authentication/authorization and to store user details in a User Pool 
 
 #### Blogen Cognito User Pool
-* A Cognito *User Pool* is used to store registration details of users. The pool has been configured to allow users
+* A Cognito *User Pool* is used to store user registration details. The pool has been configured to allow users
 to sign into Blogen using their email address.
 * The user pool also stores the following user attributes:
     * first-name
     * last-name
+    * password
     * preferred-username 
     * *avatar image name* - a custom attribute that stores the avatar image filename that a user has chosen for themselves
 
 #### Blogen Cognito Identity Pool
 * A Cognito identity pool is used to federate authenticated and unauthenticated users with AWS and give them 
-access to AWS resources. Blogen users need access to DynamoDB as well as some Cognito API Calls:
-    * Currently, the identity pool gives users access to the *ListUsers* API so that users can query the user pool in 
-    order to find out which preferred-usernames and email addresses have been taken
+temporary access to AWS resources. Blogen users need access to some Cognito API Calls, specifically the *ListUsers* 
+API so that users can query the user pool in order to find out which preferred-usernames and email addresses have been
+taken.
 
 ### AWS Lambda
-Blogen currently uses a single Lambda function.  Its job is to assign newly registered Blogen users to the "User" 
-group in Cognito. The lambda is written using the AWS Java SDK and is triggered by a Cognito 
-*Post Registration Trigger*, meaning that it runs when a user completes their Blogen registration by entering the 
-sign-up confirmation code that gets emailed to them
+Blogen currently uses AWS Lambda to assign newly registered Blogen users to the "User" 
+group within Cognito. The lambda is written using the AWS Java SDK and is triggered by a Cognito 
+*Post Registration Trigger*, meaning that it runs when a user signs-up for Blogen and completes their registration by 
+entering the sign-up confirmation code that gets emailed to them
 
 ### Spring Boot
-Spring Boot 2 is the application server. Its primary job is to serve the web resources for the front-end (html,
-javascript,css,images), serve the Blogen REST API and validate JSON Web Tokens (JWT). The REST API is secured and most 
-of the calls will require clients to pass a valid JWT ID-Token issued by AWS Cognito. 
+Spring Boot 2 is used as the application server. It performs four roles:
+* serve the web resources for the front-end (html,javascript,css,images)
+* serve the (secured) Blogen REST API requests
+* access DynamoDB to retrieve data
+* validate JSON Web Tokens (JWT) passed to the REST API
+    * Blogen uses the *ID-Tokens* issued by Cognito for REST API Access
 
 ### Elastic Beanstalk (EB)
 EB is used to run the Spring Boot application servers in EC2. Currently Blogen uses the default Java 8 environment 
@@ -55,16 +81,14 @@ tomcat server in EB. The EB environment itself is configured to start two t2.mic
 single load balancer.
 
 ### DynamoDB
-Blogen stores all data used by the website (minus user details) in a single DynamoDB table. It stores
+Blogen stores all data used by the website (minus user details) in a single DynamoDB table. It primarily stores
 the details of a user's threads and posts, which consist of the following attributes:
 * threadID, postID, post-title, post-text, image-url, userID, category-name
 
-In addition to the thread/post data, category names and avatar file names are stored as primary keys. These attributes
- are always unique strings and often need to be queried by the REST API. It made sense to store them in a primary key
- so that they could be queried rather than scanned.
+But Blogen also stores various other "types" of items as explained below..
 
 #### Blogen Primary Key Structure(s)
-The Blogen dynamoDB table uses a composite primary key (range + hash) to store items. There are four *types* of items 
+The Blogen dynamoDB table uses a composite primary key (range + hash) to store various items. There are four *types* of items 
 being stored and each use a different primary key "structure". The structure of the primary key for each item type
 is as follows:
 
@@ -99,45 +123,23 @@ is as follows:
 | rangeIndex | *primaryRange* | *primaryHash* | this GSI is used in a number of queries: to get recently posted threads (by timestamp) and to get a list of all avatar file names 
  
  
+## Blogen Set-Up and Deployment onto AWS
 
-## Blogen Project Directory Structure
-This is a Maven "multi-module" project, inspired by the wonderful blog post 
-[here](https://blog.codecentric.de/en/2018/04/spring-boot-vuejs/)  
-
-The folder structure is as follows:
-* **backend** module - contains the Spring Boot backend code. Spring Boot is used to run the Blogen REST API 
-that performs basic CRUD ops on the Blogen table in DynamoDB. Spring Boot is also used to validate Cognito 
-ID Tokens that must be sent with each request to the REST API. Additionally Spring Boot serves the initial 
-Vue.js index page and associated javascript files
-* **frontend** module - contains all the Vue.js code for the Blogen frontend
-* **lambdas** module - contains AWS lambda functions used by Blogen.
-* **aws** directory - this directory contains the CloudFormation templates for deploying Blogen onto AWS as well as some
-script files for bootstrapping data into dynamoDB (located at `/aws/dynamodb`)
-* **native-libs** - this folder contains the sql-lite libraries required by dynamodb-local. These are only used
-during development/testing
-* **.mvn** - contains maven wrapper .jar used by `mvnw` (*NIX) and `mvnw.cmd` (windows). Maven wrapper is a
-local version of Apache Maven for users that don't have maven installed on their machines. 
-
-
-## Prerequisites
-* Java installed on your machine, java 8 is the recommended version as later version of java are giving compiler 
-warnings with spring boot
+### Prerequisites
+* Java installed on your machine, java 8 is the recommended 
 * You must have a pre-existing AWS account and have the AWS command line interface installed and configured
 * If you plan to do any development on the frontend, you must have node and npm installed, at least version 8.11 of 
 node is recommended. The `/frontend/pom.xml` is configured to download and temporarily install node 8.11.3 so that users 
 that don't have node installed can compile and run the frontend code when using maven
-  
-## Blogen Set-Up and Deployment onto AWS
-Some notes before you begin:
-    * It is assumed you are familiar with the AWS Web console and AWS CLI
-    * If don't have maven installed replace the `mvn` commands below with `mvnw` (for *nix systems) 
-    or `mvnw.cmd` (on windows systems)
-    * Be aware that AWS resources will be created that can incur charges, specifically the Elastic Beanstalk template
-     used in this project will create two t2.micro instances running behind a load balancer
+* It is assumed you are familiar with the AWS Web console and AWS CLI
+* If don't have maven installed replace the `mvn` commands below with `mvnw` (for *nix systems) 
+or `mvnw.cmd` (on windows systems)
+* Be aware that AWS resources will be created that can incur charges, specifically the Elastic Beanstalk template 
+used in this project will create two t2.micro instances running behind a load balancer
 
 1. Create the Blogen DynamoDB table 
     1. run the `aws/blogen-dynamodb.yaml` template in CloudFormation. This will create the *Blogen* table
-    2. cd into the `/aws/dynamodb/` directory and run the `bootstrap-dynamodb` script. This script will load the 
+    2. cd into the `/aws/dynamodb/` directory and run the `bootstrap-dynamodb` script. This script will load some 
     default category names and avatar file names into the Blogen table
     
 2. Build and Upload the Blogen lambda jar file to AWS S3
@@ -186,4 +188,3 @@ Some notes before you begin:
     7. you should now be able to access the website in your browser via the URL in step 10. 
     **Note** that it will be a regular HTTP (unsecure) connection. The elastic beanstalk environment is configured 
     for HTTPS but you will need to configure your own domain and SSL certificate to point to the beanstalk environment
-
