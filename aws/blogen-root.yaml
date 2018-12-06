@@ -1,0 +1,106 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  This is the root parent stack for creating the Blogen application. This stack will create all the resources
+  needed by Blogen, including: Cognito User Pool (and Groups), Cognito Identity Pool,
+  a Lambda function that adds newly registered users to the User Group, and finally an two EC2 t1.micro instances
+  running on ElasticBeanstalk behind an application load balancer
+
+Parameters:
+  IdentityPoolName:
+    Type: String
+    Default: 'BlogenIdentityPool'
+    Description: Cognito Federated identity pool name
+  UserPoolName:
+    Type: String
+    Default: 'BlogenUserPool'
+    Description: Cognito user pool name
+  AppClientName:
+    Type: String
+    Default: 'blogen-webapp'
+    Description: Cognito application client Name
+  BlogenAdminEmail:
+    Type: String
+    Default: 'admin@example.com'
+    Description: email address for the blogen admin. They use this to log into the website and to receive their initial temporary password
+  LambdaS3Bucket:
+    Type: String
+    Default: 'strohs-ci-cd'
+    Description: name of S3 bucket containing the (.jar or .zip) blogen lambda source code
+  LambdaS3Key:
+    Type: String
+    Default: 'blogen-lambdas-0.0.1.jar'
+    Description: the name of the .jar or .zip file that contains the blogen lambda source code
+  KeyPairName:
+    Description: An EC2 Key Pair you can use for SSH access to the EC2 instances created by ElasticBeanstalk
+    Type: 'AWS::EC2::KeyPair::KeyName'
+    Default: 'MyEC2KeyPair'
+  ApplicationS3Bucket:
+    Type: String
+    Default: 'strohs-ci-cd'
+    # NOTE bucket versioning should be enabled, especially if you're deploying updates to the application
+    Description: Name of the S3 bucket that contains the blogen application code. Bucket Versioning in S3 should be enabled
+  ApplicationS3Key:
+    Type: String
+    Default: 'blogen-appserver-0.0.1.jar'
+    Description: Name of the blogen .jar file to install into elastic beanstalk
+  TemplateS3Bucket:
+    Type: String
+    Default: 'strohs-ci-cd'
+    Description: name of the S3 bucket containing the Blogen Cognito CloudFormation templates
+
+Resources:
+  # create the cognito stack
+  BlogenCognitoStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub 'https://s3.amazonaws.com/${TemplateS3Bucket}/blogen-cognito.yaml'
+      Parameters:
+        LambdaS3Bucket: !Ref LambdaS3Bucket
+        LambdaS3Key: !Ref LambdaS3Key
+        UserPoolName: !Ref UserPoolName
+        AppClientName: !Ref AppClientName
+        BlogenAdminEmail: !Ref BlogenAdminEmail
+        IdentityPoolName: !Ref IdentityPoolName
+        TemplateS3Bucket: !Ref TemplateS3Bucket
+
+  # create the application servers using ElasticBeanstalk
+  BlogenElasticBeanstalkStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub 'https://s3.amazonaws.com/${TemplateS3Bucket}/blogen-beanstalk.yaml'
+      Parameters:
+        ApplicationS3Bucket: !Ref ApplicationS3Bucket
+        ApplicationS3Key: !Ref ApplicationS3Key
+        KeyName: !Ref KeyPairName
+        UserPoolId: !GetAtt BlogenCognitoStack.Outputs.UserPoolId
+        IdentityPoolId: !GetAtt BlogenCognitoStack.Outputs.IdentityPoolId
+
+Outputs:
+  UserPoolId:
+    Value: !GetAtt BlogenCognitoStack.Outputs.UserPoolId
+    Export:
+      Name: "UserPoolId"
+  WebClientId:
+    Value: !GetAtt BlogenCognitoStack.Outputs.WebClientId
+    Export:
+      Name: "WebClientId"
+  IdentityPoolId:
+    Value: !GetAtt BlogenCognitoStack.Outputs.IdentityPoolId
+    Export:
+      Name: "IdentityPoolId"
+  PostConfirmationLambdaResource:
+    Value: !GetAtt BlogenCognitoStack.Outputs.PostConfirmationLambdaResource
+    Export:
+      Name: "PostConfirmationLambdaName"
+  PostConfirmationLambdaArn:
+    Value: !GetAtt BlogenCognitoStack.Outputs.PostConfirmationLambdaArn
+    Export:
+      Name: "PostConfirmationLambdaArn"
+  BlogenResourceName:
+    Value: !GetAtt BlogenElasticBeanstalkStack.Outputs.blogenResourceName
+    Export:
+      Name: "BlogenResourceName"
+  BlogenEndpointURL:
+    Value: !GetAtt BlogenElasticBeanstalkStack.Outputs.blogenEndpointURL
+    Export:
+      Name: "BlogenEndpointURL"

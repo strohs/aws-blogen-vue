@@ -1,0 +1,26 @@
+# AWS CodeBuild buildspec template
+#
+# this BuildSpec will build the Blogen AppServer artifact using Maven
+#
+version: 0.2
+
+phases:
+  install:
+    commands:
+    - echo Nothing to do in the install phase...
+  pre_build:
+    commands:
+    - echo Nothing to do in the pre_build phase...
+  build:
+    commands:
+    - echo Build started on `date`
+    - mvn install
+  post_build:
+    commands:
+    - echo Build completed on `date`
+artifacts:
+  files:
+  - backend/target/blogen-appserver-0.0.1.jar
+  - aws/code-deploy/appspec.yml
+  - aws/code-deploy/*.sh
+  discard-paths: yes

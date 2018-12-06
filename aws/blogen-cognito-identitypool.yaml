@@ -1,0 +1,108 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  Creates an Identity Pool with IAM roles (both authenticated / unauthenticated) that grants access to the User Pool
+    and gives access to the ListUsers API call.
+
+Parameters:
+  IdentityPoolName:
+    Type: String
+    Default: 'BlogenIdentityPool'
+    Description: Cognito Federated identity pool name
+  UserPoolId:
+    Type: String
+    Description: Blogen User Pool Id
+  UserPoolArn:
+    Type: String
+    Description: Blogen User Pool ARN
+  UserPoolClientId:
+    Type: String
+    Description: Blogen application client name
+
+Resources:
+  IdentityPool:
+    Type: "AWS::Cognito::IdentityPool"
+    Properties:
+      IdentityPoolName: !Ref IdentityPoolName
+      AllowUnauthenticatedIdentities: true
+      DeveloperProviderName: 'BlogenDeveloperProvider'
+      CognitoIdentityProviders:
+        - ClientId: !Ref UserPoolClientId
+          ProviderName: !Join ['', ['cognito-idp.', !Ref 'AWS::Region', '.amazonaws.com/', !Ref UserPoolId]]
+
+  UnauthRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Federated: "cognito-identity.amazonaws.com"
+            Action: "sts:AssumeRoleWithWebIdentity"
+            Condition:
+              StringEquals:
+                cognito-identity.amazonaws.com:aud: !Ref IdentityPool
+              ForAnyValue:StringLike:
+                cognito-identity.amazonaws.com:amr: "unauthenticated"
+      RoleName: "blogen-unauthenticated-role"
+
+  UnauthRolePolicy:
+    Type: "AWS::IAM::Policy"
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Effect: "Allow"
+            Action: ['mobileanalytics:PutEvents', 'cognito-sync:*']
+            Resource: '*'
+          # unauthenticated users can call ListUsers so that they can determine if a username is already taken in the user pool
+          - Effect: "Allow"
+            Action: ["cognito-idp:ListUsers"]
+            Resource: !Ref UserPoolArn
+      PolicyName: CognitoBlogenUnauthPolicy
+      Roles:
+        - !Ref UnauthRole
+
+  AuthRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Federated: "cognito-identity.amazonaws.com"
+            Action: "sts:AssumeRoleWithWebIdentity"
+            Condition:
+              StringEquals:
+                cognito-identity.amazonaws.com:aud: !Ref IdentityPool
+              ForAnyValue:StringLike:
+                cognito-identity.amazonaws.com:amr: "authenticated"
+      RoleName: "blogen-authenticated-role"
+
+  # give authenticated users access to mobile-analytics, cognito-sync, cognito identity
+  #  ALSO give users the ability to perform ListUsers api calls on the Blogen user pool
+  AuthRolePolicy:
+    Type: "AWS::IAM::Policy"
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Effect: "Allow"
+            Action: ["mobileanalytics:PutEvents","cognito-sync:*","cognito-identity:*"]
+            Resource: '*'
+          - Effect: "Allow"
+            Action: ["cognito-idp:ListUsers"]
+            Resource: !Ref UserPoolArn
+      PolicyName: CognitoBlogenAuthPolicy
+      Roles:
+        - !Ref AuthRole
+
+  IdentityPoolRoleMapping:
+    Type: "AWS::Cognito::IdentityPoolRoleAttachment"
+    Properties:
+      IdentityPoolId: !Ref IdentityPool
+      Roles:
+        authenticated: !GetAtt AuthRole.Arn
+        unauthenticated: !GetAtt UnauthRole.Arn
+
+
+Outputs:
+  IdentityPoolId:
+    Value: !Ref IdentityPool

@@ -1,0 +1,105 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >
+  Creates the Blogen DynamoDB table and its Global Secondary Indices
+
+Parameters:
+#  TableName:
+#    Description: name to give the dynamoDB table
+#    Default: 'Blogen'
+#    Type: String
+#    AllowedPattern: '[A-Za-z0-9_.-]+'
+#    MinLength: 3
+#    MaxLength: 255
+  ReadThroughput:
+    Description: Read Capacity Throughput for the Blogen DynamoDB table and each GSI that it uses
+    Default: 1
+    MinValue: 1
+    MaxValue: 10
+    Type: Number
+  WriteThroughput:
+    Description: Write Capacity Throughput for the Blogen DynamoDB table and each GSI that it uses
+    Default: 1
+    MinValue: 1
+    MaxValue: 10
+    Type: Number
+
+Resources:
+
+  #################################################
+  # Create Blogen DynamoDB Table
+  #################################################
+  BlogenDynamoDB:
+    Type: "AWS::DynamoDB::Table"
+    # DeletionPolicy: Retain
+    Properties:
+      AttributeDefinitions:
+      - AttributeName: "primaryHash"
+        AttributeType: "S"
+      - AttributeName: "primaryRange"
+        AttributeType: "S"
+      - AttributeName: "userId"
+        AttributeType: "S"
+      - AttributeName: "categoryName"
+        AttributeType: "S"
+      KeySchema:
+      - AttributeName: "primaryHash"
+        KeyType: "HASH"
+      - AttributeName: "primaryRange"
+        KeyType: "RANGE"
+      ProvisionedThroughput:
+        ReadCapacityUnits: !Ref ReadThroughput
+        WriteCapacityUnits: !Ref WriteThroughput
+      # keep table name as Blogen, backend code is currently configured to use this name
+      TableName: "Blogen"
+      GlobalSecondaryIndexes:
+      - IndexName: "rangeIndex"
+        KeySchema:
+        - AttributeName: "primaryRange"
+          KeyType: "HASH"
+        - AttributeName: "primaryHash"
+          KeyType: "RANGE"
+        Projection:
+          ProjectionType: "ALL"
+        ProvisionedThroughput:
+          ReadCapacityUnits: !Ref ReadThroughput
+          WriteCapacityUnits: !Ref WriteThroughput
+      - IndexName: "categoryNameIndex"
+        KeySchema:
+        - AttributeName: "categoryName"
+          KeyType: "HASH"
+        - AttributeName: "primaryRange"
+          KeyType: "RANGE"
+        Projection:
+          NonKeyAttributes:
+          - "threadId"
+          - "postId"
+          - "userId"
+          ProjectionType: "INCLUDE"
+        ProvisionedThroughput:
+          ReadCapacityUnits: !Ref ReadThroughput
+          WriteCapacityUnits: !Ref WriteThroughput
+      - IndexName: "userIdIndex"
+        KeySchema:
+        - AttributeName: "userId"
+          KeyType: "HASH"
+        - AttributeName: "primaryRange"
+          KeyType: "RANGE"
+        Projection:
+          NonKeyAttributes:
+          - "threadId"
+          - "postId"
+          - "categoryName"
+          ProjectionType: "INCLUDE"
+        ProvisionedThroughput:
+          ReadCapacityUnits: !Ref ReadThroughput
+          WriteCapacityUnits: !Ref WriteThroughput
+
+Outputs:
+#  TableName:
+#    Value: !Ref TableName
+#    Export:
+#      Name: "BlogenTableName"
+  TableARN:
+    Value: !GetAtt BlogenDynamoDB.Arn
+    Export:
+      Name: "BlogenTableArn"

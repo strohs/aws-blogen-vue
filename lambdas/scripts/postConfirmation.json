@@ -1,0 +1,25 @@
+{
+  "version": "1",
+  "region": "us-east-1",
+  "userPoolId": "us-east-1_8XqclGUnZ",
+  "userName": "ee7064e8-965a-4a09-ba14-18119622fdbZ",
+  "callerContext": {
+    "awsSdkVersion": "aws-sdk-unknown-unknown",
+    "clientId": "p6quivjciluiagp28ltsapr0j"
+  },
+  "triggerSource": "PostConfirmation_ConfirmSignUp",
+  "request": {
+    "userAttributes": {
+      "sub": "ee7064e8-965a-4a09-ba14-18119622fdb0",
+      "cognito:email_alias": "str@example.com",
+      "cognito:user_status": "CONFIRMED",
+      "custom:avatar_file_name": "avatar0.jpg",
+      "email_verified": "true",
+      "preferred_username": "racerx",
+      "given_name": "user",
+      "family_name": "two",
+      "email": "str@example.com"
+    }
+  },
+  "response": {}
+}

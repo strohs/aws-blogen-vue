@@ -1,0 +1,49 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  Creates the lambda function that handles the PostConfirmationTrigger. This lambda is called when a new user signs
+   up on the Blogen website and assigns them to the "User" group. NOTE that after this lambda is created you must
+  log into the Cognito web console and manually add this lambda function as the PostConfirmationTrigger and then click
+  save. There is currently a bug preventing CloudFormation from automatically doing this for us.
+
+Transform: AWS::Serverless-2016-10-31
+
+Parameters:
+  LambdaCodeBucket:
+    Type: String
+    Default: 'strohs-ci-cd'
+    Description: name of S3 bucket containing the (.jar) blogen lambda source code
+  LambdaCodeKey:
+    Type: String
+    Default: 'blogen-lambdas-0.0.1.jar'
+    Description: the name of the .jar or .zip file that contains the blogen lambda source code
+
+Resources:
+  PostConfirmationLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: 'com.cliff.aws.lambda.blogen.AddNewUserToUserGroup'
+      Runtime: java8
+      Timeout: 10
+      MemorySize: 256
+      CodeUri:
+        Bucket: !Ref LambdaCodeBucket
+        Key: !Ref LambdaCodeKey
+      # the policies that this lambda will be able to execute
+      Policies:
+        # this managed policy allows the lambda to write logs to cloudwatch
+        - AWSLambdaBasicExecutionRole
+        # Policy Document that allows this lambda to add a user to a group in any of our user pools
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - 'cognito-idp:AdminAddUserToGroup'
+                - 'cognito-idp:ListGroups'
+                - 'cognito-idp:ListUsers'
+              Resource: '*'
+
+Outputs:
+  PostConfirmationLambdaResource:
+    Value: !Ref PostConfirmationLambda
+  PostConfirmationLambdaArn:
+    Value: !GetAtt PostConfirmationLambda.Arn

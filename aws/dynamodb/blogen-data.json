@@ -1,0 +1,124 @@
+{ "Blogen": [
+  {
+    "PutRequest": {
+      "Item": {
+        "primaryHash": { "S": "Business" },
+        "primaryRange": { "S": "CATEGORY" },
+        "updatedTimestamp": { "S": "2018-06-01T12:12:00.511Z" },
+        "categoryName": { "S": "Business" }
+      }
+    }
+  },
+  {
+    "PutRequest": {
+      "Item": {
+        "primaryHash": { "S": "Health & Fitness" },
+        "primaryRange": { "S": "CATEGORY" },
+        "updatedTimestamp": { "S": "2018-06-01T12:12:00.511Z" },
+        "categoryName": { "S": "Health & Fitness" }
+      }
+    }
+  },
+  {
+    "PutRequest": {
+      "Item": {
+        "primaryHash": { "S": "Java Programming" },
+        "primaryRange": { "S": "CATEGORY" },
+        "updatedTimestamp": { "S": "2018-06-01T12:12:00.511Z" },
+        "categoryName": { "S": "Java Programming" }
+      }
+    }
+  },
+  {
+    "PutRequest": {
+      "Item": {
+        "primaryHash": { "S": "Web Development" },
+        "primaryRange": { "S": "CATEGORY" },
+        "updatedTimestamp": { "S": "2018-06-01T12:12:00.511Z" },
+        "categoryName": { "S": "Web Development" }
+      }
+    }
+  },
+  {
+    "PutRequest": {
+      "Item": {
+        "primaryHash": { "S": "Technology" },
+        "primaryRange": { "S": "CATEGORY" },
+        "updatedTimestamp": { "S": "2018-06-01T12:12:00.511Z" },
+        "categoryName": { "S": "Technology" }
+      }
+    }
+  },
+  {
+    "PutRequest": {
+      "Item": {
+        "primaryHash": { "S": "avatar0.jpg" },
+        "primaryRange": { "S": "AVATAR" },
+        "updatedTimestamp": { "S": "2018-06-01T12:12:00.511Z" }
+      }
+    }
+  },
+  {
+    "PutRequest": {
+      "Item": {
+        "primaryHash": { "S": "avatar1.jpg" },
+        "primaryRange": { "S": "AVATAR" },
+        "updatedTimestamp": { "S": "2018-06-01T12:12:00.511Z" }
+      }
+    }
+  },
+  {
+    "PutRequest": {
+      "Item": {
+        "primaryHash": { "S": "avatar2.jpg" },
+        "primaryRange": { "S": "AVATAR" },
+        "updatedTimestamp": { "S": "2018-06-01T12:12:00.511Z" }
+      }
+    }
+  },
+  {
+    "PutRequest": {
+      "Item": {
+        "primaryHash": { "S": "avatar3.jpg" },
+        "primaryRange": { "S": "AVATAR" },
+        "updatedTimestamp": { "S": "2018-06-01T12:12:00.511Z" }
+      }
+    }
+  },
+  {
+    "PutRequest": {
+      "Item": {
+        "primaryHash": { "S": "avatar4.jpg" },
+        "primaryRange": { "S": "AVATAR" },
+        "updatedTimestamp": { "S": "2018-06-01T12:12:00.511Z" }
+      }
+    }
+  },
+  {
+    "PutRequest": {
+      "Item": {
+        "primaryHash": { "S": "avatar5.jpg" },
+        "primaryRange": { "S": "AVATAR" },
+        "updatedTimestamp": { "S": "2018-06-01T12:12:00.511Z" }
+      }
+    }
+  },
+  {
+    "PutRequest": {
+      "Item": {
+        "primaryHash": { "S": "avatar6.jpg" },
+        "primaryRange": { "S": "AVATAR" },
+        "updatedTimestamp": { "S": "2018-06-01T12:12:00.511Z" }
+      }
+    }
+  },
+  {
+    "PutRequest": {
+      "Item": {
+        "primaryHash": { "S": "avatar7.jpg" },
+        "primaryRange": { "S": "AVATAR" },
+        "updatedTimestamp": { "S": "2018-06-01T12:12:00.511Z" }
+      }
+    }
+  }
+]}

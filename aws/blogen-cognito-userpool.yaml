@@ -1,0 +1,133 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  Creates a Cognito UserPool, a default admin user and two groups: "User" and "Admin".
+  You must manually add the Admin user to the Admin and User groups within the Cognito web console,
+  There is currently a bug preventing CloudFormation templates from doing this automatically
+
+Parameters:
+  UserPoolName:
+    Type: String
+    Default: 'BlogenUserPool'
+    Description: Cognito user pool name
+  AppClientName:
+    Type: String
+    Default: 'blogen-webapp'
+    Description: Cognito application client Name
+  PostConfirmationLambdaArn:
+    Type: String
+    Default: ''
+    Description: the ARN of the lambda function that handles the PostConfirmation trigger for new users sign-up
+  BlogenAdminEmail:
+    Type: String
+    Default: 'admin@example.com'
+    Description: email address for the blogen admin. They use this to log into the website and to receive their initial temporary password
+
+Resources:
+  UserPool:
+    Type: "AWS::Cognito::UserPool"
+    Properties:
+      AutoVerifiedAttributes:
+        - email
+      MfaConfiguration: "OFF"
+      UserPoolName: !Ref UserPoolName
+      UsernameAttributes:
+        - email
+      LambdaConfig:
+        PostConfirmation: !Ref PostConfirmationLambdaArn
+      Schema:
+        - AttributeDataType: String
+          DeveloperOnlyAttribute: false
+          Mutable: true
+          Name: "preferred_username"
+          Required: true
+        - AttributeDataType: String
+          DeveloperOnlyAttribute: false
+          Mutable: true
+          Name: "given_name"
+          Required: true
+        - AttributeDataType: String
+          DeveloperOnlyAttribute: false
+          Mutable: true
+          Name: "family_name"
+          Required: true
+          # this is a custom attribute to store the users avatar file name
+        - AttributeDataType: String
+          DeveloperOnlyAttribute: false
+          Mutable: true
+          Name: "avatar_file_name"
+          Required: false
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireLowercase: true
+          RequireNumbers: false
+          RequireSymbols: false
+          RequireUppercase: true
+
+  UserPoolClient:
+    Type: "AWS::Cognito::UserPoolClient"
+    Properties:
+      ClientName: !Ref AppClientName
+      GenerateSecret: False
+      UserPoolId: !Ref UserPool
+      # this auth flow will allow us to use the 'Admin*' api calls from the AWS Cognito SDK(s)
+      ExplicitAuthFlows:
+        - ADMIN_NO_SRP_AUTH
+
+  UserPoolUserGroup:
+    Type: "AWS::Cognito::UserPoolGroup"
+    Properties:
+      Description: "blogen User Group"
+      GroupName: "User"
+      Precedence: 10
+      UserPoolId: !Ref UserPool
+
+  UserPoolAdminGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      Description: "blogen Admin Group"
+      GroupName: "Admin"
+      Precedence: 5
+      UserPoolId: !Ref UserPool
+
+  # create an admin user
+  BlogenAdmin:
+    Type: AWS::Cognito::UserPoolUser
+    Properties:
+      DesiredDeliveryMediums:
+        - EMAIL
+      ForceAliasCreation: True
+      Username: !Ref BlogenAdminEmail
+      UserAttributes:
+        - Name: email_verified
+          Value: True
+        - Name: email
+          Value: !Ref BlogenAdminEmail
+        - Name: given_name
+          Value: 'admin'
+        - Name: family_name
+          Value: 'admin'
+        - Name: preferred_username
+          Value: 'admin'
+        - Name: 'custom:avatar_file_name'
+          Value: 'avatar0.jpg'
+      UserPoolId: !Ref UserPool
+
+  # assign the Admin user to the Admin group, NOTE: not currently working, possible bug with Cognito and CloudFormation
+#  BlogenAdminUserToAdminGroup:
+#    Type: AWS::Cognito::UserPoolUserToGroupAttachment
+#    DependsOn: BlogenAdmin
+#    Properties:
+#      GroupName: 'Admin'
+#      Username: !Ref BlogenAdmin
+#      UserPoolId: !Ref UserPool
+
+Outputs:
+  UserPoolId:
+    Value: !Ref UserPool
+  UserPoolArn:
+    Value: !GetAtt UserPool.Arn
+  UserPoolClientId:
+    Value: !Ref UserPoolClient
+  BlogenAdminUsername:
+    Value: !Ref BlogenAdmin

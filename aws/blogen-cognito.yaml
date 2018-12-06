@@ -1,0 +1,82 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >
+  This is a parent stack that creates the Cognito resources used by Blogen.
+  This template will create a user pool with the following: user group, admin group, a default admin user
+  An identity pool will also be created with: an unauthenticated role, and authenticated role.
+  A lambda function will be created that responds to PostConfirmationTrigger Events, this lambda is responsible for
+  adding newly signed-up users to the User group
+
+Parameters:
+  IdentityPoolName:
+    Type: String
+    Default: 'BlogenIdentityPool'
+    Description: Cognito Federated identity pool name
+  UserPoolName:
+    Type: String
+    Default: 'BlogenUserPool'
+    Description: Cognito user pool name
+  AppClientName:
+    Type: String
+    Default: 'blogen-webapp'
+    Description: Cognito application client Name
+  LambdaS3Bucket:
+    Type: String
+    Default: 'strohs-ci-cd'
+    Description: name of S3 bucket containing the (.jar or .zip) blogen lambda source code
+  LambdaS3Key:
+    Type: String
+    Default: 'blogen-lambdas-0.0.1.jar'
+    Description: the name of the .jar or .zip file that contains the blogen lambda source code
+  BlogenAdminEmail:
+    Type: String
+    Default: 'admin@example.com'
+    Description: email address for the blogen admin. They use this to log into the website and to receive their initial temporary password
+  TemplateS3Bucket:
+    Type: String
+    Default: 'strohs-ci-cd'
+    Description: name of the S3 bucket containing the Blogen Cognito CloudFormation templates
+
+
+Resources:
+  # create the PostConfirmation Lambda Function
+  PostConfirmationLambdaStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub 'https://s3.amazonaws.com/${TemplateS3Bucket}/blogen-cognito-lambda.yaml'
+      Parameters:
+        LambdaCodeBucket: !Ref LambdaS3Bucket
+        LambdaCodeKey: !Ref LambdaS3Key
+
+  # create the User Pool
+  UserPoolStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub 'https://s3.amazonaws.com/${TemplateS3Bucket}/blogen-cognito-userpool.yaml'
+      Parameters:
+        UserPoolName: !Ref UserPoolName
+        AppClientName: !Ref AppClientName
+        PostConfirmationLambdaArn: !GetAtt PostConfirmationLambdaStack.Outputs.PostConfirmationLambdaArn
+        BlogenAdminEmail: !Ref BlogenAdminEmail
+
+  # create the identity pool
+  IdentityPoolStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub 'https://s3.amazonaws.com/${TemplateS3Bucket}/blogen-cognito-identitypool.yaml'
+      Parameters:
+        IdentityPoolName: !Ref IdentityPoolName
+        UserPoolId: !GetAtt UserPoolStack.Outputs.UserPoolId
+        UserPoolArn: !GetAtt UserPoolStack.Outputs.UserPoolArn
+        UserPoolClientId: !GetAtt UserPoolStack.Outputs.UserPoolClientId
+
+Outputs:
+  UserPoolId:
+    Value: !GetAtt UserPoolStack.Outputs.UserPoolId
+  WebClientId:
+    Value: !GetAtt UserPoolStack.Outputs.UserPoolClientId
+  IdentityPoolId:
+    Value: !GetAtt IdentityPoolStack.Outputs.IdentityPoolId
+  PostConfirmationLambdaResource:
+    Value: !GetAtt PostConfirmationLambdaStack.Outputs.PostConfirmationLambdaResource
+  PostConfirmationLambdaArn:
+    Value: !GetAtt PostConfirmationLambdaStack.Outputs.PostConfirmationLambdaArn

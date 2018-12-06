@@ -1,0 +1,142 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >
+  Creates two Blogen Spring-Boot Application Server(s) running behind a load balancer using Elastic Beanstalk.
+  Creates a Role for the appservers granting them full access to DynamoDB and Cognito
+
+Parameters:
+  ApplicationS3Bucket:
+    Type: String
+    Default: 'strohs-ci-cd'
+    # NOTE bucket versioning should be enabled, especially if you're deploying updates to the application
+    Description: Name of the S3 bucket that contains the blogen application code. Bucket Versioning in S3 should be enabled
+  ApplicationS3Key:
+    Type: String
+    Default: 'blogen-appserver-0.0.1.jar'
+    Description: Name of the blogen .jar file to install into elastic beanstalk
+  KeyName:
+    Description: An EC2 Key Pair you can use for SSH access to the EC2 instances
+    Type: 'AWS::EC2::KeyPair::KeyName'
+    Default: 'MyEC2KeyPair'
+  UserPoolId:
+    Description: The ID of the Cognito user pool containing Blogen users
+    Type: String
+    Default: 'us-east-1_ABC123DEFG'
+  IdentityPoolId:
+    Description: The ID of the Cognito identity pool for Blogen users
+    Type: String
+    Default: 'us-east-1:1111AAAA-bbb22-cccc-dddd-3333eeee4444ffff'
+
+
+Resources:
+
+  # Create a role that will allow our EC2 app server instances to access DynamoDB and Cognito
+  # This role grants FULL access to DynamoDB and Cognito
+  blogenAppServerRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Effect: "Allow"
+          Principal:
+            Service:
+              - "ec2.amazonaws.com"
+          Action:
+            - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
+        - "arn:aws:iam::aws:policy/AmazonCognitoPowerUser"
+
+  # This instance profile will be used on each appServer instance in EC2
+  blogenAppServerInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - !Ref blogenAppServerRole
+        
+  ###########################################################################
+  # Create two load balanced blogen application servers on Elastic Beanstalk
+  ###########################################################################
+  blogenServerApplication:
+    Type: AWS::ElasticBeanstalk::Application
+    Properties:
+      ApplicationName: "blogen-application-server"
+      Description: "example blogen web server using Cognito and SpringBoot"
+
+#  blogenServerApplicationVersion:
+#    Type: AWS::ElasticBeanstalk::ApplicationVersion
+#    Properties:
+#      ApplicationName: !Ref blogenServerApplication
+#      Description: "initial version of blogen application server"
+#      SourceBundle:
+#        S3Bucket: !Ref ApplicationS3Bucket
+#        S3Key: !Ref ApplicationS3Key
+
+
+  blogenServerEnvironment:
+    Type: AWS::ElasticBeanstalk::Environment
+    Properties:
+      ApplicationName: !Ref blogenServerApplication
+      # CNAMEPrefix: !Ref EnvironmentCNAME
+      Description: "Blogen Wev Applicaton Server Environment"
+      SolutionStackName: "64bit Amazon Linux 2018.03 v2.7.7 running Java 8"
+      OptionSettings:
+      - Namespace: aws:autoscaling:asg
+        OptionName: MinSize
+        Value: '2'
+      - Namespace: aws:autoscaling:asg
+        OptionName: MaxSize
+        Value: '2'
+      # set beanstalk to use a LoadBalanced environment (uses Classic load balancer by default)
+      - Namespace: aws:elasticbeanstalk:environment
+        OptionName: EnvironmentType
+        Value: LoadBalanced
+      # set up a listener for HTTPS connections on the load balancer
+      - Namespace: aws:elb:listener:443
+        OptionName: ListenerProtocol
+        Value: HTTPS
+      # set the port that the load balancer will use to communicate with EC2 instances (we are using HTTP on port 80)
+      #  and we want to terminate HTTPS at the load-balancer
+      - Namespace: aws:elb:listener:443
+        OptionName: InstancePort
+        Value: 80
+      # set the SSL certificate to use
+      - Namespace: aws:elb:listener:443
+        OptionName: SSLCertificateId
+        Value: 'arn:aws:acm:us-east-1:067678732759:certificate/831500c9-84e9-4ba7-960a-0cb5afe63f38'
+      # set environment variable to override Spring Boot's default embedded server port to 5000, which is what beanstalk's nginx server defaults to
+      - Namespace: aws:elasticbeanstalk:application:environment
+        OptionName: "SERVER_PORT"
+        Value: 5000
+      # set environment variable so spring boot can verify JWT ID Tokens from our Cognito user pool
+      - Namespace: aws:elasticbeanstalk:application:environment
+        OptionName: "BLOGEN_SECURITY_JWT_AWS_USERPOOLID"
+        Value: !Ref UserPoolId
+      # set environment variable so spring boot can verify JWT ID Tokens from our Cognito Identity Pool
+      - Namespace: aws:elasticbeanstalk:application:environment
+        OptionName: "BLOGEN_SECURITY_JWT_AWS_IDENTITYPOOLID"
+        Value: !Ref IdentityPoolId
+      # set environment variable so spring boot can get the AWS region we are running in
+      - Namespace: aws:elasticbeanstalk:application:environment
+        OptionName: "BLOGEN_SECURITY_JWT_AWS_REGION"
+        Value: !Ref 'AWS::Region'
+      # set the Role to be used by the EC2 instances, they need access to DynamoDB and Cognito
+      - Namespace: aws:autoscaling:launchconfiguration
+        OptionName: IamInstanceProfile
+        Value: !Ref blogenAppServerInstanceProfile
+      # explicitly set ec2 instance types to t2.micro
+      - Namespace: aws:autoscaling:launchconfiguration
+        OptionName: InstanceType
+        Value: t2.micro
+      - Namespace: aws:autoscaling:launchconfiguration
+        OptionName: EC2KeyName
+        Value: !Ref KeyName
+      #VersionLabel: !Ref blogenServerApplicationVersion
+
+Outputs:
+  blogenApplicationName:
+    Value: !Ref blogenServerApplication
+  blogenResourceName:
+    Value: !Ref blogenServerEnvironment
+  blogenEndpointURL:
+    Value: !GetAtt blogenServerEnvironment.EndpointURL
