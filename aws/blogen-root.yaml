@@ -24,7 +24,7 @@ Parameters:
     Description: email address for the blogen admin. They use this to log into the website and to receive their initial temporary password
   LambdaS3Bucket:
     Type: String
-    Default: 'strohs-ci-cd'
+    Default: 'bucket'
     Description: name of S3 bucket containing the (.jar or .zip) blogen lambda source code
   LambdaS3Key:
     Type: String
@@ -36,7 +36,7 @@ Parameters:
     Default: 'MyEC2KeyPair'
   ApplicationS3Bucket:
     Type: String
-    Default: 'strohs-ci-cd'
+    Default: 'bucket'
     # NOTE bucket versioning should be enabled, especially if you're deploying updates to the application
     Description: Name of the S3 bucket that contains the blogen application code. Bucket Versioning in S3 should be enabled
   ApplicationS3Key:
@@ -45,7 +45,7 @@ Parameters:
     Description: Name of the blogen .jar file to install into elastic beanstalk
   TemplateS3Bucket:
     Type: String
-    Default: 'strohs-ci-cd'
+    Default: 'bucket'
     Description: name of the S3 bucket containing the Blogen Cognito CloudFormation templates
 
 Resources:

@@ -10,7 +10,7 @@ Transform: AWS::Serverless-2016-10-31
 Parameters:
   LambdaCodeBucket:
     Type: String
-    Default: 'strohs-ci-cd'
+    Default: 'bucket'
     Description: name of S3 bucket containing the (.jar) blogen lambda source code
   LambdaCodeKey:
     Type: String

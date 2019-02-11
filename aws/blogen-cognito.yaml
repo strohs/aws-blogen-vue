@@ -21,7 +21,7 @@ Parameters:
     Description: Cognito application client Name
   LambdaS3Bucket:
     Type: String
-    Default: 'strohs-ci-cd'
+    Default: 'bucket'
     Description: name of S3 bucket containing the (.jar or .zip) blogen lambda source code
   LambdaS3Key:
     Type: String
@@ -33,7 +33,7 @@ Parameters:
     Description: email address for the blogen admin. They use this to log into the website and to receive their initial temporary password
   TemplateS3Bucket:
     Type: String
-    Default: 'strohs-ci-cd'
+    Default: 'bucket'
     Description: name of the S3 bucket containing the Blogen Cognito CloudFormation templates
 
 

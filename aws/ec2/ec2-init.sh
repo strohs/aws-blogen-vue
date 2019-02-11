@@ -14,11 +14,11 @@ yum update -y
 
 # set environment variables needed by Spring Boot
 cat > /etc/profile.d/load_env.sh << 'EOF'
-export BLOGEN_SECURITY_JWT_AWS_USERPOOLID=us-east-1_ccBMleomF
-export BLOGEN_SECURITY_JWT_AWS_IDENTITYPOOLID=us-east-1:d9b442be-f398-45fd-9ebf-44e2a32fdf0f
+export BLOGEN_SECURITY_JWT_AWS_USERPOOLID=us-east-1_USER_POOL_ID
+export BLOGEN_SECURITY_JWT_AWS_IDENTITYPOOLID=us-east-1:IDENTITY_POOL_ID
 export BLOGEN_SECURITY_JWT_AWS_REGION=us-east-1
 # export SERVER_PORT=5000
 EOF
 
 # copy a file from S3
-aws s3 cp s3://strohs-ci-cd/blogen.zip /home/ec2-user
+aws s3 cp s3://bucket/blogen.zip /home/ec2-user

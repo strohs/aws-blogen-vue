@@ -27,7 +27,7 @@ Parameters:
     ConstraintDescription: must be the name of an existing EC2 KeyPair.
   ApplicationS3BucketName:
     Type: String
-    Default: 'strohs-ci-cd'
+    Default: 'YOUR-BUCKET-NAME'
     # NOTE bucket versioning should be enabled, especially if you're deploying updates to the application
     Description: Name of the S3 bucket that contains the blogen application code. Bucket Versioning in S3 should be enabled
   SSHLocation:

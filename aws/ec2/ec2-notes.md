@@ -36,7 +36,7 @@ EOF
 
 #### running spring boot as a service on Linux
 * more info [here](https://www.baeldung.com/spring-boot-app-as-a-service)
-* this will configures a System V daemon
+* this will configure a System V daemon
 * you can optionally create a new user to run your app
     * `sudo useradd baeldung`
     * `sudo passwd baeldung`
