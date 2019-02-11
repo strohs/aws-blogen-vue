@@ -153,8 +153,8 @@
     <build>
         <plugins>
 
-            <!-- this plugin makes a .jar executable, NOTE it does not work on Elastic Beanstalk -->
-            <!-- Beanstalk tries to unzip the .jar and it will fail -->
+            <!-- this plugin can make a .jar executable, which is needed when deploying directly to EC2 instances -->
+            <!-- NOTE executable jars do not work on Elastic Beanstalk, it tries to unzip the .jar and it will fail -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
