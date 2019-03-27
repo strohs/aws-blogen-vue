@@ -23,7 +23,7 @@
         <springfox-swagger.version>2.9.2</springfox-swagger.version>
         <json.web.token.version>0.9.1</json.web.token.version>
         <aws.dynamodblocal.version>[1.11.86,2.0)</aws.dynamodblocal.version>
-        <aws.sdk.version>1.11.408</aws.sdk.version>
+        <aws.sdk.version>1.11.525</aws.sdk.version>
     </properties>
 
     <dependencyManagement>

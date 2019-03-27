@@ -9,7 +9,7 @@ import com.amazonaws.services.cognitoidp.model.*;
 
 /**
  * This is a standalone utility class that creates five 'fake' Blogen users in the Blogen Cognito user pool using the
- * Cognito admin* api from the AWS Java SDK. The Blogen user pool must already be created.
+ * Cognito admin* api from the AWS Java SDK. The Blogen user pool must already be created within AWS.
  * <p>
  * The created users will be added to the user group, have a fake e-mail address and phone number, and their
  * passwords will all be set to 'tempPassword'. The passwords must be changed when the user logs into the website.

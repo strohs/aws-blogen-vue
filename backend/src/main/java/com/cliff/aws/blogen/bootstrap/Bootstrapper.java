@@ -76,7 +76,7 @@ public class Bootstrapper implements ApplicationListener<ContextRefreshedEvent> 
         logFailedBatches( failedBatches );
 
 
-        // build and save users
+//        // build and save users
 //        log.debug("building blogen users");
 //        Instant yesterday = Instant.now().minus(1, ChronoUnit.DAYS );
 //        Blogen admin = buildBlogenUser(
@@ -113,18 +113,18 @@ public class Bootstrapper implements ApplicationListener<ContextRefreshedEvent> 
 //
 //        failedBatches = dbMapper.batchSave( Arrays.asList( admin, john, william, maggie, elizabeth));
 //        logFailedBatches( failedBatches );
-
-
-
-        // build user names keys and assign userNames to userIds
+//
+//
+//
+//        // build user names keys and assign userNames to userIds
 //        log.debug("building username(s) to userId(s)");
 //        List<Blogen> userNames = buildUserNames( admin, maggie, elizabeth, john, william );
 //        failedBatches = dbMapper.batchSave(userNames);
 //        logFailedBatches( failedBatches );
-
-
-        // BUILD POSTS
-
+//
+//
+//        // BUILD POSTS
+//
 //        String threadId1, threadId2, threadId3;
 //        Blogen thread,thread2,thread3,thread4,thread5,thread6,thread7,thread8,thread9,thread10,post1,post2,post3,post4,post5,post6;
 //
@@ -260,9 +260,12 @@ public class Bootstrapper implements ApplicationListener<ContextRefreshedEvent> 
         //there should now be 26 posts in total - sixteen thread start posts and ten child posts
     }
 
+    /**
+     * creates the blogen dynamodb table and Global Secondary Indices
+     */
     private void buildBlogenTable() {
-        CreateTableRequest ctr = TableUtils.createBlogenTableRequest( dbMapper, dbMapperConfig, 2L,2L );
-        TableUtils.checkOrCreateTable( dynamoDB, ctr, shouldRecreateTable, true );
+        CreateTableRequest ctr = DynamoDBUtils.createBlogenTableRequest( dbMapper, dbMapperConfig, 2L,2L );
+        DynamoDBUtils.checkOrCreateTable( dynamoDB, ctr, shouldRecreateTable, true );
     }
 
     // this maps a userName to the userId that is currently assigned to that userName

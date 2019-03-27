@@ -7,7 +7,7 @@ Blogen is a very simple, micro-blogging site / message board, that lets users po
   information.  
  
 This version of Blogen uses Vue.js with Bootstrap 4 on the frontend, while the backend has been changed to use (mostly)
-AWS. Specifically, AWS Cognito is used to for user management, DynamoDB is used to store user messages, AWS
+AWS. Specifically, AWS Cognito is used for user management, DynamoDB is used to store user messages, AWS
 Lambda is used to perform some post user registration steps. Spring Boot 2 is still used, but it mainly serves as the
 controller for the Blogen REST API. The Spring Boot servers are run on Elastic Beanstalk.
 
@@ -126,7 +126,7 @@ is as follows:
 ## Blogen Set-Up and Deployment onto AWS
 
 ### Prerequisites
-* Java installed on your machine, java 8 is the recommended 
+* Java installed on your machine, java 8 is the recommended version 
 * You must have a pre-existing AWS account and have the AWS command line interface installed and configured
 * If you plan to do any development on the frontend, you must have node and npm installed, at least version 8.11 of 
 node is recommended. The `/frontend/pom.xml` is configured to download and temporarily install node 8.11.3 so that users 

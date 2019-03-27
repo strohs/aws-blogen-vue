@@ -291,7 +291,7 @@ public class BlogenCustomRepositoryImpl implements BlogenCustomRepository {
     }
 
     private Comparator<Map<String,AttributeValue>> byPrimaryRangeAsc = ( Map<String,AttributeValue> m1,
-                                                                 Map<String,AttributeValue> m2) -> {
+                                                                         Map<String,AttributeValue> m2) -> {
         String ts1 = m1.get("primaryRange").getS();
         String ts2 = m2.get("primaryRange").getS();
         return ts1.compareTo(ts2);

@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
  * Author: Cliff
  */
 @Slf4j
-public class TableUtils {
+public class DynamoDBUtils {
 
     /**
      * creates a Blogen table using a {@link Blogen} domain object
@@ -69,6 +69,7 @@ public class TableUtils {
 
         String tableName = createTableRequest.getTableName();
         try {
+            // this throws an exception if the table does not exist
             dynamoDB.describeTable(tableName);
             if ( deleteTableIfExists ) {
                 log.info("Table {} exists, deleting....", tableName);

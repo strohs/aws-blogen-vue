@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.User;
 import java.util.Collection;
 
 /**
- * A Spring Security User class that stores details of a Blogen user.
+ * A Spring Security User class that stores details specific to a Blogen user.
  *
  * Information from the Cognito ID-Token is mapped into this class and then stored in the Spring Authentication
  * object (as the principal).
