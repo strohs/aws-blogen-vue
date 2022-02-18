@@ -88,7 +88,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostListDTO getPostsForUser( String userId, String categoryName, int pageNum, int pageSize ) {
-        //TODO return empty results of user id does not exist, may need try catch
+        //TODO return empty results if user id does not exist, may need try catch
 
         //create a PageRequest
         PageRequest pageRequest = pageRequestBuilder.buildPageRequest( pageNum, pageSize );

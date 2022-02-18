@@ -7,18 +7,34 @@ import com.amazonaws.services.dynamodbv2.model.*;
 import com.cliff.aws.blogen.domain.Blogen;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 /**
- * Methods to create and delete DynamoDB Tables
+ * Utility Methods to create and delete DynamoDB Tables
  *
  * Author: Cliff
  */
 @Slf4j
-public class DynamoDBUtils {
+public class BootstrapUtils {
+
 
     /**
-     * creates a Blogen table using a {@link Blogen} domain object
+     * @return the current time formatted as a 12 digit String. The string includes
+     * two digits from each of the following: year, month, day, hour, minute and seconds.
+     * Example: 220205134504
+     */
+    public static String currentTime() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMddHHmmss");
+        return formatter.format(LocalDateTime.now());
+    }
+
+
+    /**
+     * creates the request object, required by the aws-java-sdk, that will create
+     * the Blogen table in DynamoDB
      *
-     * @return CreateTableRequest for creating the Blogen table
+     * @return a CreateTableRequest object that can be used by aws-java-sdk for creating the Blogen table
      */
     public static CreateTableRequest createBlogenTableRequest( DynamoDBMapper dbMapper,
                                                         DynamoDBMapperConfig dbMapperConfig,

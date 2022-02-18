@@ -3,6 +3,7 @@ package com.cliff.aws.blogen.api.v1.mappers;
 import com.cliff.aws.blogen.api.v1.model.CategoryDTO;
 import com.cliff.aws.blogen.api.v1.services.CategoryService;
 import com.cliff.aws.blogen.bootstrap.Bootstrapper;
+import com.cliff.aws.blogen.bootstrap.DynamoDbBootstrapper;
 import com.cliff.aws.blogen.domain.Blogen;
 import org.junit.Test;
 
@@ -72,6 +73,6 @@ public class CategoryMapperTest {
 
 
     private Blogen buildCategory(String name) {
-        return Bootstrapper.buildCategory(name);
+        return DynamoDbBootstrapper.buildCategory(name);
     }
 }

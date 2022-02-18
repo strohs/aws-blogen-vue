@@ -2,7 +2,7 @@ package com.cliff.aws.blogen.api.v1.mappers;
 
 import com.cliff.aws.blogen.api.v1.model.PostUserDTO;
 import com.cliff.aws.blogen.api.v1.services.AvatarService;
-import com.cliff.aws.blogen.bootstrap.Bootstrapper;
+import com.cliff.aws.blogen.bootstrap.DynamoDbBootstrapper;
 import com.cliff.aws.blogen.domain.Blogen;
 import com.cliff.aws.blogen.domain.BlogenPrimaryKey;
 import org.junit.Test;
@@ -26,7 +26,7 @@ public class PostUserMapperTest {
         String userId = "1233-ABCD";
         String userName = "mcgill";
         String avatarFileName = "avatar1.jpg";
-        BlogenPrimaryKey pk = Bootstrapper.buildUserPK(userId);
+        BlogenPrimaryKey pk = DynamoDbBootstrapper.buildUserPK(userId);
         Blogen user = Blogen.builder().blogenPrimaryKey(pk).userId(userId).userName(userName).avatarFileName(avatarFileName).build();
         String avatarUrl = AvatarService.buildAvatarUrl(user);
 

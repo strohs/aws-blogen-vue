@@ -1,35 +1,42 @@
 package com.cliff.aws.blogen.services.security;
 
+import com.cliff.aws.blogen.config.CognitoConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(prefix = "blogen.security.jwt.aws")
+//@ConfigurationProperties(prefix = "blogen.security.jwt.aws")
 public class JwtConfiguration {
 
     private static final String COGNITO_IDENTITY_POOL_URL = "https://cognito-idp.%s.amazonaws.com/%s";
     private static final String JSON_WEB_TOKEN_SET_URL_SUFFIX = "/.well-known/jwks.json";
 
-    private String userPoolId;
-    private String identityPoolId;
+    // cognito config will have the currently configured userPoolId,
+    // identityPoolId, and region
+    private CognitoConfig cognitoConfig;
 
     private String jwkUrl;
-    private String region = "us-east-1";
     private String userNameField = "cognito:username";
     private String groupsField = "cognito:groups";
     private int connectionTimeout = 2000;
     private int readTimeout = 2000;
     private String httpHeader = "Authorization";
 
+    @Autowired
+    public JwtConfiguration(CognitoConfig cognitoConfig) {
+        this.cognitoConfig = cognitoConfig;
+    }
+
     public String getJwkUrl() {
         if (jwkUrl==null || jwkUrl.isEmpty()) {
-            return String.format(COGNITO_IDENTITY_POOL_URL + JSON_WEB_TOKEN_SET_URL_SUFFIX,region,userPoolId);
+            return String.format(COGNITO_IDENTITY_POOL_URL + JSON_WEB_TOKEN_SET_URL_SUFFIX, getRegion(), getUserPoolId());
         }
         return jwkUrl;
     }
 
     public String getCognitoIdentityPoolUrl() {
-        return String.format(COGNITO_IDENTITY_POOL_URL,region,userPoolId);
+        return String.format(COGNITO_IDENTITY_POOL_URL, getRegion(), getUserPoolId());
     }
 
     public void setJwkUrl(String jwkUrl) {
@@ -37,21 +44,29 @@ public class JwtConfiguration {
     }
 
     public String getUserPoolId() {
-        return userPoolId;
+        return cognitoConfig.getUserPoolId();
     }
 
-    public void setUserPoolId(String userPoolId) {
-        this.userPoolId = userPoolId;
-    }
+//    public void setUserPoolId(String userPoolId) {
+//        this.userPoolId = userPoolId;
+//    }
 
     public String getIdentityPoolId() {
-        return identityPoolId;
+        return cognitoConfig.getIdentityPoolId();
     }
 
-    public JwtConfiguration setIdentityPoolId(String identityPoolId) {
-        this.identityPoolId = identityPoolId;
-        return this;
+//    public JwtConfiguration setIdentityPoolId(String identityPoolId) {
+//        this.identityPoolId = identityPoolId;
+//        return this;
+//    }
+
+    public String getRegion() {
+        return cognitoConfig.getRegion();
     }
+
+//    public void setRegion(String region) {
+//        this.region = region;
+//    }
 
     public String getHttpHeader() {
         return httpHeader;
@@ -75,14 +90,6 @@ public class JwtConfiguration {
 
     public void setGroupsField(String groupsField) {
         this.groupsField = groupsField;
-    }
-
-    public String getRegion() {
-        return region;
-    }
-
-    public void setRegion(String region) {
-        this.region = region;
     }
 
     public int getConnectionTimeout() {

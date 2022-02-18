@@ -22,8 +22,7 @@
         <lombok.version>1.18.0</lombok.version>
         <springfox-swagger.version>2.9.2</springfox-swagger.version>
         <json.web.token.version>0.9.1</json.web.token.version>
-        <aws.dynamodblocal.version>[1.11.86,2.0)</aws.dynamodblocal.version>
-        <aws.sdk.version>1.11.525</aws.sdk.version>
+        <aws.sdk.version>1.12.159</aws.sdk.version>
     </properties>
 
     <dependencyManagement>
@@ -109,24 +108,17 @@
 
         <!-- Spring Community Data for DynamoDB -->
         <dependency>
-            <groupId>com.github.spring-data-dynamodb</groupId>
+            <groupId>com.github.derjust</groupId>
             <artifactId>spring-data-dynamodb</artifactId>
-            <version>5.0.2</version>
+            <version>5.0.3</version>
         </dependency>
 
-        <!-- DynamoDB SDK and DynamoDBLocal -->
+        <!-- DynamoDB SDK -->
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-dynamodb</artifactId>
         </dependency>
 
-        <!-- DynamoDB Local -->
-        <dependency>
-            <groupId>com.amazonaws</groupId>
-            <artifactId>DynamoDBLocal</artifactId>
-            <version>${aws.dynamodblocal.version}</version>
-        </dependency>
-        
         <!-- sdk for working with federated identities -->
         <dependency>
             <groupId>com.amazonaws</groupId>
@@ -137,6 +129,19 @@
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-cognitoidp</artifactId>
+        </dependency>
+
+        <!-- sdk for working with identity access management -->
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-iam</artifactId>
+        </dependency>
+
+        <!-- DynamoDB Local -->
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>DynamoDBLocal</artifactId>
+            <version>[1.12,2.0)</version>
         </dependency>
         
     </dependencies>
@@ -241,7 +246,7 @@
             </plugin>
 
             <!-- this plugin is used to create a native-libs directory so that dynamodb-local can find the -->
-            <!--   sqllite libraries that it needs when we run unit/integration tests -->
+            <!--   sql-lite libraries that it needs when we run unit/integration tests -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>

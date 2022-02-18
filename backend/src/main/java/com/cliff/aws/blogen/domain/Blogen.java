@@ -35,6 +35,7 @@ public class Blogen {
 
     private Instant updatedTimestamp;
     private String userId;
+    // userName is the user's preferred username or nickname
     private String userName;
 
     // user detail attributes

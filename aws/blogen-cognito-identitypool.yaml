@@ -53,7 +53,7 @@ Resources:
           - Effect: "Allow"
             Action: ['mobileanalytics:PutEvents', 'cognito-sync:*']
             Resource: '*'
-          # unauthenticated users can call ListUsers so that they can determine if a username is already taken in the user pool
+          # unauthenticated users can call ListUsers so that they can determine if a username/email is already taken in the user pool
           - Effect: "Allow"
             Action: ["cognito-idp:ListUsers"]
             Resource: !Ref UserPoolArn

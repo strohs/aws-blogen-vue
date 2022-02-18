@@ -12,6 +12,7 @@ import javax.annotation.PreDestroy;
 
 /**
  * Starts an instance of a DynamoDB Local server
+ * DynamoDB Local is described here: https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.html
  *
  * NOTICE make sure you run mvn test-compile at least once in order to initialize and created the sqlite4java
  * native-libs directory

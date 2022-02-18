@@ -1,5 +1,5 @@
-// configures the AWS amplify library to use a Cognito user pool and identity pool
-//
+// configures the AWS amplify library to use these configurations when accessing
+// a Cognito user pool and identity pool
 
 const amplifyConf = {
   Auth: {
@@ -9,10 +9,10 @@ const amplifyConf = {
     // REQUIRED - Amazon Cognito Region
     region: process.env.VUE_APP_AWS_REGION,
 
-    // OPTIONAL - Amazon Cognito User Pool ID
+    // REQUIRED - Amazon Cognito User Pool ID
     userPoolId: process.env.VUE_APP_AWS_USER_POOL_ID,
 
-    // OPTIONAL - Amazon Cognito Web Client ID (26-char alphanumeric string)
+    // REQUIRED - Amazon Cognito Web Client ID (26-char alphanumeric string)
     userPoolWebClientId: process.env.VUE_APP_AWS_USER_POOL_WEB_CLIENT_ID,
 
     // OPTIONAL - Enforce user authentication prior to accessing AWS resources or not

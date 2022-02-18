@@ -1,6 +1,7 @@
 package com.cliff.aws.blogen.dynamodb;
 
 import com.cliff.aws.blogen.bootstrap.Bootstrapper;
+import com.cliff.aws.blogen.bootstrap.DynamoDbBootstrapper;
 import com.cliff.aws.blogen.domain.Blogen;
 import com.cliff.aws.blogen.repositories.BlogenRepository;
 import org.junit.Ignore;
@@ -44,7 +45,7 @@ public class BlogenRepositoryIT {
 
     @Test
     public void shouldSaveNewCategory() {
-        final Blogen linuxCategory = Bootstrapper.buildCategory("Linux");
+        final Blogen linuxCategory = DynamoDbBootstrapper.buildCategory("Linux");
         final Blogen savedCat = repository.save(linuxCategory);
         assertThat( savedCat, is( notNullValue() ));
         System.out.println( savedCat );
