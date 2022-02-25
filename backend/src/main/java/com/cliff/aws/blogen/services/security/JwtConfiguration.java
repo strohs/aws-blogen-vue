@@ -1,11 +1,12 @@
 package com.cliff.aws.blogen.services.security;
 
 import com.cliff.aws.blogen.config.CognitoConfig;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 //@ConfigurationProperties(prefix = "blogen.security.jwt.aws")
 public class JwtConfiguration {
 
@@ -26,10 +27,14 @@ public class JwtConfiguration {
     @Autowired
     public JwtConfiguration(CognitoConfig cognitoConfig) {
         this.cognitoConfig = cognitoConfig;
+        log.debug("cognito region: " + this.getRegion());
+        log.debug("user pool id: " + this.getUserPoolId());
+        log.debug("identity pool id: " + this.getIdentityPoolId());
+        log.debug("jwkUrl: " + this.getJwkUrl());
     }
 
     public String getJwkUrl() {
-        if (jwkUrl==null || jwkUrl.isEmpty()) {
+        if (jwkUrl == null || jwkUrl.isEmpty()) {
             return String.format(COGNITO_IDENTITY_POOL_URL + JSON_WEB_TOKEN_SET_URL_SUFFIX, getRegion(), getUserPoolId());
         }
         return jwkUrl;

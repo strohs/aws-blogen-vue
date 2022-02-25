@@ -8,7 +8,6 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="blogen-lambdas" />
-        <module name="blogen-frontend" />
       </profile>
       <profile name="Annotation profile for aws-blogen" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -33,6 +32,9 @@
         <module name="blogen-appserver" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="blogen-frontend" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">

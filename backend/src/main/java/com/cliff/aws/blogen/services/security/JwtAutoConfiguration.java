@@ -9,8 +9,10 @@ import com.nimbusds.jose.util.ResourceRetriever;
 import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
 import com.nimbusds.jwt.proc.DefaultJWTProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -18,21 +20,24 @@ import java.net.URL;
 import static com.nimbusds.jose.JWSAlgorithm.RS256;
 
 @Configuration
-@Lazy
 //@EnableConfigurationProperties({JwtConfiguration.class})
 public class JwtAutoConfiguration {
 
     @Bean
-    @Scope(value="request", proxyMode= ScopedProxyMode.TARGET_CLASS)
+    @Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
     public JwtIdTokenCredentialsHolder awsCognitoCredentialsHolder() {
         return new JwtIdTokenCredentialsHolder();
     }
 
     @Bean
-    public AwsCognitoIdTokenProcessor awsCognitoIdTokenProcessor() { return new AwsCognitoIdTokenProcessor(); }
+    public AwsCognitoIdTokenProcessor awsCognitoIdTokenProcessor() {
+        return new AwsCognitoIdTokenProcessor();
+    }
 
     @Bean
-    public JwtAuthenticationProvider jwtAuthenticationProvider() { return new JwtAuthenticationProvider(); }
+    public JwtAuthenticationProvider jwtAuthenticationProvider() {
+        return new JwtAuthenticationProvider();
+    }
 
 
     @Bean

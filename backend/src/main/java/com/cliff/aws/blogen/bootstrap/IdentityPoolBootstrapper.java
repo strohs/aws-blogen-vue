@@ -10,6 +10,7 @@ import com.amazonaws.services.identitymanagement.model.*;
 import com.cliff.aws.blogen.config.CognitoConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -31,7 +32,7 @@ import java.util.HashMap;
  */
 @Component
 @Slf4j
-@Profile({"dev"})
+@Profile("dev")
 public class IdentityPoolBootstrapper {
 
     public static final String IDENTITY_POOL_NAME = "BlogenIdentityPool-" + BootstrapUtils.currentTime();
@@ -41,12 +42,13 @@ public class IdentityPoolBootstrapper {
     public static final String AUTHENTICATED_ROLE_NAME = "BlogenAuthRole-" + BootstrapUtils.currentTime();
     public static final String AUTHENTICATED_ROLE_POLICY_NAME = "BlogenAuthRolePolicy-" + BootstrapUtils.currentTime();
 
-    protected String identityPoolId = null;
+    public String identityPoolId = null;
     protected String authRoleArn = null;
     protected String authPolicyArn = null;
     protected String unAuthRoleArn = null;
     protected String unAuthPolicyArn = null;
 
+    private String region;
 
     private final AWSCredentialsProvider credentialsProvider;
 
@@ -56,11 +58,12 @@ public class IdentityPoolBootstrapper {
     // this client is used to access IAM in order to create ROLES and Policies
     private final AmazonIdentityManagement iamClient;
 
-    private final CognitoConfig cognitoConfig;
-
     @Autowired
-    public IdentityPoolBootstrapper(AWSCredentialsProvider credentialsProvider, CognitoConfig cognitoConfig) {
-        this.cognitoConfig = cognitoConfig;
+    public IdentityPoolBootstrapper(
+            @Value("${blogen.security.jwt.aws.region:us-east-1}") String region,
+            AWSCredentialsProvider credentialsProvider
+    ) {
+        this.region = region;
         this.credentialsProvider = credentialsProvider;
         this.identityClient = buildIdentityPoolClient();
         log.debug("cognito identity pool client created");
@@ -72,7 +75,7 @@ public class IdentityPoolBootstrapper {
     private AmazonCognitoIdentity buildIdentityPoolClient() {
         return AmazonCognitoIdentityClientBuilder
                 .standard()
-                .withRegion(cognitoConfig.getRegion())
+                .withRegion(this.region)
                 .withCredentials(credentialsProvider)
                 .build();
     }
@@ -81,7 +84,7 @@ public class IdentityPoolBootstrapper {
     private AmazonIdentityManagement buildIamClient() {
         return AmazonIdentityManagementClientBuilder
                 .standard()
-                .withRegion(cognitoConfig.getRegion())
+                .withRegion(this.region)
                 .withCredentials(credentialsProvider)
                 .build();
     }
@@ -175,10 +178,10 @@ public class IdentityPoolBootstrapper {
         return unAuthRoleArn;
     }
 
-    public void bootstrap(String userPoolRegion, String userPoolId, String userPoolArn, String appClientId) {
+    public void bootstrap(String userPoolId, String userPoolArn, String appClientId) {
         log.info("starting identity pool bootstrap...");
         // create the identity pool
-        CreateIdentityPoolResult res = createIdentityPool(userPoolId, appClientId, userPoolRegion);
+        CreateIdentityPoolResult res = createIdentityPool(userPoolId, appClientId, this.region);
         this.identityPoolId = res.getIdentityPoolId();
 
         // create a role for unauthenticated users
@@ -200,7 +203,6 @@ public class IdentityPoolBootstrapper {
                         .withRoles(roleMap));
         log.debug("authenticated and unauthenticated roles added to identity pool {}", res.getIdentityPoolId());
 
-        cognitoConfig.setIdentityPoolId(this.identityPoolId);
         log.info("finished identity pool bootstrap");
     }
 

@@ -69,7 +69,7 @@ public class DynamoDBConfig {
 
     @Bean("amazonDynamoDB")
     @Profile("dynamodb-local")
-    public AmazonDynamoDB localDynamoDB() {
+    public AmazonDynamoDB localDynamoDB(DynamoDBLocal dynamoDBLocal) {
         String dynamoDBEndpoint = "http://localhost:" + dynamoDBLocalPort + "/";
         AmazonDynamoDB amazonDynamoDB = AmazonDynamoDBClientBuilder
                 .standard()

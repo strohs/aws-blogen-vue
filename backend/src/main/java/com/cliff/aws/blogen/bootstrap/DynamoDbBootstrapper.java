@@ -339,7 +339,14 @@ public class DynamoDbBootstrapper {
         return IMG_SERVICE + "/?image=" + imageStart++;
     }
 
-
+    /**
+     * starts the bootstrapping process.
+     * - Creates one dynamoDB table named "Blogen"
+     * - creates 5 categories in the table
+     * - creates 7 avatar file names in the table
+     * - retrieves the 5 users created by the userPoolBootstrapper and uses their IDs to build
+     * 26 posts in total
+     */
     public void bootstrap() {
 
         buildBlogenTable();

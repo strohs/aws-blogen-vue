@@ -4,16 +4,15 @@ import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProvider;
 import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProviderClientBuilder;
 import com.amazonaws.services.cognitoidp.model.*;
-import com.cliff.aws.blogen.config.CognitoConfig;
 import com.cliff.aws.blogen.domain.Blogen;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PreDestroy;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * This class will bootstrap a cognito user pool that is needed by blogen
@@ -27,7 +26,7 @@ import java.util.List;
  */
 @Component
 @Slf4j
-@Profile({"dev"})
+@Profile("dev")
 public class UserPoolBootstrapper {
 
     // these are the roles that can be assigned to Blogen users
@@ -37,6 +36,8 @@ public class UserPoolBootstrapper {
         // admin roles can delete any posts, and create new categories
         Admin
     }
+
+    private String region;
 
     // the name to assign to Blogen's Cognito User Pool
     private static final String USER_POOL_NAME = "BlogenUserPool-" + BootstrapUtils.currentTime();
@@ -52,8 +53,6 @@ public class UserPoolBootstrapper {
     // this client is used to access the cognito user pool
     private final AWSCognitoIdentityProvider userPoolClient;
 
-    private static final String currTime = BootstrapUtils.currentTime();
-
     protected String userPoolId = null;
     protected String userPoolArn = null;
     protected String appClientId = null;
@@ -61,13 +60,28 @@ public class UserPoolBootstrapper {
     // this maps user email addresses to their internal cognito "username"
     protected HashMap<String, Blogen> userMap;
 
-    // the current cognito configuration
-    private final CognitoConfig cognitoConfig;
+    public String getUserPoolId() {
+        return userPoolId;
+    }
+
+    public String getUserPoolArn() {
+        return userPoolArn;
+    }
+
+    public String getAppClientId() {
+        return appClientId;
+    }
+
+    public HashMap<String, Blogen> getUserMap() {
+        return userMap;
+    }
 
     @Autowired
-    public UserPoolBootstrapper(AWSCredentialsProvider credentialsProvider, CognitoConfig cognitoConfig) {
+    public UserPoolBootstrapper(
+            @Value("${blogen.security.jwt.aws.region:us-east-1}") String region,
+            AWSCredentialsProvider credentialsProvider) {
+        this.region = region;
         this.credentialsProvider = credentialsProvider;
-        this.cognitoConfig = cognitoConfig;
         this.userPoolClient = buildUserPoolClient();
         log.debug("cognito user pool client created");
         userMap = new HashMap<>();
@@ -77,7 +91,7 @@ public class UserPoolBootstrapper {
     private AWSCognitoIdentityProvider buildUserPoolClient() {
         return AWSCognitoIdentityProviderClientBuilder
                 .standard()
-                .withRegion(cognitoConfig.getRegion())
+                .withRegion(this.region)
                 .withCredentials(credentialsProvider)
                 .build();
     }
@@ -85,9 +99,10 @@ public class UserPoolBootstrapper {
     /**
      * Creates a new Cognito User Pool with the given userPoolName. This method will also create the following:
      * - user's can use their email address as their username
-     * - no MFA is enabled
+     * - MFA is not enabled
      * - email addresses will be automatically verified once created
-     * - user's must use passwords of at least 8 characters, and at least one character must be lowercase
+     * - user's must use passwords of at least 8 characters, and at least one character must be uppercase and one must
+     * be lowercase
      *
      * @param userPoolName
      */
@@ -97,12 +112,19 @@ public class UserPoolBootstrapper {
                 .withAutoVerifiedAttributes(VerifiedAttributeType.Email)
                 .withMfaConfiguration(UserPoolMfaType.OFF)
                 .withUsernameAttributes(UsernameAttributeType.Email)
+                .withSchema(
+                        new SchemaAttributeType().withName("given_name").withRequired(true).withMutable(true),
+                        new SchemaAttributeType().withName("family_name").withRequired(true).withMutable(true),
+                        new SchemaAttributeType().withName("preferred_username").withRequired(true).withMutable(true),
+                        new SchemaAttributeType().withName("email").withRequired(true).withMutable(true)
+                )
                 .withPolicies(new UserPoolPolicyType()
                         // passwords must be at least 8 characters
                         .withPasswordPolicy(
                                 new PasswordPolicyType()
                                         .withMinimumLength(8)
                                         .withRequireLowercase(true)
+                                        .withRequireUppercase(true)
                         )
                 );
         //TODO should we create a PostConfirmationLambda, or just auto add all BOOTRAPPED USERS to the users group
@@ -261,8 +283,6 @@ public class UserPoolBootstrapper {
         userRes = createUser(this.userPoolId, "lizreed@example.com", "Elizabeth", "Reed", "lizreed", "avatar4.jpg");
         addUserToGroup(userPoolRes.getUserPool().getId(), userRes.getUser().getUsername(), BLOGEN_GROUP.User);
 
-
-        cognitoConfig.setUserPoolId(this.userPoolId);
     }
 
 }
