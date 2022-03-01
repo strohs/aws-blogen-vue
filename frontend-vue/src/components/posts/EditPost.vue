@@ -7,18 +7,32 @@
 // postId - post id to be be edited, this will be used to retrieve the post details from the store.
 //
 <template>
-  <div class="mx-1">
+  <div>
 
-    <b-button size="sm" variant="outline-primary" data-bs-toggle="modal" data-bs-target="#bsModal">
+    <b-button size="sm" variant="outline-primary" @click="isModalVisible = !isModalVisible">
       Edit
     </b-button>
 
-    <blogen-modal header-bg-color="bg-primary" header-text-color="text-white" :show-footer="false">
-      <template #header-title>Edit Post</template>
-      <template #body>
-        <app-post-form v-bind="post" @cancel-post="dismissModal" @submit-post="submitPost"></app-post-form>
-      </template>
-    </blogen-modal>
+    <Teleport to="body">
+      <transition name="modal-fade">
+        <app-modal
+            v-show="isModalVisible"
+            header-bg-color="bg-primary"
+            @cancel="dismissModal"
+        >
+          <template #header>
+            <h4 class="modal-title">Edit Post</h4>
+          </template>
+
+          <template #body>
+            <app-post-form v-bind="post" @cancel-post="dismissModal" @submit-post="submitPost"></app-post-form>
+          </template>
+
+          <template #footer><br/></template>
+
+        </app-modal>
+      </transition>
+    </Teleport>
 
   </div>
 
@@ -27,13 +41,13 @@
 <script>
 import PostForm from './PostForn.vue'
 import constants from '../../common/constants.js'
-import BlogenModal from "../common/BlogenModal.vue";
+import Modal from "../common/Modal.vue";
 
 export default {
   name: 'EditPost',
   components: {
     appPostForm: PostForm,
-    BlogenModal
+    appModal: Modal,
   },
   props: {
     // the post id to edit
@@ -49,31 +63,39 @@ export default {
         text: '',
         imageUrl: constants.API_SERVER_URL + constants.DEFAULT_IMAGE_PATH,
         categoryName: ''
-      }
+      },
+      isModalVisible: false,
     }
   },
   created () {
     // default this components post data to the post data in the store
-    const post = this.$store.getters.getPostById(this.postId)
-    this.post.title = post.title
-    this.post.text = post.text
-    this.post.imageUrl = post.imageUrl
-    this.post.categoryName = post.category.name
+    const post = this.$store.getters.getPostById(this.postId);
+    this.post.title = post.title;
+    this.post.text = post.text;
+    this.post.imageUrl = post.imageUrl;
+    this.post.categoryName = post.category.name;
   },
   methods: {
     submitPost (postData) {
-      console.log(`edit post id:${this.postId} with data:`, postData)
-      this.$store.dispatch('updatePost', { id: this.postId, post: postData })
-      this.dismissModal()
+      console.log(`edit post id:${this.postId} with data:`, postData);
+      this.$store.dispatch('updatePost', { id: this.postId, post: postData });
+      this.dismissModal();
     },
     dismissModal () {
-      const bsModal = new bootstrap.Modal(document.getElementById('bsModal'));
-      bsModal.hide();
+      this.isModalVisible = false;
     }
   }
 }
 </script>
 
 <style scoped>
+.modal-fade-enter,
+.modal-fade-leave-to {
+  opacity: 0;
+}
 
+.modal-fade-enter-active,
+.modal-fade-leave-active {
+  transition: opacity 0.5s ease;
+}
 </style>

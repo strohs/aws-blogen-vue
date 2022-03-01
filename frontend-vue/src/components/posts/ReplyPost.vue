@@ -7,18 +7,32 @@
 // postId - the id of the post to reply to
 //
 <template>
-  <div class="mx-1">
+  <div>
 
-    <b-button size="sm" variant="outline-success" data-bs-toggle="modal" data-bs-target="#bsModal">
+    <b-button size="sm" variant="outline-success" @click="isModalVisible = !isModalVisible">
       Reply
     </b-button>
 
-    <blogen-modal header-bg-color="bg-success" header-text-color="text-white" :show-footer="false">
-      <template #header-title>Reply to Post</template>
-      <template #body>
-        <app-post-form v-bind="post" @cancel-post="dismissModal" @submit-post="submitPost"></app-post-form>
-      </template>
-    </blogen-modal>
+    <Teleport to="body">
+      <transition name="modal-fade">
+        <app-modal
+            v-show="isModalVisible"
+            header-bg-color="bg-success"
+            @cancel="dismissModal"
+        >
+          <template #header>
+            <h4 class="modal-title">Reply to Post</h4>
+          </template>
+
+          <template #body>
+            <app-post-form v-bind="post" @cancel-post="dismissModal" @submit-post="submitPost"></app-post-form>
+          </template>
+
+          <template #footer><br/></template>
+
+        </app-modal>
+      </transition>
+    </Teleport>
 
   </div>
 
@@ -27,13 +41,13 @@
 <script>
 import PostForm from './PostForn.vue';
 import constants from '../../common/constants.js';
-import BlogenModal from "../common/BlogenModal.vue";
+import Modal from "../common/Modal.vue";
 
 export default {
   name: 'ReplyPost',
   components: {
     appPostForm: PostForm,
-    BlogenModal
+    appModal: Modal
   },
   props: {
     // the post id to reply to
@@ -49,7 +63,8 @@ export default {
         text: '',
         imageUrl: constants.API_SERVER_URL + constants.DEFAULT_IMAGE_PATH,
         categoryName: ''
-      }
+      },
+      isModalVisible: false,
     }
   },
   created () {
@@ -62,18 +77,25 @@ export default {
   },
   methods: {
     submitPost (postData) {
-      console.log(`reply to post id:${this.postId} with data:${postData}`)
-      this.$store.dispatch('createPost', { id: this.postId, post: postData })
-      this.dismissModal()
+      console.log(`reply to post id:${this.postId} with data:${postData}`);
+      this.$store.dispatch('createPost', { id: this.postId, post: postData });
+      this.dismissModal();
     },
     dismissModal () {
-      const bsModal = new bootstrap.Modal(document.getElementById('bsModal'));
-      bsModal.hide();
+      this.isModalVisible = false;
     }
   }
 }
 </script>
 
 <style scoped>
+.modal-fade-enter,
+.modal-fade-leave-to {
+  opacity: 0;
+}
 
+.modal-fade-enter-active,
+.modal-fade-leave-active {
+  transition: opacity 0.5s ease;
+}
 </style>

@@ -70,14 +70,14 @@ const userAuthenticationModule = {
       console.log('authenticate user...');
       return Auth.currentAuthenticatedUser()
         .then(user => {
-          console.log('user is currently authenticated', { user })
-          dispatch('setIdToken')
-          dispatch('setCurrentUserInfo')
+          console.log('user is currently authenticated', { user });
+          dispatch('setIdToken');
+          dispatch('setCurrentUserInfo');
           return user
         })
         .catch(err => {
           // cognito will return the string 'not authenticated'
-          console.log(err)
+          console.log(err);
           return null
         })
     },

@@ -1,23 +1,36 @@
 // DeletePost
-// This component consists of a "delete" button that will launch a modal to confirm if the
-// user really wants to delete a post. If confirmed, the vuex store will be called to actually
-// perform the deletion
+// This component consists of a "delete" button that will launch a modal to confirm the deletion.
+// If confirmed, the vuex store will be called to actually perform the deletion
 //
 // Props:
 // postId - the post id to be deleted
 <template>
-  <div class="mx-1 text-dark">
+  <div>
 
-    <b-button size="sm" variant="outline-danger" data-bs-toggle="modal" data-bs-target="#bsModal">
+    <b-button size="sm" variant="outline-danger" @click="isModalVisible = !isModalVisible">
       Delete
     </b-button>
 
-    <blogen-modal header-bg-color="bg-danger" header-text-color="text-white" @confirm="deletePost">
-      <template #header-title>Delete Post</template>
-      <template #body>
-        <h4>Are you sure?</h4>
-      </template>
-    </blogen-modal>
+    <Teleport to="body">
+      <transition name="modal-fade">
+        <app-modal
+            v-show="isModalVisible"
+            header-bg-color="bg-danger"
+            header-text-color="text-white"
+            @cancel="dismissModal"
+            @confirm="deletePost"
+        >
+          <template #header>
+            <h4 class="modal-title">Delete Post</h4>
+          </template>
+
+          <template #body>
+            Are You Sure?
+          </template>
+
+        </app-modal>
+      </transition>
+    </Teleport>
 
   </div>
 
@@ -25,12 +38,12 @@
 
 <script>
 import constants from '../../common/constants.js';
-import BlogenModal from "../common/BlogenModal.vue";
+import Modal from "../common/Modal.vue";
 
 export default {
   name: 'DeletePost',
   components: {
-    BlogenModal
+    appModal: Modal
   },
   props: {
     // the post id to delete
@@ -46,18 +59,30 @@ export default {
         text: '',
         imageUrl: constants.API_SERVER_URL + constants.DEFAULT_IMAGE_PATH,
         categoryName: ''
-      }
+      },
+      isModalVisible: false,
     }
   },
   methods: {
     deletePost () {
-      console.log(`delete post with id:${this.postId}`)
-      this.$store.dispatch('deletePost', this.postId)
+      console.log(`delete post with id:${this.postId}`);
+      this.$store.dispatch('deletePost', this.postId);
+    },
+    dismissModal () {
+      this.isModalVisible = false;
     }
   }
 }
 </script>
 
 <style scoped>
+.modal-fade-enter,
+.modal-fade-leave-to {
+  opacity: 0;
+}
 
+.modal-fade-enter-active,
+.modal-fade-leave-active {
+  transition: opacity 0.5s ease;
+}
 </style>

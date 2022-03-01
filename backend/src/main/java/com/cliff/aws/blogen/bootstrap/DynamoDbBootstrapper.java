@@ -21,8 +21,8 @@ import java.util.*;
 @Profile({"dev"})
 public class DynamoDbBootstrapper {
 
-    @Value("${blogen.recreate.table.if.exists:false}")
-    private boolean shouldRecreateTable;
+//    @Value("${blogen.recreate.table.if.exists:false}")
+//    private boolean shouldRecreateTable;
 
     private final AmazonDynamoDB dynamoDB;
     private final DynamoDBMapper dbMapper;
@@ -213,7 +213,7 @@ public class DynamoDbBootstrapper {
      */
     private void buildBlogenTable() {
         CreateTableRequest ctr = BootstrapUtils.createBlogenTableRequest(dbMapper, dbMapperConfig, 1L, 1L);
-        BootstrapUtils.checkOrCreateTable(dynamoDB, ctr, shouldRecreateTable, true);
+        BootstrapUtils.checkOrCreateTable(dynamoDB, ctr, true, true);
     }
 
     // this maps a userName to the userId that is currently assigned to that userName

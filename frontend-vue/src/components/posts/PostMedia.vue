@@ -1,5 +1,5 @@
 // PostMedia
-//  Uses bootstrap css to render a post as a traditional "bootstrap media object".
+//  Uses bootstrap css to render a post as a "traditional bootstrap media object".
 //  A media object renders the user's avatar image to the left, along with the text of the post to the right.
 <template>
 
@@ -26,12 +26,12 @@
       <p>{{ text }}</p>
 
       <!-- CRUD buttons for a post -->
-      <div class="row">
-        <app-reply-post v-if="isParentPost" :postId="id"></app-reply-post>
+      <div class="d-flex">
+        <app-reply-post class="mx-2" v-if="isParentPost" :postId="id"></app-reply-post>
 
-        <app-edit-post v-if="canEditOrDeletePost" :postId="id"></app-edit-post>
+        <app-edit-post class="mx-2" v-if="canEditOrDeletePost" :postId="id"></app-edit-post>
 
-        <app-delete-post v-if="canEditOrDeletePost" :postId="id"></app-delete-post>
+        <app-delete-post class="mx-2" v-if="canEditOrDeletePost" :postId="id"></app-delete-post>
       </div>
 
     </div>
@@ -91,6 +91,10 @@ export default {
     postId: {
       type: String,
       default: ''
+    },
+    children: {
+      type: Array,
+      default: [],
     }
   },
   data () {

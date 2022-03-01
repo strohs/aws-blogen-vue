@@ -43,7 +43,7 @@
     <b-form-group id="textGroup" label="Text" label-for="text"
                   :state="textValidator.state" :invalid-feedback="textValidator.invalidFeedback"
                   :valid-feedback="textValidator.validFeedback">
-      <b-form-textarea v-model="post.text" id="text" type="text" placeholder="post text" rows="3"
+      <b-form-textarea v-model="post.text" id="text" type="text" placeholder="the text of your post" rows="3"
                        :state="textValidator.state" @input="validateText" required></b-form-textarea>
     </b-form-group>
     <b-button type="button" variant="secondary" @click="$emit('cancelPost')">Cancel</b-button>
@@ -61,19 +61,19 @@ export default {
   props: {
     title: {
       type: String,
-      required: true,
+      default: '',
     },
     text: {
       type: String,
-      required: true,
+      default: '',
     },
     imageUrl: {
       type: String,
-      required: true,
+      default: '',
     },
     categoryName: {
       type: String,
-      required: true,
+      default: '',
     },
   },
   emits: ['cancelPost', 'submitPost'],

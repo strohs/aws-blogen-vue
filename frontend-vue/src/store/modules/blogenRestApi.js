@@ -195,7 +195,7 @@ const blogenRestApiModule = {
           throw error
         })
     },
-    fetchPosts: ({ commit, dispatch }, { pageNum, pageLimit, categoryName }) => {
+    fetchPosts: ({ commit, dispatch, state }, { pageNum, pageLimit, categoryName }) => {
       axios.get('/api/v1/posts', {
         params: {
           page: pageNum,
@@ -204,9 +204,9 @@ const blogenRestApiModule = {
         }
       })
         .then(res => {
-          console.log('fetchPosts response:', res.data)
-          commit('SET_POSTS', res.data.posts)
-          commit('SET_PAGE_INFO', res.data.pageInfo)
+          console.log('fetchPosts response:', res.data);
+          commit('SET_POSTS', res.data.posts);
+          commit('SET_PAGE_INFO', res.data.pageInfo);
         })
         .catch(error => {
           handleAxiosError(error)

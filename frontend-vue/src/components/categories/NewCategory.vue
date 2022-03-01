@@ -9,17 +9,31 @@
 <template>
   <div>
 
-    <b-button block variant="success" data-bs-toggle="modal" data-bs-target="#bsModal">
+    <b-button block variant="success" @click="isModalVisible = !isModalVisible">
       <font-awesome-icon class="mx-2" icon="plus" />
       New Category
     </b-button>
 
-    <blogen-modal header-bg-color="bg-success" header-text-color="text-white" :show-footer="false">
-      <template #header-title>New Category</template>
-      <template #body>
-        <app-category-form v-bind="category" @cancel="dismissModal" @submit="submitCategory"></app-category-form>
-      </template>
-    </blogen-modal>
+    <Teleport to="body">
+      <transition name="modal-fade">
+        <app-modal
+            v-show="isModalVisible"
+            header-bg-color="bg-success"
+            @cancel="dismissModal"
+        >
+          <template #header>
+            <h4 class="modal-title">New Category</h4>
+          </template>
+
+          <template #body>
+            <app-category-form v-bind="category" @cancel="dismissModal" @submit="submitCategory"></app-category-form>
+          </template>
+
+          <template #footer><br/></template>
+
+        </app-modal>
+      </transition>
+    </Teleport>
 
   </div>
 
@@ -27,13 +41,13 @@
 
 <script>
 import CategoryForm from './CategoryForm.vue'
-import BlogenModal from "../common/BlogenModal.vue";
+import Modal from "../common/Modal.vue";
 
 export default {
   name: 'NewCategory',
   components: {
     appCategoryForm: CategoryForm,
-    BlogenModal,
+    appModal: Modal,
   },
   emits: ['submit'],
   data () {
@@ -46,22 +60,30 @@ export default {
         code: 0,
         message: '',
         category: {}
-      }
+      },
+      isModalVisible: false,
     }
   },
   methods: {
     submitCategory (newCategory) {
-      this.dismissModal()
-      this.$emit('submit', newCategory)
+      this.dismissModal();
+      this.$emit('submit', newCategory);
     },
     dismissModal () {
-      const bsModal = new bootstrap.Modal(document.getElementById('bsModal'));
-      bsModal.hide();
+      this.isModalVisible = false;
     }
   }
 }
 </script>
 
 <style scoped>
+.modal-fade-enter,
+.modal-fade-leave-to {
+  opacity: 0;
+}
 
+.modal-fade-enter-active,
+.modal-fade-leave-active {
+  transition: opacity 0.5s ease;
+}
 </style>

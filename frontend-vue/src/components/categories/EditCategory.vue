@@ -11,16 +11,30 @@
 <template>
   <div class="mx-1">
 
-    <b-button size="sm" variant="outline-success" data-bs-toggle="modal" data-bs-target="#bsModal">
+    <b-button size="sm" variant="outline-success" @click="isModalVisible = !isModalVisible">
       Edit
     </b-button>
 
-    <blogen-modal header-bg-color="bg-success" header-text-color="text-white" :show-footer="false">
-      <template #header-title>Edit Category</template>
-      <template #body>
-        <app-category-form v-bind="category" @cancel="dismissModal" @submit="submit"></app-category-form>
-      </template>
-    </blogen-modal>
+    <Teleport to="body">
+      <transition name="modal-fade">
+        <app-modal
+            v-show="isModalVisible"
+            header-bg-color="bg-success"
+            @cancel="dismissModal"
+        >
+          <template #header>
+            <h4 class="modal-title">Edit Category</h4>
+          </template>
+
+          <template #body>
+            <app-category-form v-bind="category" @cancel="dismissModal" @submit="submit"></app-category-form>
+          </template>
+
+          <template #footer><br/></template>
+
+        </app-modal>
+      </transition>
+    </Teleport>
 
   </div>
 
@@ -28,13 +42,13 @@
 
 <script>
 import CategoryForm from './CategoryForm.vue';
-import BlogenModal from "../common/BlogenModal.vue";
+import Modal from "../common/Modal.vue";
 
 export default {
   name: 'EditCategory',
   components: {
     appCategoryForm: CategoryForm,
-    BlogenModal
+    appModal: Modal,
   },
   props: {
     name: {
@@ -52,7 +66,8 @@ export default {
       category: {
         name: this.name,
         oldName: this.name
-      }
+      },
+      isModalVisible: false,
     }
   },
   methods: {
@@ -63,14 +78,20 @@ export default {
       this.dismissModal()
     },
     dismissModal () {
-      // hide the bootstrap modal
-      const bsModal = new bootstrap.Modal(document.getElementById('bsModal'));
-      bsModal.hide();
+      this.isModalVisible = false;
     }
   }
 }
 </script>
 
 <style scoped>
+.modal-fade-enter,
+.modal-fade-leave-to {
+  opacity: 0;
+}
 
+.modal-fade-enter-active,
+.modal-fade-leave-active {
+  transition: opacity 0.5s ease;
+}
 </style>

@@ -37,7 +37,7 @@
               </li>
               <li><hr class="dropdown-divider"></li>
               <li>
-                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#bsModal">
+                <a class="dropdown-item" @click="isModalVisible = !isModalVisible">
                   <font-awesome-icon icon="lock"></font-awesome-icon>
                   Display Token
                 </a>
@@ -68,26 +68,38 @@
   </nav>
 
   <!-- Modal for auth token -->
-  <blogen-modal header-bg-color="bg-primary">
-    <template #header-title>Auth token</template>
-    <template #body>
-      <b-form-textarea id="authTokenTextArea" rows="4" plaintext :value="getIdToken"></b-form-textarea>
-    </template>
-  </blogen-modal>
+  <Teleport to="body">
+    <transition name="modal-fade">
+      <app-modal
+          v-show="isModalVisible"
+          @cancel="dismissModal"
+          @confirm="dismissModal"
+      >
+        <template #header>
+          <h4 class="modal-title">Your Token</h4>
+        </template>
+
+        <template #body>
+          <b-form-textarea id="authTokenTextArea" rows="4" plaintext :value="getIdToken"></b-form-textarea>
+        </template>
+
+      </app-modal>
+    </transition>
+  </Teleport>
 
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import BlogenLogo from './common/BlogenLogo.vue'
-import BlogenModal from "./common/BlogenModal.vue";
+import Modal from "./common/Modal.vue";
 import BlogenAuthenticator from "./login/BlogenAuthenticator.vue";
 
 export default {
   name: 'Navbar',
   components: {
     appBlogenLogo: BlogenLogo,
-    BlogenModal,
+    appModal: Modal,
     BlogenAuthenticator,
 
   },
@@ -99,6 +111,16 @@ export default {
       'getAuthUserId',
       'getIdToken'
     ])
+  },
+  data() {
+    return {
+      isModalVisible: false
+    }
+  },
+  methods: {
+    dismissModal() {
+      this.isModalVisible = false;
+    }
   }
 }
 </script>

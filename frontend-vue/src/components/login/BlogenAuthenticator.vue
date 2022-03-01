@@ -49,8 +49,12 @@ const store = useStore();
 // when they successfully sign in
 watch(route, async (newRoute, oldRoute) => {
   console.log('oldRoute', oldRoute, ' newRoute', newRoute);
-  if (oldRoute === 'signIn' && newRoute === 'authenticated') {
-    // authenticate the user locally so we store their data in vuex
+
+  // if this is a new user sign-in or a password change then after successfully authenticating,
+  // send the user to the list-posts page
+  if ((oldRoute === 'signIn' && newRoute === 'authenticated') ||
+      (oldRoute === 'forceNewPassword' && newRoute === 'authenticated')) {
+    // authenticate the user locally so that we store their data in vuex
     await store.dispatch('authenticateUser');
     await router.push({ name: 'posts'});
   }
