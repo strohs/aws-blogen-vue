@@ -29,15 +29,18 @@ import java.util.HashMap;
 @Profile("dev")
 public class UserPoolBootstrapper {
 
-    // these are the roles that can be assigned to Blogen users
+    // these are the roles (a.k.a  Cognito Groups) that can be assigned to Blogen users
     enum BLOGEN_GROUP {
         // the basic role for all Blogen users, this will give them access to the REST API
         User,
-        // admin roles can delete any posts, and create new categories
+        // the admin role can edit and delete any posts, and create new categories
         Admin
     }
 
     private String region;
+
+    // this is the default password for all Cognito users created by this bootstrapper class
+    private final String DEFAULT_USER_PASSWORD = "Password";
 
     // the name to assign to Blogen's Cognito User Pool
     private static final String USER_POOL_NAME = "BlogenUserPool-" + BootstrapUtils.currentTime();
@@ -177,15 +180,23 @@ public class UserPoolBootstrapper {
         AttributeType attEmailVer = new AttributeType().withName("email_verified").withValue("True");
         AdminCreateUserRequest request = new AdminCreateUserRequest()
                 .withUsername(email)
-                .withTemporaryPassword("tempPassword")
                 .withUserAttributes(attFirstName, attLastName, attPrefName, attAvatar, attEmail, attEmailVer)
                 .withUserPoolId(userPoolId)
                 .withMessageAction(MessageActionType.SUPPRESS);
 
         AdminCreateUserResult res = this.userPoolClient.adminCreateUser(request);
-        log.debug("created user {} with username {}", email, res.getUser().getUsername());
 
-        // store user in user hashmap, for later use by DynamoDB bootstrapper
+        // now set the user's password, which will automatically set their cognito confirmation status to "Confirmed"
+        this.userPoolClient.adminSetUserPassword(
+                new AdminSetUserPasswordRequest()
+                        .withUserPoolId(userPoolId)
+                        .withUsername(res.getUser().getUsername())
+                        .withPassword(DEFAULT_USER_PASSWORD)
+                        .withPermanent(true));
+
+        log.debug("created user {} with username {} with password: {}", email, res.getUser().getUsername(), DEFAULT_USER_PASSWORD);
+
+        // store user details in the user hashmap, for later use by DynamoDB bootstrapper
         Blogen user = Blogen.builder()
                 .userId(res.getUser().getUsername())
                 .userName(preferredName)
