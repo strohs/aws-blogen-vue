@@ -133,24 +133,26 @@ const blogenRestApiModule = {
     }
   },
   actions: {
+
     updatePostData: ({ commit, getters }, { id, newPost }) => {
       let updateData = getters.getPostIndicesById(id)
       updateData.newPost = newPost // { ti, ci, newPost }
       commit('UPDATE_POST', updateData)
     },
     fetchAndStoreCategories: ({ commit }, { pageNum = 0, pageLimit = 20 }) => {
-      axios.get('/api/v1/categories', {
+      return axios.get('/api/v1/categories', {
         params: {
           page: pageNum,
           limit: pageLimit
         }
       })
         .then(res => {
-          console.log(`fetchAndStoreCategories response:`, res.data)
-          commit('SET_CATEGORIES', res.data.categories)
+          console.log(`fetchAndStoreCategories response:`, res.data);
+          commit('SET_CATEGORIES', res.data.categories);
+          return res.data.categories;
         })
         .catch(error => {
-          handleAxiosError(error)
+          handleAxiosError(error);
         })
     },
     fetchCategories: ({ commit }, { pageNum = 0, pageLimit = 20 }) => {
@@ -280,18 +282,19 @@ const blogenRestApiModule = {
           throw error
         })
     },
-    fetchAvatarFileNames: ({ commit }) => {
-      axios.get('/api/v1/avatars')
+    fetchAndStoreAvatarFileNames: ({ commit }) => {
+      return axios.get('/api/v1/avatars')
         .then(res => {
-          console.log('fetch avatar file name response:', res)
-          commit('SET_AVATARS', res.data.avatars)
+          console.log('fetch avatar file name response:', res);
+          commit('SET_AVATARS', res.data.avatars);
+          return res.data.avatars;
         })
         .catch(error => {
-          handleAxiosError(error)
-          throw (error)
+          handleAxiosError(error);
+          throw (error);
         })
     }
   }
-}
+};
 
 export default blogenRestApiModule

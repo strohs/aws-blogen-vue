@@ -8,10 +8,10 @@
     <header id="post-header" class="container-fluid py-2 bg-primary">
       <div class="row">
         <div class="col-sm-6">
-                <span>
-                    <h1 class="text-white"><font-awesome-icon class="mx-2" icon="pencil-alt"
-                                                              scale="1.5"></font-awesome-icon>Posts (<small>{{ selectedCategory.name }}</small>)</h1>
-                </span>
+          <h1 class="text-white">
+            <font-awesome-icon class="mx-2" icon="pencil-alt" scale="1.5"></font-awesome-icon>
+            Posts (<small>{{ selectedCategory.name }}</small>)
+          </h1>
         </div>
       </div>
     </header>
@@ -125,7 +125,7 @@ export default {
   },
   data() {
     return {
-      selectedCategory: { name: 'All' },
+      selectedCategory: { name: 'All', categoryUrl: '' },
       postSearchStr: '',
       pageLimit: 3,
       currentNavPage: 1,
@@ -146,10 +146,11 @@ export default {
     })
   },
   watch: {
+    // when selected category changes, re-fetch posts with the new category and start on the first page
     selectedCategory(newCategory) {
-      // when selected category changes, re-fetch posts with the new category and start on the first page
+      console.log('selected category changed to: ', this.selectedCategory.name);
+      this.fetchPosts(0, this.pageLimit, newCategory.name);
       this.currentNavPage = 1;
-      //this.fetchPosts(0, this.pageLimit, newCategory.name)
     },
     postSearchStr(newSearchStr) {
       if (newSearchStr.length > 0) {
@@ -165,9 +166,6 @@ export default {
     }
   },
   created() {
-    // pre-fetch a list of all categories and user avatars from the API and put them in the store
-    this.$store.dispatch('fetchAndStoreCategories', { pageNum: 0, pageLimit: 10 });
-    this.$store.dispatch('fetchAvatarFileNames');
     this.fetchPosts(0);
   },
   methods: {

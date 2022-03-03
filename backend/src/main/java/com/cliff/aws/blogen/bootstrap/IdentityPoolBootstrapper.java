@@ -212,8 +212,7 @@ public class IdentityPoolBootstrapper {
      * - the authenticated role
      * - the unauthenticated role
      */
-    @PreDestroy
-    private void deleteResources() {
+    protected void deleteResources() {
         log.info("deleting identity pool resources...");
 
         // delete identity pool

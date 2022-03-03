@@ -5,8 +5,22 @@
 
 @import "node_modules/bootstrap/scss/bootstrap";
 
-// Then add additional custom code here
+// create bg-blue-### colors
 @each $name, $color in $blues {
+  .bg-#{$name} {
+    background-color: $color;
+  }
+}
+
+// create bg-green-### colors
+@each $name, $color in $greens {
+  .bg-#{$name} {
+    background-color: $color;
+  }
+}
+
+// create bg-yellow-### colors
+@each $name, $color in $yellows {
   .bg-#{$name} {
     background-color: $color;
   }

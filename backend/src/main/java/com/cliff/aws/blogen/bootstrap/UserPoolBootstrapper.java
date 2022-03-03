@@ -236,22 +236,23 @@ public class UserPoolBootstrapper {
     }
 
     /**
-     * returns the specified user details from the internal map
+     * returns the specified user details from the userMap
      */
-    protected Blogen getUser(String email) {
+    protected Blogen getUserByEmail(String email) {
         return this.userMap.get(email);
     }
 
-    @PreDestroy
-    private void deleteUserPool() {
-        try {
-            log.info("deleting user pool {}", this.userPoolId);
-            this.userPoolClient.deleteUserPool(new DeleteUserPoolRequest().withUserPoolId(this.userPoolId));
-            log.info("deleted user pool");
-        } catch (Exception e) {
-            log.error("exception deleting user pool {} exception is {}", this.userPoolId, e.getMessage());
-        }
-
+    /**
+     * Deletes the AWS resources created by this UserPoolBootrapper
+     */
+    protected void deleteUserPool() {
+            try {
+                log.info("deleting user pool {}", this.userPoolId);
+                this.userPoolClient.deleteUserPool(new DeleteUserPoolRequest().withUserPoolId(this.userPoolId));
+                log.info("deleted user pool");
+            } catch (Exception e) {
+                log.error("exception deleting user pool {} exception is {}", this.userPoolId, e.getMessage());
+            }
     }
 
     public void bootstrap() {

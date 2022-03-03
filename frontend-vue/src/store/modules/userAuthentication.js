@@ -195,13 +195,13 @@ const userAuthenticationModule = {
       return Auth.currentUserInfo()
           .then(userInfo => {
             console.log('cognito user info:', userInfo);
-            const user = mapCogitoUserInfoToBlogenUser(userInfo, getters.getIdToken)
-            commit('SET_USER', user)
-            return userInfo
+            const user = mapCogitoUserInfoToBlogenUser(userInfo, getters.getIdToken);
+            commit('SET_USER', user);
+            return userInfo;
           })
           .catch(err => {
-            console.log('error from currentUserInfo', err)
-            throw err
+            console.log('error from currentUserInfo', err);
+            throw err;
           })
     },
 

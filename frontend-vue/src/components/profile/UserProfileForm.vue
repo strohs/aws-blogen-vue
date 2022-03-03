@@ -1,183 +1,163 @@
-// Form for capturing details of a user: firstname, lastname, email, username, password
-// Form info is validated and then emitted in an object to the parent component
+// UserProfileForm
+// Form for capturing a user's profile: firstname, lastname, email, username, password
+// The form is validated and then emitted in an object to the parent component
 <template>
-  <b-form>
+  <b-form @submit.prevent="emitFormData(v$)">
 
     <b-form-group id="firstNameGroup1" label="First Name" label-for="firstName1"
-                  :state="v$.form.firstName.$dirty && !v$.form.firstName.$invalid"
-                  :valid-feedback="firstNameValidText"
-                  :invalid-feedback="firstNameInvalidText">
+                  :state="!v$.firstName.$error"
+                  :valid-feedback="validMessage"
+                  :invalid-feedback="invalidMessage(v$.firstName)">
 
       <b-form-input id="firstName1"
                     type="text"
-                    v-model="form.firstName"
-                    @input="v$.form.firstName.$touch()"></b-form-input>
+                    v-model="v$.firstName.$model"
+      >
+      </b-form-input>
     </b-form-group>
 
     <b-form-group id="lastNameGroup1" label="Last Name" label-for="lastName1"
-                  :state="v$.form.lastName.$dirty && !v$.form.lastName.$invalid"
-                  :valid-feedback="lastNameValidText"
-                  :invalid-feedback="lastNameInvalidText">
+                  :state="!v$.lastName.$error"
+                  :valid-feedback="validMessage"
+                  :invalid-feedback="invalidMessage(v$.lastName)">
 
       <b-form-input id="lastName1"
                     type="text"
-                    v-model="form.lastName"
-                    @input="v$.form.lastName.$touch()"></b-form-input>
+                    v-model="v$.lastName.$model"
+      ></b-form-input>
     </b-form-group>
 
     <b-form-group id="emailGroup1" label="Email" label-for="email1"
-                  :state="v$.form.email.email && !v$.form.email.$invalid"
-                  :valid-feedback="emailValidText"
-                  :invalid-feedback="emailInvalidText">
+                  :state="!v$.email.$error"
+                  :valid-feedback="validMessage"
+                  :invalid-feedback="invalidMessage(v$.email)">
       <b-form-input id="email1"
                     type="email"
-                    v-model="form.email"
-                    placeholder="Email"
-                    @change="v$.form.email.$touch()"></b-form-input>
+                    v-model="v$.email.$model"
+      ></b-form-input>
     </b-form-group>
 
     <b-form-group id="prefUsernameGroup1" label="Preferred Username" label-for="prefUsername1"
-                  :state="v$.form.userName.$dirty && !v$.form.userName.$invalid"
-                  :valid-feedback="preferredUsernameValidText"
-                  :invalid-feedback="preferredUsernameInvalidText">
+                  :state="!v$.userName.$error"
+                  :valid-feedback="validMessage"
+                  :invalid-feedback="invalidMessage(v$.userName)">
 
       <b-form-input id="prefUsername1"
                     type="text"
-                    v-model="form.userName"
-                    @change="validateUsername"></b-form-input>
+                    v-model="v$.userName.$model"
+      ></b-form-input>
     </b-form-group>
 
-    <app-avatar-chooser v-model="form.avatarImage"></app-avatar-chooser>
+    <avatar-chooser v-model="v$.avatarImage"></avatar-chooser>
 
     <b-button :to="{ name: 'posts'}" type="button" variant="secondary">Cancel</b-button>
-    <b-button :disabled="v$.form.$invalid" type="submit" variant="primary" @click="emitFormData">Submit</b-button>
+    <b-button type="submit" variant="primary">Submit</b-button>
 
   </b-form>
 </template>
 
-<script>
+<script setup>
+import { ref, reactive, computed } from 'vue';
 import useVuelidate from '@vuelidate/core'
-import { required, email, minLength, alphaNum } from '@vuelidate/validators'
-import * as vt from '../../validators/validationText'
-import { prefUsernameTaken, emailTaken } from '../../common/awsCognito'
-import _ from 'lodash'
+import {required, email, minLength, alphaNum, helpers} from '@vuelidate/validators'
+import {prefUsernameIsUnique, emailIsUnique} from '../../common/awsCognito'
 import AvatarChooser from './AvatarChooser.vue'
 
-export default {
-  name: 'UserProfileForm',
-  components: {
-    appAvatarChooser: AvatarChooser
+const props = defineProps({
+  firstName: {
+    type: String,
+    default: '',
   },
-  props: {
-    firstName: {
-      type: String,
-      default: '',
-    },
-    lastName: {
-      type: String,
-      default: '',
-    },
-    userName: {
-      type: String,
-      default: '',
-    },
-    email: {
-      type: String,
-      default: '',
-    },
-    avatarImage: {
-      type: String,
-      default: '',
-    },
+  lastName: {
+    type: String,
+    default: '',
   },
-  emits: ['validated'],
-  setup () {
-    return { v$: useVuelidate() }
+  userName: {
+    type: String,
+    default: '',
   },
-  data () {
-    return {
-      form: {
-        firstName: this.firstName,
-        lastName: this.lastName,
-        email: this.email,
-        userName: this.userName,
-        avatarImage: this.avatarImage
-      }
-    }
+  email: {
+    type: String,
+    default: '',
   },
-  validations () {
-    return {
-      form: {
-        email: {
-          required,
-          email,
-          async isUnique (value) {
-            // standalone validator ideally should not assume a field is required
-            if (value === '' || value === this.email) return true
-            const taken = await emailTaken(value)
-            return !taken
-          }
-        },
-        userName: {
-          required,
-          minLength: minLength(3),
-          alphaNum,
-          async isUnique (value) {
-            // standalone validator ideally should not assume a field is required
-            if (value === '' || value === this.userName) return true
-            const taken = await prefUsernameTaken(value)
-            return !taken
-          }
-        },
-        firstName: {
-          required
-        },
-        lastName: {
-          required
-        }
-      }
-    }
-  },
-  computed: {
-    emailValidText () { return vt.emailValidText(this.v$.form.email) },
-    emailInvalidText () { return vt.emailInvalidText(this.v$.form.email) },
-    preferredUsernameValidText () {
-      return !this.v$.form.userName.$error ? 'Good' : ''
-    },
-    preferredUsernameInvalidText () {
-      if (this.v$.form.userName.$dirty) {
-        if (!this.v$.form.userName.minLength) {
-          return `preferred username must have at least ${this.v$.form.userName.$params.minLength.min} characters`
-        } else if (!this.v$.form.userName.alphaNum) {
-          return `preferred username must contain only alpha-numeric characters`
-        } else if (!this.v$.form.userName.required) {
-          return 'preferred username is required'
-        } else if (!this.v$.form.userName.isUnique) {
-          return 'preferred username is already taken'
-        }
-      } else {
-        return ''
-      }
-    },
-    firstNameValidText () { return vt.firstNameValidText(this.v$.form.firstName) },
-    firstNameInvalidText () { return vt.firstNameInvalidText(this.v$.form.firstName) },
-    lastNameValidText () { return vt.lastNameValidText(this.v$.form.lastName) },
-    lastNameInvalidText () { return vt.lastNameInvalidText(this.v$.form.lastName) }
-  },
-  created () {
-    // create a debounced function that validates the preferred username field, need to limit the amount of calls to AWS
-    this.validateUsername = _.debounce(() => {
-      this.v$.form.userName.$touch()
-    }, 1000)
-  },
-  methods: {
-    emitFormData (evt) {
-      evt.preventDefault()
-      const evtData = Object.assign({}, this.form)
-      this.$emit('validated', evtData)
-    }
-  },
+  avatarImage: {
+    type: String,
+    default: '',
+  }
+});
+
+const emit = defineEmits(['validated']);
+
+// reactive state
+const form = reactive({
+  firstName: props.firstName,
+  lastName: props.lastName,
+  email: props.email,
+  userName: props.userName,
+  avatarImage: props.avatarImage,
+});
+
+const {withAsync} = helpers;
+
+function emailUnique(value) {
+  if (value === props.email) {
+    return true;
+  } else {
+    return emailIsUnique(value);
+  }
 }
+
+function userNameUnique(value) {
+  if (value === props.userName) {
+    return true;
+  } else {
+    return prefUsernameIsUnique(value);
+  }
+}
+
+// vuelidate validation rules
+const rules = {
+  email: {
+    required,
+    email,
+    emailUnique: withAsync(helpers.withMessage('email is taken', emailUnique), props),
+  },
+  userName: {
+    required,
+    minLength: minLength(3),
+    alphaNum,
+    userNameUnique: withAsync(helpers.withMessage('username is taken', userNameUnique), props),
+  },
+  firstName: {
+    required,
+    alphaNum
+  },
+  lastName: {
+    required,
+    alphaNum
+  }
+};
+
+const v$ = useVuelidate(rules, form);
+
+// the validation message that is displayed for a form field that passed validation
+const validMessage = computed(() => 'Good');
+
+// the message that displays when any form field is invalid. This will simplu
+//  concatentate all errors on the field with a comma
+function invalidMessage(vuelidateFormField) {
+  return vuelidateFormField.$errors.map(error => error.$message).join(', ');
+}
+
+async function emitFormData(v$) {
+  const isFormValid = await v$.$validate();
+  if (isFormValid) {
+    console.log('form is valid', form);
+    //todo may need to make form unreactive before submitting
+    emit('validated', form);
+  }
+}
+
 </script>
 
 <style scoped>

@@ -27,9 +27,6 @@ public class JwtConfiguration {
     @Autowired
     public JwtConfiguration(CognitoConfig cognitoConfig) {
         this.cognitoConfig = cognitoConfig;
-        log.debug("cognito region: " + this.getRegion());
-        log.debug("user pool id: " + this.getUserPoolId());
-        log.debug("identity pool id: " + this.getIdentityPoolId());
         log.debug("jwkUrl: " + this.getJwkUrl());
     }
 

@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * Controller for retrieving user preferences
  *
@@ -24,7 +26,7 @@ public class UserPrefsController {
 
     public static final String BASE_URL = "/api/v1/avatars";
 
-    private AvatarService avatarService;
+    private final AvatarService avatarService;
 
     @Autowired
     public UserPrefsController( AvatarService avatarService ) {
@@ -34,8 +36,9 @@ public class UserPrefsController {
     @ApiOperation( value = "a list of all Avatar file names", produces = "application/json", authorizations = { @Authorization(value="apiKey") })
     @GetMapping
     public AvatarResponse avatarImageFileNames() {
+        List<String> fileNames = avatarService.getAllAvatarImageNames();
         return AvatarResponse.builder()
-                .avatars( avatarService.getAllAvatarImageNames() )
+                .avatars( fileNames )
                 .build();
 
     }

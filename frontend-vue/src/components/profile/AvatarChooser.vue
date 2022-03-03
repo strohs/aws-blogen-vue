@@ -6,10 +6,14 @@
   <div class="row">
     <div class="col">
       <b-form-group id="avatarGroup" label="Select Your Avatar" label-for="avatarSelect">
-        <b-form-select id="avatarSelect"
-                       :value="value"
-                       v-model="avatarImage"
-                       :options="avatars" @input="$emit('input', avatarImage)"></b-form-select>
+        <b-form-select
+            id="avatarSelect"
+            v-model="avatarImage"
+            :options="avatars"
+            @input="$emit('update:modelValue', avatarImage)"
+        >
+
+        </b-form-select>
       </b-form-group>
     </div>
 
@@ -24,11 +28,16 @@
 <script>
 export default {
   name: 'AvatarSelect',
-  props: ['value'],
+  props: {
+    modelValue: {
+      type: String,
+      default: 'avatar0.jpg'
+    }
+  },
   data () {
     return {
       avatars: [],
-      avatarImage: this.value
+      avatarImage: this.modelValue
     }
   },
   methods: {
@@ -39,7 +48,9 @@ export default {
     }
   },
   created () {
-    this.avatars = this.$store.state.blogenRestApi.avatars
+    // fetch a list of avatar image filenames
+    this.$store.dispatch('fetchAndStoreAvatarFileNames')
+      .then(filenames => this.avatars = filenames);
   }
 }
 </script>

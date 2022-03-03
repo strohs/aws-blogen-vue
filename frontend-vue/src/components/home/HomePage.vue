@@ -1,29 +1,15 @@
 <template>
   <div id="homePage" class="container-fluid">
-    <header id="welcome-head-section" class="row bg-blue-300 text-white">
-      <div class="col text-center my-4">
+    <header id="welcome-head-section" class="row bg-blue-300 text-white py-4">
+      <div class="col text-center">
         <div>
           <h1 class="display-4">Welcome To Blogen</h1>
         </div>
       </div>
     </header>
 
-    <!-- MAIN PAGE HEADER -->
-    <section id="main-header" class="row bg-gray-700 text-white">
-      <div class="col-md text-center my-2">
-        <h3>A blogging community sharing pictures and thoughts on a variety of topics</h3>
-      </div>
-    </section>
-
-    <div id="postCarouselSection" class="row mt-4">
-      <div class="col-md-4 mx-auto">
-        <post-carousel></post-carousel>
-      </div>
-    </div>
-
-
     <!-- HOME ICON SECTION -->
-    <section id="homeIcons" class="row mt-4 p-4 bg-gray-100 justify-content-around">
+    <section id="homeIcons" class="row py-2 bg-gray-200 justify-content-around">
       <div class="col-md-3 text-center">
         <font-awesome-icon class="mb-2" icon="pencil-alt"></font-awesome-icon>
         <h3>Blogging:</h3>
@@ -37,13 +23,23 @@
       <div class="col-md-3 text-center">
         <font-awesome-icon class="mb-2" icon="cloud"></font-awesome-icon>
         <h3>All in the cloud:</h3>
-        <p>Blogen is cloud based, you data is available from any device, anywhere in the world!</p>
+        <p>Your data is available from any device, anywhere in the world!</p>
       </div>
     </section>
 
+    <!-- Latest Posts Carousel -->
+    <div id="postCarouselSection" class="row my-5 text-center">
+      <h4>Here are some of the latest posts from our community...</h4>
+      <div class="col-md-4 mx-auto">
+        <post-carousel></post-carousel>
+      </div>
+    </div>
+
+
+
     <!-- Mission Statement SECTION HEADER-->
-    <section id="about-header" class="row">
-      <div class="col-md-6 m-auto text-center">
+    <section id="about-header" class="row justify-content-center">
+      <div class="col text-center p-2">
         <h1>Our Mission</h1>
         <p>We are a group of technology professionals that believe in connecting the world through the
           power of words and images.
@@ -56,7 +52,7 @@
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi, molestiae.</p>
 
 
-        <b-button class="my-4" :to="{ name: 'clogin' }"
+        <b-button class="my-4" :to="{ name: 'clogin', params: { initialState: 'signUp'} }"
                   type="button"
                   variant="primary">
           Sign-Up
@@ -65,7 +61,8 @@
       </div>
     </section>
 
-    <BlogenFooter class="mt-4"></BlogenFooter>
+    <blogen-footer class="d-flex py-2 justify-content-center align-items-center">
+    </blogen-footer>
 
   </div>
 </template>
@@ -93,7 +90,7 @@ export default {
 
 
 #about-header {
-  background: url('/images/lights.jpg');
+  background: url('/images/image1.jpg');
   background-position: center;
   background-attachment: fixed;
   background-size: cover;

@@ -8,7 +8,6 @@ import com.cliff.aws.blogen.domain.Blogen;
 import com.cliff.aws.blogen.domain.BlogenPrimaryKey;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -74,11 +73,11 @@ public class DynamoDbBootstrapper {
         String threadId1, threadId2, threadId3;
         Blogen thread, thread2, thread3, thread4, thread5, thread6, thread7, thread8, thread9, thread10, post1, post2, post3, post4, post5, post6;
         // retrieve the users from the userPoolBootstrapper
-        Blogen william = userPoolBootstrapper.getUser("scotsman@example.com");
-        Blogen maggie = userPoolBootstrapper.getUser("mcgill@example.com");
-        Blogen john = userPoolBootstrapper.getUser("johndoe@example.com");
-        Blogen elizabeth = userPoolBootstrapper.getUser("lizreed@example.com");
-        Blogen admin = userPoolBootstrapper.getUser("admin@example.com");
+        Blogen william = userPoolBootstrapper.getUserByEmail("scotsman@example.com");
+        Blogen maggie = userPoolBootstrapper.getUserByEmail("mcgill@example.com");
+        Blogen john = userPoolBootstrapper.getUserByEmail("johndoe@example.com");
+        Blogen elizabeth = userPoolBootstrapper.getUserByEmail("lizreed@example.com");
+        Blogen admin = userPoolBootstrapper.getUserByEmail("admin@example.com");
 
         //build posts for william - 2 parent posts
         threadId1 = UUID.randomUUID().toString();
@@ -339,6 +338,13 @@ public class DynamoDbBootstrapper {
         return IMG_SERVICE + "/?image=" + imageStart++;
     }
 
+
+    /**
+     * deletes the dynamoDB table created by this class
+     */
+    protected void deleteResources() {
+        BootstrapUtils.deleteTable(this.dynamoDB, "Blogen", true);
+    }
     /**
      * starts the bootstrapping process.
      * - Creates one dynamoDB table named "Blogen"

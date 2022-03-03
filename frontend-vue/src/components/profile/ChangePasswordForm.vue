@@ -42,8 +42,8 @@
                     @input="v$.form.confPassword.$touch()"></b-form-input>
     </b-form-group>
 
-    <b-button block :disabled="v$.form.$invalid" size="lg" type="submit" variant="primary" @click="emitFormData">Submit</b-button>
-    <b-button block size="lg" type="submit" variant="danger" @click="emitCancel">Cancel</b-button>
+    <b-button block size="sm" type="submit" variant="secondary" @click="emitCancel">Cancel</b-button>
+    <b-button block :disabled="v$.form.$invalid" size="sm" type="submit" variant="primary" @click="emitFormData">Submit</b-button>
 
   </b-form>
 </template>

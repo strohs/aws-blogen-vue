@@ -1,10 +1,6 @@
 <template>
-  <footer id="main-footer">
-    <div class="row">
-      <div class="col">
-        <p class="lead text-center">Copyright &copy; Blogen 2022</p>
-      </div>
-    </div>
+  <footer id="main-footer" class="bg-gray-400">
+    <p class="h5">Copyright &copy; Blogen 2022</p>
   </footer>
 </template>
 

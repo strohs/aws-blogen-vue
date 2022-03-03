@@ -2,18 +2,12 @@
 // Vuelidate is used as the validation library so all input parameters to each method expect a vuelidate object
 
 export function emailValidText (email) {
-  return email.email ? 'Looks Good' : ''
+  return !email.$error ? 'Good!' : ''
 }
 
 export function emailInvalidText (email) {
-  if (email.$dirty) {
-    if (!email.required) {
-      return 'email is required'
-    } else if (!email.email) {
-      return 'Please enter a valid email address'
-    } else if (!email.isUnique) {
-      return 'email address is already taken'
-    }
+  if (email.$error) {
+    return email.$errors.map(errObj => errObj.$message).join(', ');
   } else {
     return ''
   }
@@ -56,16 +50,8 @@ export function preferredUsernameValidText (pu) {
 }
 
 export function preferredUsernameInvalidText (pu) {
-  if (pu.$dirty) {
-    if (!pu.minLength) {
-      return `preferred username must have at least ${pu.$params.minLength.min} characters`
-    } else if (!pu.alphaNum) {
-      return `preferred username must contain only alpha-numeric characters`
-    } else if (!pu.required) {
-      return 'preferred username is required'
-    } else if (!pu.isUnique) {
-      return 'preferred username is already taken'
-    }
+  if (pu.$error) {
+    return pu.$errors.map(error => error.$message).join(', ');
   } else {
     return ''
   }
@@ -76,12 +62,10 @@ export function firstNameValidText (firstName) {
 }
 
 export function firstNameInvalidText (firstName) {
-  if (firstName.$dirty) {
-    if (!firstName.required) {
-      return 'first name is required'
-    }
+  if (firstName.$error) {
+    return firstName.$errors.map(errObj => errObj.$message).join(', ');
   } else {
-    return ''
+    return '';
   }
 }
 
@@ -90,12 +74,10 @@ export function lastNameValidText (lastName) {
 }
 
 export function lastNameInvalidText (lastName) {
-  if (lastName.$dirty) {
-    if (!lastName.required) {
-      return 'last name is required'
-    }
+  if (lastName.$error) {
+    return lastName.$errors.map(errObj => errObj.$message).join(', ');
   } else {
-    return ''
+    return '';
   }
 }
 

@@ -59,38 +59,55 @@ export function mapBlogenSignUpDataToCognito ({ email, password, firstName, last
 }
 
 /**
- * returns true if the preferredUsername is already taken by another user is our user pool
+ * returns true if the preferredUsername is NOT already taken by another user in the cognito user pool
  * @param prefUsername
  */
-export function prefUsernameTaken (prefUsername) {
+export function prefUsernameIsUnique (prefUsername) {
   return listUsersByAttribute('preferred_username', prefUsername)
     .then(user => {
-      console.log('pref_username taken:', user)
-      return user.Users.length > 0
+      console.log('pref_username unique?:', user, user.Users.length === 0);
+      return user.Users.length === 0
     })
     .catch(err => {
-      console.log('error fetching preferred username from ListUsers', err)
-      return true
+      console.log('error fetching preferred username from ListUsers', err);
+      return false;
     })
 }
 
 /**
- * returns true if email is in use by another user
+ * returns true if email is NOT in use by another user
  * @param email - email address to search for
  * @returns {*}
  */
-export function emailTaken (email) {
+export function emailIsUnique (email) {
   return listUsersByAttribute('email', email)
     .then(userInfo => {
-      console.log('email taken:', userInfo)
-      return userInfo.Users.length > 0
+      console.log('email unique?', email, userInfo.Users.length === 0);
+      return userInfo.Users.length === 0
     })
     .catch(err => {
       console.log('error fetching email from ListUsers', err)
-      return true
+      return false
     })
 }
 
+/**
+ * uses the aws javascript api to query our cognito user pool for any user
+ * that has an attributeName equal to the attributeValue
+ * @param attributeName - a cognito user pool attribute name, i.e. 'preferred_username'
+ * @param attributeValue - the value that attributeName must equal
+ * @returns {Promise<Object>} the returned promise will resolve to an object with the following shape
+ * if a user is found:
+ * {
+ *     Users: [ { Username, Enabled, UserStatus, Attributes }, ]
+ * }
+ *
+ * if no user is NOT found, an empty Users array will be returned:
+ * {
+ *     Users: []
+ * }
+ *
+ */
 function listUsersByAttribute (attributeName, attributeValue) {
   // will only work after user is authenticated
   // configure the CognitoIdentitiyServiceProvider using Amplify Auth credentials
@@ -101,17 +118,21 @@ function listUsersByAttribute (attributeName, attributeValue) {
         apiVersion: '2016-04-18',
         region: import.meta.env.VITE_AWS_REGION,
         credentials: Auth.essentialCredentials(credentials)
-      })
+      });
       const params = {
         UserPoolId: import.meta.env.VITE_AWS_USER_POOL_ID,
         AttributesToGet: [attributeName],
         Filter: `${attributeName} = "${attributeValue}"`,
         Limit: 1
-      }
+      };
       return new Promise((resolve, reject) => {
         cisp.listUsers(params, function (err, data) {
-          if (err !== null) reject(err)
-          else resolve(data)
+          if (err !== null) {
+            reject(err);
+          } else {
+            console.log('listUsers data is:', data);
+            resolve(data);
+          }
         })
       })
     })

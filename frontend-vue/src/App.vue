@@ -11,12 +11,21 @@
 <script setup>
 import Navbar from './components/Navbar.vue'
 import { useStore } from 'vuex';
+import {onMounted} from "vue";
 
 const store = useStore();
 
-// check if user is still authenticated, if so, store their credentials and user details
-// within our store
-store.dispatch('authenticateUser');
+onMounted( async () => {
+  // if user us currently authenticated, try to prefetch catagories and avatar names
+  const user = await store.dispatch('authenticateUser');
+  if (user) {
+    await store.dispatch('fetchAndStoreCategories', {});
+    await store.dispatch('fetchAndStoreAvatarFileNames');
+  }
+
+});
+
+
 
 </script>
 

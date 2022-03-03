@@ -74,7 +74,7 @@
 <script>
 import { validationMixin } from 'vuelidate'
 import { required, minLength, sameAs, alphaNum } from 'vuelidate/lib/validators'
-import { prefUsernameTaken } from '../../common/awsCognito'
+import { prefUsernameIsUnique } from '../../common/awsCognito'
 import * as vt from '@/validators/validationText'
 import _ from 'lodash'
 
@@ -114,7 +114,7 @@ export default {
         async isUnique (value) {
           // standalone validator ideally should not assume a field is required
           if (value === '') return true
-          const taken = await prefUsernameTaken(value)
+          const taken = await prefUsernameIsUnique(value)
           return !taken
         }
       },

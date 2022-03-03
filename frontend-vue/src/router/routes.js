@@ -14,7 +14,8 @@ const router = createRouter({
     { path: '/', name: 'homepage', component: HomePage },
     { path: '/clogin',
       name: 'clogin',
-      component: BlogenAuthenticator
+      component: BlogenAuthenticator,
+      props: true
     },
     { path: '/signup', name: 'signup', component: Signup },
     { path: '/users', name: 'users', component: UserPosts, props: true },

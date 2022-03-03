@@ -10,16 +10,30 @@
 <template>
   <div class="mx-1">
 
-    <b-button variant="danger" @click="showModal">
+    <b-button variant="danger" @click="isModalVisible = !isModalVisible">
       Change Password
     </b-button>
 
-    <blogen-modal header-bg-color="bg-info" header-text-color="text-white" :show-footer="false">
-      <template #header-title>Change Password</template>
-      <template #body>
-        <appChangePasswordForm @validated="validated" @cancel="hideModal"></appChangePasswordForm>
-      </template>
-    </blogen-modal>
+    <Teleport to="body">
+      <transition name="modal-fade">
+        <app-modal
+            v-show="isModalVisible"
+            header-bg-color="bg-warning"
+            @cancel="dismissModal"
+        >
+          <template #header>
+            <h4 class="modal-title">Change Password</h4>
+          </template>
+
+          <template #body>
+            <appChangePasswordForm @validated="validated" @cancel="dismissModal"></appChangePasswordForm>
+          </template>
+
+          <template #footer><br/></template>
+
+        </app-modal>
+      </transition>
+    </Teleport>
 
   </div>
 
@@ -27,32 +41,31 @@
 
 <script>
 import ChangePasswordForm from '../../components/profile/ChangePasswordForm.vue'
-import BlogenModal from "../common/BlogenModal.vue";
+import Modal from "../common/Modal.vue";
 
 export default {
   name: 'EditPassword',
   components: {
     appChangePasswordForm: ChangePasswordForm,
-    BlogenModal
+    appModal: Modal
   },
   emits: ['submit'],
   data () {
     return {
       curPassword: '',
-      newPassword: ''
+      newPassword: '',
+      isModalVisible: false,
     }
   },
   methods: {
     validated (evt) {
       // submit the form data to parent component
       // evt data will contain { curPassword, newPassword }
-      this.$emit('submit', evt)
+      this.$emit('submit', evt);
       this.dismissModal()
     },
     dismissModal () {
-      // hide the bootstrap modal
-      const bsModal = new bootstrap.Modal(document.getElementById('bsModal'));
-      bsModal.hide();
+      this.isModalVisible = false;
     }
   }
 }

@@ -5,6 +5,7 @@
       <div class="col">
 
         <authenticator
+            :initial-state="initialState"
             :login-mechanisms="['email']"
             :sign-up-attributes="['email','preferred_username','given_name','family_name']"
         >
@@ -44,6 +45,13 @@ import { useStore } from "vuex";
 const { route, user } = toRefs(useAuthenticator());
 const router = useRouter();
 const store = useStore();
+
+const props = defineProps({
+  initialState: {
+    type: String,
+    default: 'signIn'
+  }
+});
 
 // watch for Authenticator.route changes and automatically send a user to the Posts page
 // when they successfully sign in

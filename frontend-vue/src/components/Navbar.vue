@@ -15,10 +15,10 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <router-link to="/posts" class="nav-link" active-class="active" v-if="isAuthenticated">Recent Posts</router-link>
+            <router-link to="/posts" class="nav-link" active-class="active" v-if="isAuthenticated">All Posts</router-link>
           </li>
           <li class="nav-item">
-            <router-link :to="{ name: 'users', params: { id: getAuthUser.id, userName: getAuthUser.userName, avatarImage: getAuthUser.avatarImage } }" class="nav-link" active-class="active" v-if="isAuthenticated">User Posts</router-link>
+            <router-link :to="{ name: 'users', params: { id: getAuthUser.id, userName: getAuthUser.userName, avatarImage: getAuthUser.avatarImage } }" class="nav-link" active-class="active" v-if="isAuthenticated">Your Posts</router-link>
           </li>
           <li class="nav-item">
             <router-link to="/categories" class="nav-link" active-class="active" v-if="isAuthenticated && isAdmin">Categories</router-link>
@@ -32,13 +32,13 @@
               <li>
                 <router-link to="/userProfile" class="dropdown-item">
                   <font-awesome-icon icon="user-cog"></font-awesome-icon>
-                  Profile
+                  Edit User Profile
                 </router-link>
               </li>
               <li><hr class="dropdown-divider"></li>
               <li>
                 <a class="dropdown-item" @click="isModalVisible = !isModalVisible">
-                  <font-awesome-icon icon="lock"></font-awesome-icon>
+                  <font-awesome-icon icon="key"></font-awesome-icon>
                   Display Token
                 </a>
               </li>

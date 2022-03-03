@@ -105,7 +105,7 @@
 import { validationMixin } from 'vuelidate'
 import { required, email, minLength, alphaNum, sameAs } from 'vuelidate/lib/validators'
 import * as vt from '@/validators/validationText'
-import { prefUsernameTaken, emailTaken } from '../../common/awsCognito'
+import { prefUsernameIsUnique, emailIsUnique } from '../../common/awsCognito'
 import _ from 'lodash'
 
 export default {
@@ -137,7 +137,7 @@ export default {
         async isUnique (value) {
           // standalone validator ideally should not assume a field is required
           if (value === '') return true
-          const taken = await emailTaken(value)
+          const taken = await emailIsUnique(value)
           return !taken
         }
       },
@@ -157,7 +157,7 @@ export default {
         async isUnique (value) {
           // standalone validator ideally should not assume a field is required
           if (value === '') return true
-          const taken = await prefUsernameTaken(value)
+          const taken = await prefUsernameIsUnique(value)
           return !taken
         }
       },

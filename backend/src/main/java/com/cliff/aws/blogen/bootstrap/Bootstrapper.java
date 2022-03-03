@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PreDestroy;
+
 /**
  * Kicks off the bootstrapping process for Cognito User Pool, Cognito Identity Pool and DynamoDB
  */
@@ -20,6 +22,7 @@ public class Bootstrapper {
 
     @Value("${blogen.bootstrap.data:false}")
     boolean shouldBootstrap;
+
 
     @Autowired
     public Bootstrapper(
@@ -51,6 +54,15 @@ public class Bootstrapper {
         } else {
             log.info("BOOTSTRAP Skipped....");
         }
+    }
+
+    @PreDestroy
+    private void cleanup() {
+        log.info("BOOTSTRAP Cleanup started");
+        this.userPoolBootstrapper.deleteUserPool();
+        this.identityPoolBootstrapper.deleteResources();
+        this.dynamoDbBootstrapper.deleteResources();
+        log.info("BOOTSTRAP Cleanup finished");
     }
 
     public UserPoolBootstrapper getUserPoolBootstrapper() {
