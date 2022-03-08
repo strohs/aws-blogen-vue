@@ -107,14 +107,14 @@ export default {
     }
   },
   computed: {},
-  created () {
-    this.fetchCategories(0, this.pageInfo.pageSize)
-  },
   watch: {
       currentNavPage(newPageNum) {
         console.log('fetch category page', newPageNum);
         this.fetchPage(newPageNum)
       }
+  },
+  created () {
+    this.fetchCategories(0, this.pageInfo.pageSize)
   },
   methods: {
     async fetchCategories (pageNum, pageLimit) {

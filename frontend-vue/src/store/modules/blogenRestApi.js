@@ -36,7 +36,7 @@ const blogenRestApiModule = {
     getCategories: state => {
       return state.categories
     },
-    getAvatarUrlByFileName: (state) => (fileName) => {
+    getAvatarUrlByFileName: () => (fileName) => {
       return constants.DEFAULT_AVATAR_URL + '/' + fileName
     },
     getPostById: (state) => (id) => {
@@ -156,7 +156,7 @@ const blogenRestApiModule = {
           handleAxiosError(error);
         })
     },
-    fetchCategories: ({ commit }, { pageNum = 0, pageLimit = 20 }) => {
+    fetchCategories: (context, { pageNum = 0, pageLimit = 20 }) => {
       return axios.get('/api/v1/categories', {
         params: {
           page: pageNum,
@@ -198,7 +198,7 @@ const blogenRestApiModule = {
           throw error
         })
     },
-    fetchPosts: ({ commit, dispatch, state }, { pageNum, pageLimit, categoryName }) => {
+    fetchPosts: ({ commit }, { pageNum, pageLimit, categoryName }) => {
       axios.get('/api/v1/posts', {
         params: {
           page: pageNum,

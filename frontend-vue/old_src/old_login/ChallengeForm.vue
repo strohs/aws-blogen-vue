@@ -9,59 +9,69 @@
 <template>
   <b-form>
 
-    <b-form-group id="passwordGroup1" label="New Password" label-for="password1"
+    <b-form-group
+id="passwordGroup1" label="New Password" label-for="password1"
                   :state="!$v.form.password.$invalid"
                   :valid-feedback="passwordValidText"
                   :invalid-feedback="passwordInvalidText">
 
-      <b-form-input id="password1"
-                    type="password"
+      <b-form-input
+id="password1"
                     v-model="form.password"
+                    type="password"
                     @input="$v.form.password.$touch()"></b-form-input>
     </b-form-group>
 
-    <b-form-group id="confPasswordGroup1" label="Confirm Password" label-for="confPassword1"
+    <b-form-group
+id="confPasswordGroup1" label="Confirm Password" label-for="confPassword1"
                   :state="!$v.form.confPassword.$invalid"
                   :valid-feedback="confPasswordValidText"
                   :invalid-feedback="confPasswordInvalidText">
 
-      <b-form-input id="confPassword1"
-                    type="password"
+      <b-form-input
+id="confPassword1"
                     v-model="form.confPassword"
+                    type="password"
                     @input="$v.form.confPassword.$touch()"></b-form-input>
     </b-form-group>
 
-    <b-form-group id="prefUsernameGroup1" label="Nickname" label-for="prefUsername1"
+    <b-form-group
+id="prefUsernameGroup1" label="Nickname" label-for="prefUsername1"
                   :state="$v.form.preferredUsername.$dirty && !$v.form.preferredUsername.$invalid"
                   :valid-feedback="preferredUsernameValidText"
                   :invalid-feedback="preferredUsernameInvalidText">
 
-      <b-form-input id="prefUsername1"
-                    type="text"
+      <b-form-input
+id="prefUsername1"
                     v-model="form.preferredUsername"
+                    type="text"
                     placeholder="nickname other users will know you by"
                     @input="validatePrefUsername"></b-form-input>
     </b-form-group>
 
-    <b-form-group id="firstNameGroup1" label="First Name" label-for="firstName1"
+    <b-form-group
+id="firstNameGroup1" label="First Name" label-for="firstName1"
                   :state="$v.form.firstName.$dirty && !$v.form.firstName.$invalid"
                   :valid-feedback="firstNameValidText"
                   :invalid-feedback="firstNameInvalidText">
 
-      <b-form-input id="firstName1"
-                    type="text"
+      <b-form-input
+id="firstName1"
                     v-model="form.firstName"
+                    type="text"
                     @input="$v.form.firstName.$touch()"></b-form-input>
     </b-form-group>
 
-    <b-form-group id="lastNameGroup1" label="Last Name" label-for="lastName1"
+    <b-form-group
+id="lastNameGroup1" label="Last Name" label-for="lastName1"
                   :state="$v.form.lastName.$dirty && !$v.form.lastName.$invalid"
                   :valid-feedback="lastNameValidText"
                   :invalid-feedback="lastNameInvalidText">
 
-      <b-form-input id="lastName1"
-                    type="text"
+      <b-form-input
+id="lastName1"
                     v-model="form.lastName"
+                    type="text"
                     @input="$v.form.lastName.$touch()"></b-form-input>
     </b-form-group>
 
@@ -74,7 +84,7 @@
 <script>
 import { validationMixin } from 'vuelidate'
 import { required, minLength, sameAs, alphaNum } from 'vuelidate/lib/validators'
-import { prefUsernameIsUnique } from '../../common/awsCognito'
+import { prefUsernameIsUnique } from '../../src/common/awsCognito'
 import * as vt from '@/validators/validationText'
 import _ from 'lodash'
 
@@ -148,6 +158,12 @@ export default {
     lastNameValidText () { return vt.lastNameValidText(this.$v.form.lastName) },
     lastNameInvalidText () { return vt.lastNameInvalidText(this.$v.form.lastName) }
   },
+  created () {
+    // create a debounced function that validates the preferred username field, need to limit the amount of calls to AWS
+    this.validatePrefUsername = _.debounce(() => {
+      this.$v.form.preferredUsername.$touch()
+    }, 1000)
+  },
   methods: {
     emitFormData (evt) {
       evt.preventDefault()
@@ -157,12 +173,6 @@ export default {
       evt.preventDefault()
       this.$emit('cancel')
     }
-  },
-  created () {
-    // create a debounced function that validates the preferred username field, need to limit the amount of calls to AWS
-    this.validatePrefUsername = _.debounce(() => {
-      this.$v.form.preferredUsername.$touch()
-    }, 1000)
   }
 }
 </script>

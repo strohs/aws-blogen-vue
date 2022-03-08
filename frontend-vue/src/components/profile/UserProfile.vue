@@ -22,7 +22,7 @@
       <div class="col-6">
         <b-card no-body border-variant="warning">
           <b-card-header header-class="d-flex justify-content-between align-items-center">
-            <h5>Profile for {{ this.user.email }}</h5>
+            <h5>Profile for {{ user.email }}</h5>
             <app-change-password @submit="doChangePassword"></app-change-password>
           </b-card-header>
 
@@ -69,11 +69,15 @@ export default {
       showStatus: false,
     }
   },
+  created () {
+    // get the currently authenticated user details and store them here
+    this.user = this.$store.getters.getAuthUser;
+  },
   methods: {
     doChangeProfile (user) {
       console.log('change profile user info:', user)
       this.$store.dispatch('updateUserAttributes', user)
-        .then(res => {
+        .then(() => {
           this.displayStatusAlert(200, 'Your profile was successfully changed');
         })
         .catch(error => {
@@ -82,7 +86,7 @@ export default {
     },
     doChangePassword ({ curPassword, newPassword }) {
       this.$store.dispatch('changeUserPassword', { curPassword, newPassword })
-        .then(res => {
+        .then(() => {
           // res can be; SUCCESS
           this.displayStatusAlert(200, 'Your password was successfully changed');
         })
@@ -99,10 +103,6 @@ export default {
     dismissStatusAlert () {
       //this.showStatus = false;
     }
-  },
-  created () {
-    // get the currently authenticated user details and store them here
-    this.user = this.$store.getters.getAuthUser;
   }
 }
 </script>

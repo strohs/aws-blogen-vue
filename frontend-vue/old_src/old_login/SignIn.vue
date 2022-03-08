@@ -26,25 +26,29 @@
 
         <b-card-body>
             <b-form>
-                <b-form-group id="emailGroup1" label="Email" label-for="email1"
+                <b-form-group
+id="emailGroup1" label="Email" label-for="email1"
                               :state="v$.form.email.email && !v$.form.email.$invalid"
                               :valid-feedback="emailValidText"
                               :invalid-feedback="emailInvalidText">
-                    <b-form-input id="email1"
-                                  type="email"
+                    <b-form-input
+id="email1"
                                   v-model="form.email"
+                                  type="email"
                                   placeholder="Email"
                                   @input="v$.form.email.$touch()"></b-form-input>
                 </b-form-group>
 
-                <b-form-group id="passwordGroup1" label="Password" label-for="password1"
+                <b-form-group
+id="passwordGroup1" label="Password" label-for="password1"
                               :state="!v$.form.password.$invalid"
                               :valid-feedback="passwordValidText"
                               :invalid-feedback="passwordInvalidText">
 
-                    <b-form-input id="password1"
-                                  type="password"
+                    <b-form-input
+id="password1"
                                   v-model="form.password"
+                                  type="password"
                                   @input="v$.form.password.$touch()"></b-form-input>
                     <b-link @click="forgotPassword = true">
                         <small>Forgot Password?</small>
@@ -67,7 +71,8 @@
                 </b-button>
 
                 <div v-if="forgotPassword === true">
-                    <b-button class="my-2" :disabled="v$.form.email.$invalid"
+                    <b-button
+class="my-2" :disabled="v$.form.email.$invalid"
                               block size="lg" type="submit" variant="warning"
                               @click="doForgotPassword"
                     >
@@ -85,7 +90,7 @@
 <script>
 import useVuelidate from '@vuelidate/core'
 import { required, email, minLength } from '@vuelidate/validators'
-import * as vt from '../../validators/validationText'
+import * as vt from '../../src/validators/validationText'
 
 export default {
   name: 'SignIn',

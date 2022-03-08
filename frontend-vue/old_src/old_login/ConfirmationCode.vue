@@ -17,18 +17,21 @@
         </b-card-header>
         <b-card-body>
             <b-form>
-                <b-form-group id="confCodeGroup1" label="Confirmation Code" label-for="confCode1"
+                <b-form-group
+id="confCodeGroup1" label="Confirmation Code" label-for="confCode1"
                               :state="!$v.form.confCode.$invalid"
                               :valid-feedback="confCodeValidText"
                               :invalid-feedback="confCodeInvalidText">
-                    <b-form-input id="confCode1"
-                                  type="text"
+                    <b-form-input
+id="confCode1"
                                   v-model="form.confCode"
+                                  type="text"
                                   placeholder="confirmation code"
                                   @input="$v.form.confCode.$touch()"></b-form-input>
                 </b-form-group>
 
-                <b-button block
+                <b-button
+block
                           :disabled="$v.form.$invalid"
                           size="lg" type="submit" variant="primary"
                           @click.stop.prevent="validateConfirmationCode"

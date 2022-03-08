@@ -10,14 +10,14 @@
             :login-mechanisms="['email']"
             :sign-up-attributes="['email','preferred_username','given_name','family_name']"
         >
-          <template v-slot:header>
+          <template #header>
             <div class="d-flex m-4 justify-content-center">
               <blogen-logo width="100" height="100"></blogen-logo>
             </div>
           </template>
 
           <!-- Template for when user is already signed in -->
-          <template v-slot="{ user, signOut }">
+          <template #default="{ user, signOut }">
             <div class="d-flex flex-column justify-content-center align-items-center">
               <blogen-logo class="m-4" width="100" height="100"></blogen-logo>
               <p>Confirm sign out for {{ user?.attributes?.email }}</p>

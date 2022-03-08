@@ -9,36 +9,42 @@
 <template>
   <b-form @submit.prevent="emitFormData(v$)">
 
-    <b-form-group id="curPasswordGroup1" label="Current Password" label-for="curPassword1"
+    <b-form-group
+id="curPasswordGroup1" label="Current Password" label-for="curPassword1"
                   :state="!v$.curPassword.$error"
                   :valid-feedback="validMessage(v$.curPassword)"
                   :invalid-feedback="invalidMessage(v$.curPassword)">
 
-      <b-form-input id="curPassword1"
-                    type="password"
+      <b-form-input
+id="curPassword1"
                     v-model="v$.curPassword.$model"
+                    type="password"
       ></b-form-input>
     </b-form-group>
 
-    <b-form-group id="newPasswordGroup1" label="New Password" label-for="newPassword1"
+    <b-form-group
+id="newPasswordGroup1" label="New Password" label-for="newPassword1"
                   :state="!v$.newPassword.$error"
                   :valid-feedback="validMessage(v$.newPassword)"
                   :invalid-feedback="invalidMessage(v$.newPassword)">
 
-      <b-form-input id="newPassword1"
-                    type="password"
+      <b-form-input
+id="newPassword1"
                     v-model="v$.newPassword.$model"
+                    type="password"
       ></b-form-input>
     </b-form-group>
 
-    <b-form-group id="confPasswordGroup1" label="Confirm New Password" label-for="confPassword1"
+    <b-form-group
+id="confPasswordGroup1" label="Confirm New Password" label-for="confPassword1"
                   :state="!v$.confPassword.$error"
                   :valid-feedback="validMessage(v$.confPassword)"
                   :invalid-feedback="invalidMessage(v$.confPassword)">
 
-      <b-form-input id="confPassword1"
-                    type="password"
+      <b-form-input
+id="confPassword1"
                     v-model="v$.confPassword.$model"
+                    type="password"
       ></b-form-input>
     </b-form-group>
 

@@ -14,40 +14,49 @@
 //                                                      contain an object with the validated post properties
 <template>
   <b-form>
-    <b-form-group id="titleGroup" label="Title" label-for="title"
+    <b-form-group
+id="titleGroup" label="Title" label-for="title"
                   :state="titleValidator.state" :invalid-feedback="titleValidator.invalidFeedback"
                   :valid-feedback="titleValidator.validFeedback">
-      <b-form-input v-model="post.title" id="title" type="text" placeholder="post title"
-                    :state="titleValidator.state" @input="validateTitle" required></b-form-input>
+      <b-form-input
+id="title" v-model="post.title" type="text" placeholder="post title"
+                    :state="titleValidator.state" required @input="validateTitle"></b-form-input>
     </b-form-group>
 
-    <b-form-group id="categoryGroup" label="Category" label-for="category"
+    <b-form-group
+id="categoryGroup" label="Category" label-for="category"
                   :state="categoryValidator.state" :invalid-feedback="categoryValidator.invalidFeedback"
                   :valid-feedback="categoryValidator.validFeedback">
-      <b-form-select v-model="post.categoryName" id="category" :state="categoryValidator.state" @input="validateCategory"
-                     :options="categoryOptions"></b-form-select>
+      <b-form-select
+id="category" v-model="post.categoryName" :state="categoryValidator.state" :options="categoryOptions"
+                     @input="validateCategory"></b-form-select>
     </b-form-group>
 
-    <b-form-group id="imageUrlGroup" label="Image URL" label-for="imageUrl"
+    <b-form-group
+id="imageUrlGroup" label="Image URL" label-for="imageUrl"
                   :state="imageUrlValidator.state" :invalid-feedback="imageUrlValidator.invalidFeedback"
                   :valid-feedback="imageUrlValidator.validFeedback">
-      <b-form-input v-model="post.imageUrl" id="imageUrl" type="text"
+      <b-form-input
+id="imageUrl" v-model="post.imageUrl" type="text"
                     placeholder="image link URL (optional)"
                     :state="imageUrlValidator.state" @input="validateImageUrl"></b-form-input>
-      <img class="image-preview"
+      <img
+class="image-preview"
            :src="post.imageUrl"
            width="100" height="100"
            alt="image preview"/>
     </b-form-group>
 
-    <b-form-group id="textGroup" label="Text" label-for="text"
+    <b-form-group
+id="textGroup" label="Text" label-for="text"
                   :state="textValidator.state" :invalid-feedback="textValidator.invalidFeedback"
                   :valid-feedback="textValidator.validFeedback">
-      <b-form-textarea v-model="post.text" id="text" type="text" placeholder="the text of your post" rows="3"
-                       :state="textValidator.state" @input="validateText" required></b-form-textarea>
+      <b-form-textarea
+id="text" v-model="post.text" type="text" placeholder="the text of your post" rows="3"
+                       :state="textValidator.state" required @input="validateText"></b-form-textarea>
     </b-form-group>
     <b-button type="button" variant="secondary" @click="$emit('cancelPost')">Cancel</b-button>
-    <b-button type="button" variant="primary" @mouseover="validateAllFields" @click="$emit('submitPost',post)" :disabled="!allModalFieldsValid">Submit</b-button>
+    <b-button type="button" variant="primary" :disabled="!allModalFieldsValid" @mouseover="validateAllFields" @click="$emit('submitPost',post)">Submit</b-button>
   </b-form>
 
 </template>

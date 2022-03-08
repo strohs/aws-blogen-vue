@@ -23,6 +23,6 @@ function invalidFeedback (value) {
   }
 }
 
-function validFeedback (value) {
+function validFeedback () {
   return 'Looks Good'
 }

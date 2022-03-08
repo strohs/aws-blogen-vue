@@ -2,40 +2,50 @@
 // Form info is validated and then emitted in an object to the parent component
 <template>
   <b-form>
-    <b-form-group id="firstNameGroup2" label="First Name" label-for="firstName2"
+    <b-form-group
+id="firstNameGroup2" label="First Name" label-for="firstName2"
                   :state="firstNameValidator.state" :invalid-feedback="firstNameValidator.invalidFeedback"
                   :valid-feedback="firstNameValidator.validFeedback">
-      <b-form-input id="firstName2" type="text" v-model.trim="user.firstName" placeholder="First Name"
-                    :state="firstNameValidator.state" @input="validateFirstName" required></b-form-input>
+      <b-form-input
+id="firstName2" v-model.trim="user.firstName" type="text" placeholder="First Name"
+                    :state="firstNameValidator.state" required @input="validateFirstName"></b-form-input>
     </b-form-group>
 
-    <b-form-group id="lastNameGroup2" label="Last Name" label-for="lastName2"
+    <b-form-group
+id="lastNameGroup2" label="Last Name" label-for="lastName2"
                   :state="lastNameValidator.state" :invalid-feedback="lastNameValidator.invalidFeedback"
                   :valid-feedback="lastNameValidator.validFeedback">
-      <b-form-input id="lastName2" type="text" v-model="user.lastName" placeholder="Last Name"
-                    :state="lastNameValidator.state" @input="validateLastName" required>
+      <b-form-input
+id="lastName2" v-model="user.lastName" type="text" placeholder="Last Name"
+                    :state="lastNameValidator.state" required @input="validateLastName">
       </b-form-input>
     </b-form-group>
 
-    <b-form-group id="emailGroup2" label="Email" label-for="emailName2"
+    <b-form-group
+id="emailGroup2" label="Email" label-for="emailName2"
                   :state="emailValidator.state" :invalid-feedback="emailValidator.invalidFeedback"
                   :valid-feedback="emailValidator.validFeedback">
-      <b-form-input id="emailName2" type="email" v-model="user.email" placeholder="Email"
-                    :state="emailValidator.state" @input="validateEmail" required></b-form-input>
+      <b-form-input
+id="emailName2" v-model="user.email" type="email" placeholder="Email"
+                    :state="emailValidator.state" required @input="validateEmail"></b-form-input>
     </b-form-group>
 
-    <b-form-group id="userNameGroup2" label="User Name" label-for="userName2"
+    <b-form-group
+id="userNameGroup2" label="User Name" label-for="userName2"
                   :state="userNameValidator.state" :invalid-feedback="userNameValidator.invalidFeedback"
                   :valid-feedback="userNameValidator.validFeedback">
-      <b-form-input id="userName2" type="text" v-model="user.userName" placeholder="username"
-                    :state="userNameValidator.state" @input="validateUserName" required></b-form-input>
+      <b-form-input
+id="userName2" v-model="user.userName" type="text" placeholder="username"
+                    :state="userNameValidator.state" required @input="validateUserName"></b-form-input>
     </b-form-group>
 
-    <b-form-group id="passwordGroup2" label="Password" label-for="password2"
+    <b-form-group
+id="passwordGroup2" label="Password" label-for="password2"
                   :state="passwordValidator.state" :invalid-feedback="passwordValidator.invalidFeedback"
                   :valid-feedback="passwordValidator.validFeedback">
-      <b-form-input id="password2" type="password" v-model="user.password" placeholder=""
-                    :state="passwordValidator.state" @input="validatePassword" required>
+      <b-form-input
+id="password2" v-model="user.password" type="password" placeholder=""
+                    :state="passwordValidator.state" required @input="validatePassword">
       </b-form-input>
     </b-form-group>
 
@@ -46,9 +56,9 @@
 </template>
 
 <script>
-import textLengthValidator from '../../validators/textLengthValidator'
-import emailValidator from '../../validators/emailValidator'
-import userNameExistsValidator from '../../validators/userNameExistsValidator'
+import textLengthValidator from '../../../src/validators/textLengthValidator'
+import emailValidator from '../../../src/validators/emailValidator'
+import userNameExistsValidator from '../../../src/validators/userNameExistsValidator'
 
 export default {
   name: 'SignupForm',
@@ -74,6 +84,12 @@ export default {
       lastNameValidator: { state: null, invalidFeedback: '', validFeedback: '' },
       passwordValidator: { state: null, invalidFeedback: '', validFeedback: '' },
       emailValidator: { state: null, invalidFeedback: '', validFeedback: '' }
+    }
+  },
+  computed: {
+    allFieldsValid () {
+      return (this.userNameValidator.state && this.firstNameValidator.state &&
+          this.lastNameValidator.state && this.emailValidator.state && this.passwordValidator.state)
     }
   },
   methods: {
@@ -103,12 +119,6 @@ export default {
     },
     validateEmail (val) {
       this.emailValidator = emailValidator(val)
-    }
-  },
-  computed: {
-    allFieldsValid () {
-      return (this.userNameValidator.state && this.firstNameValidator.state &&
-          this.lastNameValidator.state && this.emailValidator.state && this.passwordValidator.state)
     }
   }
 }

@@ -52,7 +52,8 @@
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi, molestiae.</p>
 
 
-        <b-button class="my-4" :to="{ name: 'clogin', params: { initialState: 'signUp'} }"
+        <b-button
+class="my-4" :to="{ name: 'clogin', params: { initialState: 'signUp'} }"
                   type="button"
                   variant="primary">
           Sign-Up

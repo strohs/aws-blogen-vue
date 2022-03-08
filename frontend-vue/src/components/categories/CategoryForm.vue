@@ -3,16 +3,18 @@
 //
 <template>
   <!-- v-on:submit.prevent added to prevent form from erroneously submitting data when enter key is pressed -->
-  <b-form v-on:submit.prevent>
-    <b-form-group id="categoryNameGroup3" label="Category Name" label-for="categoryName3"
+  <b-form @submit.prevent>
+    <b-form-group
+id="categoryNameGroup3" label="Category Name" label-for="categoryName3"
                   :state="nameValidator.state" :invalid-feedback="nameValidator.invalidFeedback"
                   :valid-feedback="nameValidator.validFeedback">
-      <b-form-input v-model="category.name" id="categoryName3" type="text" placeholder="category name"
-                    :state="nameValidator.state" @input="validateName" required></b-form-input>
+      <b-form-input
+id="categoryName3" v-model="category.name" type="text" placeholder="category name"
+                    :state="nameValidator.state" required @input="validateName"></b-form-input>
     </b-form-group>
 
     <b-button type="button" variant="secondary" @click="$emit('cancel')">Cancel</b-button>
-    <b-button type="button" variant="success" @mouseover="validateAllFields" @click="submit" :disabled="!allModalFieldsValid">Submit</b-button>
+    <b-button type="button" variant="success" :disabled="!allModalFieldsValid" @mouseover="validateAllFields" @click="submit">Submit</b-button>
   </b-form>
 
 </template>

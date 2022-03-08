@@ -6,25 +6,29 @@
 // submit button of the form is clicked. This event will contain an object with the validated confirmation code and password
 <template>
   <b-form>
-    <b-form-group id="confCodeGroup1" :label="'Password Reset Code (emailed to: {{ email }})'" label-for="confCode1"
+    <b-form-group
+id="confCodeGroup1" :label="'Password Reset Code (emailed to: {{ email }})'" label-for="confCode1"
                   :state="!$v.form.confCode.$invalid"
                   :valid-feedback="confCodeValidText"
                   :invalid-feedback="confCodeInvalidText">
-      <b-form-input id="confCode1"
-                    type="text"
+      <b-form-input
+id="confCode1"
                     v-model="form.confCode"
+                    type="text"
                     placeholder="confirmation code"
                     @input="$v.form.confCode.$touch()"></b-form-input>
     </b-form-group>
 
-    <b-form-group id="passwordGroup1" label="Password" label-for="password1"
+    <b-form-group
+id="passwordGroup1" label="Password" label-for="password1"
                   :state="!$v.form.password.$invalid"
                   :valid-feedback="passwordValidText"
                   :invalid-feedback="passwordInvalidText">
 
-      <b-form-input id="password1"
-                    type="password"
+      <b-form-input
+id="password1"
                     v-model="form.password"
+                    type="password"
                     @input="$v.form.password.$touch()"></b-form-input>
     </b-form-group>
 

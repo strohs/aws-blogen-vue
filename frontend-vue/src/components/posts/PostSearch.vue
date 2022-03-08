@@ -11,8 +11,8 @@
 
   <b-input-group id="postSearchGroup">
     <b-form-input
-        type="text"
         v-model="searchStr"
+        type="text"
         placeholder="Search All Posts"
     ></b-form-input>
     <b-input-group-append>

@@ -6,8 +6,9 @@
   <div class="d-flex">
 
     <div class="flex-shrink-0">
-      <b-img thumbnail fluid slot="aside" width="100" alt="avatar image"
-             @mouseover="image = imageUrl" @mouseout="image = avatarUrl" :src="image">
+      <b-img
+slot="aside" thumbnail fluid width="100" alt="avatar image"
+             :src="image" @mouseover="image = imageUrl" @mouseout="image = avatarUrl">
       </b-img>
     </div>
 
@@ -27,11 +28,11 @@
 
       <!-- CRUD buttons for a post -->
       <div class="d-flex">
-        <app-reply-post class="mx-2" v-if="isParentPost" :postId="id"></app-reply-post>
+        <app-reply-post v-if="isParentPost" class="mx-2" :post-id="id"></app-reply-post>
 
-        <app-edit-post class="mx-2" v-if="canEditOrDeletePost" :postId="id"></app-edit-post>
+        <app-edit-post v-if="canEditOrDeletePost" class="mx-2" :post-id="id"></app-edit-post>
 
-        <app-delete-post class="mx-2" v-if="canEditOrDeletePost" :postId="id"></app-delete-post>
+        <app-delete-post v-if="canEditOrDeletePost" class="mx-2" :post-id="id"></app-delete-post>
       </div>
 
     </div>

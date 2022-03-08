@@ -22,7 +22,8 @@
 
       <!-- Horizontal Card containing post details -->
       <div class="row mt-2">
-        <media-card v-for="post in posts" :key="post.id"
+        <media-card
+v-for="post in posts" :key="post.id"
                     class="m-1"
                     :title="post.title"
                     :sub-title="post.category.name"
@@ -71,7 +72,6 @@ import { dateShortFormat } from '../../filters/dateFormatFilter'
 import constants from '../../common/constants'
 import StatusAlert from '../common/StatusAlert.vue'
 import { mapState } from 'vuex'
-import BaseMediaCard from "../cards/BaseMediaCard.vue"
 import BaseHorizCard from "../cards/BaseHorizCard.vue"
 
 export default {

@@ -28,6 +28,6 @@ function invalidFeedback (value, minLength, maxLength) {
   }
 }
 
-function validFeedback (value, minLength, maxLength) {
+function validFeedback () {
   return 'Looks Good'
 }

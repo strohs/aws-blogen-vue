@@ -1,7 +1,7 @@
 <template>
   <div id="app">
 
-    <Navbar></Navbar>
+    <main-navbar></main-navbar>
     <router-view></router-view>
 
 
@@ -9,9 +9,9 @@
 </template>
 
 <script setup>
-import Navbar from './components/Navbar.vue'
+import MainNavbar from './components/MainNavbar.vue'
 import { useStore } from 'vuex';
-import {onMounted} from "vue";
+import { onMounted } from "vue";
 
 const store = useStore();
 

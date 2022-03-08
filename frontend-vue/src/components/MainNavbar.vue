@@ -12,20 +12,20 @@
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <div id="navbarSupportedContent" class="collapse navbar-collapse">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <router-link to="/posts" class="nav-link" active-class="active" v-if="isAuthenticated">All Posts</router-link>
+            <router-link v-if="isAuthenticated" to="/posts" class="nav-link" active-class="active">All Posts</router-link>
           </li>
           <li class="nav-item">
-            <router-link :to="{ name: 'users', params: { id: getAuthUser.id, userName: getAuthUser.userName, avatarImage: getAuthUser.avatarImage } }" class="nav-link" active-class="active" v-if="isAuthenticated">Your Posts</router-link>
+            <router-link v-if="isAuthenticated" :to="{ name: 'users', params: { id: getAuthUser.id, userName: getAuthUser.userName, avatarImage: getAuthUser.avatarImage } }" class="nav-link" active-class="active">Your Posts</router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/categories" class="nav-link" active-class="active" v-if="isAuthenticated && isAdmin">Edit Categories</router-link>
+            <router-link v-if="isAuthenticated && isAdmin" to="/categories" class="nav-link" active-class="active">Edit Categories</router-link>
           </li>
 
           <li v-if="isAuthenticated" class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Welcome {{ getAuthUser.userName }}
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -96,7 +96,7 @@ import Modal from "./common/Modal.vue";
 import BlogenAuthenticator from "./authentication/BlogenAuthenticator.vue";
 
 export default {
-  name: 'Navbar',
+  name: 'MainNavbar',
   components: {
     appBlogenLogo: BlogenLogo,
     appModal: Modal,

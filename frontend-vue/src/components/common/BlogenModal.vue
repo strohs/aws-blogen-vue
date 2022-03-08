@@ -16,7 +16,6 @@
 //
 <script>
 export default {
-  emits: ['confirm'],
   props: {
     headerBgColor: {
       type: String,
@@ -31,6 +30,7 @@ export default {
       default: true,
     }
   },
+  emits: ['confirm'],
   data() {
     return {
       openModal: false,
@@ -48,7 +48,7 @@ export default {
         <div class="modal-content">
 
           <div class="modal-header" :class="headerBgColor">
-            <h5 class="modal-title" id="bsModalLabel">
+            <h5 id="bsModalLabel" class="modal-title">
               <slot name="header-title" :class="headerTextColor"></slot>
             </h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

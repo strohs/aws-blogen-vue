@@ -62,7 +62,7 @@
                 <app-post-media v-bind="post"></app-post-media>
               </Transition>
 
-              <div class="row my-2" v-for="child in post.children" :key="child.id">
+              <div v-for="child in post.children" :key="child.id" class="row my-2">
                 <div class="col-md-6 offset-md-2">
                   <Transition appear name="fade" mode="out-in">
                     <app-post-media v-bind="child"></app-post-media>

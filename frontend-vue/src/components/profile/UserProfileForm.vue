@@ -4,47 +4,55 @@
 <template>
   <b-form @submit.prevent="emitFormData(v$)">
 
-    <b-form-group id="firstNameGroup1" label="First Name" label-for="firstName1"
+    <b-form-group
+id="firstNameGroup1" label="First Name" label-for="firstName1"
                   :state="!v$.firstName.$error"
                   :valid-feedback="validMessage"
                   :invalid-feedback="invalidMessage(v$.firstName)">
 
-      <b-form-input id="firstName1"
-                    type="text"
+      <b-form-input
+id="firstName1"
                     v-model="v$.firstName.$model"
+                    type="text"
       >
       </b-form-input>
     </b-form-group>
 
-    <b-form-group id="lastNameGroup1" label="Last Name" label-for="lastName1"
+    <b-form-group
+id="lastNameGroup1" label="Last Name" label-for="lastName1"
                   :state="!v$.lastName.$error"
                   :valid-feedback="validMessage"
                   :invalid-feedback="invalidMessage(v$.lastName)">
 
-      <b-form-input id="lastName1"
-                    type="text"
+      <b-form-input
+id="lastName1"
                     v-model="v$.lastName.$model"
+                    type="text"
       ></b-form-input>
     </b-form-group>
 
-    <b-form-group id="emailGroup1" label="Email" label-for="email1"
+    <b-form-group
+id="emailGroup1" label="Email" label-for="email1"
                   :state="!v$.email.$error"
                   :valid-feedback="validMessage"
                   :invalid-feedback="invalidMessage(v$.email)">
-      <b-form-input id="email1"
-                    type="email"
+      <b-form-input
+id="email1"
                     v-model="v$.email.$model"
+                    type="email"
       ></b-form-input>
     </b-form-group>
 
-    <b-form-group id="prefUsernameGroup1" label="Preferred Username" label-for="prefUsername1"
+    <b-form-group
+id="prefUsernameGroup1" label="Preferred Username" label-for="prefUsername1"
                   :state="!v$.userName.$error"
                   :valid-feedback="validMessage"
                   :invalid-feedback="invalidMessage(v$.userName)">
 
-      <b-form-input id="prefUsername1"
-                    type="text"
+      <b-form-input
+id="prefUsername1"
                     v-model="v$.userName.$model"
+                    type="text"
       ></b-form-input>
     </b-form-group>
 

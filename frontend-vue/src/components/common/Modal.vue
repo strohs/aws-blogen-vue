@@ -1,7 +1,6 @@
 <script>
 export default {
   name: 'Modal',
-  emits: ['cancel', "confirm"],
   props: {
     headerBgColor: {
       type: String,
@@ -12,6 +11,7 @@ export default {
       default: 'text-black'
     }
   },
+  emits: ['cancel', "confirm"],
   methods: {
     cancel() {
       this.$emit('cancel');
@@ -26,7 +26,8 @@ export default {
 <template>
       <div class="modal-backdrop">
         <div class="modal-dialog">
-          <div class="modal-content"
+          <div
+class="modal-content"
                role="dialog"
                aria-labelledby="modalTitle"
                aria-describedby="modalDescription"
@@ -38,7 +39,7 @@ export default {
               <button type="button" class="btn-close" aria-label="Close Modal" @click="cancel"></button>
             </header>
 
-            <section class="modal-body" id="modalDescription">
+            <section id="modalDescription" class="modal-body">
               <slot name="body">
                 <p>This is the default body!</p>
               </slot>

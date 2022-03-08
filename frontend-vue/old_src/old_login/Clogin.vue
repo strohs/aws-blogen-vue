@@ -43,7 +43,7 @@
                         </div>
 
                         <!-- Forgot Password Form -->
-                        <b-card no-body v-else-if="activeForm.forgotPassword" key="forgotPassword">
+                        <b-card v-else-if="activeForm.forgotPassword" key="forgotPassword" no-body>
                             <b-card-header header-text-variant="dark" header-bg-variant="light">
                                 <div class="row">
                                     <h4>
@@ -59,7 +59,7 @@
                         </b-card>
 
                         <!-- New Password Form -->
-                        <b-card no-body v-else-if="activeForm.newPassword" key="newPassword">
+                        <b-card v-else-if="activeForm.newPassword" key="newPassword" no-body>
                             <b-card-header header-text-variant="dark" header-bg-variant="light">
                                 <div class="row">
                                     <h4>
@@ -90,11 +90,6 @@ import ChallengeForm from '@/components/login/ChallengeForm'
 
 export default {
   name: 'Clogin',
-  props: {
-    // loginState will be one of SIGN_IN, SIGN_UP, CONFIRM_CODE, FORGOT_PASSWORD
-    loginState: String,
-    message: ''
-  },
   components: {
     appStatusAlert: StatusAlert,
     appSignIn: SignIn,
@@ -102,6 +97,11 @@ export default {
     appForgotPasswordForm: ForgotPasswordForm,
     appConfirmationCode: ConfirmationCode,
     appChallengeForm: ChallengeForm
+  },
+  props: {
+    // loginState will be one of SIGN_IN, SIGN_UP, CONFIRM_CODE, FORGOT_PASSWORD
+    loginState: String,
+    message: ''
   },
   data () {
     return {
@@ -128,6 +128,16 @@ export default {
         confirmCode: false,
         forgotPassword: false
       }
+    }
+  },
+  created () {
+    if (this.loginState === 'LOGOUT') {
+      this.doLogout()
+    } else if (this.message) { // if a status message was set, show it
+      this.setStatusMsg(400, this.message, true)
+    } else {
+      // begin the sign-in/sign-up process
+      this.setFormState(this.loginState)
     }
   },
   methods: {
@@ -222,16 +232,6 @@ export default {
       this.$store.dispatch('doLogout')
       this.setFormState('SIGN_IN')
       this.setStatusMsg(200, 'You have been logged out', true)
-    }
-  },
-  created () {
-    if (this.loginState === 'LOGOUT') {
-      this.doLogout()
-    } else if (this.message) { // if a status message was set, show it
-      this.setStatusMsg(400, this.message, true)
-    } else {
-      // begin the sign-in/sign-up process
-      this.setFormState(this.loginState)
     }
   }
 }

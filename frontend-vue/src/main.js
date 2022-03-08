@@ -23,7 +23,7 @@ app.use(store);
 app.use(BootstrapVue3);
 
 library.add(faUserCircle, faUserCog, faUserTimes, faUserPlus, faLock, faCloud, faCamera, faDollarSign, faQuestionCircle, faPencilAlt, faKeyboard, faPlus, faFolder, faKey);
-app.component('font-awesome-icon', FontAwesomeIcon);
+app.component('FontAwesomeIcon', FontAwesomeIcon);
 
 
 app.mount('#app');

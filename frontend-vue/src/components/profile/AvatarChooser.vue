@@ -28,6 +28,7 @@
 <script>
 export default {
   name: 'AvatarSelect',
+  emits: ['update:modelValue'],
   props: {
     modelValue: {
       type: String,
@@ -40,8 +41,6 @@ export default {
       avatarImage: this.modelValue
     }
   },
-  methods: {
-  },
   computed: {
     avatarUrl () {
       return this.$store.getters.getAvatarUrlByFileName(this.avatarImage)
@@ -51,6 +50,8 @@ export default {
     // fetch a list of avatar image filenames
     this.$store.dispatch('fetchAndStoreAvatarFileNames')
       .then(filenames => this.avatars = filenames);
+  },
+  methods: {
   }
 }
 </script>

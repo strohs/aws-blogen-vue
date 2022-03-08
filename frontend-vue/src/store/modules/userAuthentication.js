@@ -66,7 +66,7 @@ const userAuthenticationModule = {
     },
     actions: {
         // checks if a user is still currently Authenticated with Cognito, if so, save their info into vuex
-        authenticateUser: ({commit, dispatch}) => {
+        authenticateUser: ({dispatch}) => {
             console.log('authenticate user...');
             return Auth.currentAuthenticatedUser()
                 .then(user => {
@@ -92,10 +92,10 @@ const userAuthenticationModule = {
          * refresh completed successfully, else returns null if the user was not authenticated
          * when this function was called, or if there was an exception while calling cognito
          */
-        forceTokenRefresh:({commit, dispatch}) => {
+        forceTokenRefresh:({dispatch}) => {
             console.log('forcing token refresh');
             return Auth.currentAuthenticatedUser({bypassCache: true})
-                .then(user => {
+                .then(() => {
                     console.log('refresh complete');
                     return dispatch('setIdToken');
                 })
@@ -154,77 +154,6 @@ const userAuthenticationModule = {
         },
 
         /**
-         * manually sign-in a user to cognito
-         * @param commit
-         * @param getters
-         * @param email - the user's email address
-         * @param password - the user's (plaintext) password
-         * @returns {Promise<any>} a promise that may contain the user's data, or may contain
-         * a challenge string indicating the next stage in the log-in process
-         */
-        doSignIn: ({commit, getters}, {email, password}) => {
-            console.log('attempting sign-in with:', email, password)
-            return Auth.signIn(email, password)
-                .then(userData => {
-                    // userData may contain a challenge, clients will have to check for this
-                    console.log('sign-in to cognito okay', userData)
-                    return userData
-                })
-                .catch(err => {
-                    console.log('sign-in to cognito err', err)
-                    throw err
-                })
-        },
-
-        /**
-         * signs up a new user with Cognito
-         * @param commit
-         * @param getters
-         * @param email - the users email address
-         * @param password - the users plaintext password
-         * @param firstName - users first name a.k.a given_name
-         * @param lastName - users last name a.k.a family name
-         * @param preferredUsername - users preferred nickname
-         * @returns {Promise<ISignUpResult>}
-         */
-        doSignUp({commit, getters}, {email, password, firstName, lastName, preferredUsername}) {
-            const suData = {
-                username: email,
-                password: password,
-                attributes: {
-                    given_name: firstName,
-                    family_name: lastName,
-                    preferred_username: preferredUsername,
-                    'custom:avatar_file_name': 'avatar0.jpg'
-                }
-            }
-            console.log('cognito sign-up with:', suData)
-            return Auth.signUp(suData)
-                .then(data => {
-                    console.log('cognito sign-up response:', data)
-                    return data
-                })
-                .catch(err => {
-                    console.log('cognito sign-up error:', err)
-                    return err
-                })
-        },
-
-        /**
-         * performs a global logout of the currently logged-in user from Cognito, and also logs them
-         * out from this website
-         * @param commit
-         */
-        doLogout: ({commit}) => {
-            commit('LOGOUT')
-            commit('RESET_USER')
-            // global sign-out
-            return Auth.signOut({global: true})
-                .then(data => console.log('cognito sign out:', data))
-                .catch(err => console.log('error during cognito sign out:', err))
-        },
-
-        /**
          * updates a users details with the details in the 'userAttrs' object
          * @param commit
          * @param getters
@@ -253,7 +182,7 @@ const userAuthenticationModule = {
                 })
         },
 
-        changeUserPassword: ({commit, getters}, {curPassword, newPassword}) => {
+        changeUserPassword: (context, {curPassword, newPassword}) => {
             console.log('change password:', curPassword, newPassword);
             return Auth.currentAuthenticatedUser()
                 .then(authUser => {
@@ -271,72 +200,143 @@ const userAuthenticationModule = {
                 })
         },
 
-        // todo handled by authenticator sends a cognito confirmation code back to cognito
-        doConfirmSignUp({commit, getters}, {email, confCode}) {
-            console.log('cognito confirm sign-up:', email, confCode)
-            return Auth.confirmSignUp(email, confCode)
-                .then(data => {
-                    // returns 'SUCCESS' if correct code entered
-                    console.log('cognito confirm response:', data)
-                    return data
-                })
-                .catch(err => {
-                    console.log('cognito confirm sign-up error:', err)
-                    return err
-                })
-        },
+        // /**
+        //  * manually sign-in a user to cognito
+        //  * @param commit
+        //  * @param getters
+        //  * @param email - the user's email address
+        //  * @param password - the user's (plaintext) password
+        //  * @returns {Promise<any>} a promise that may contain the user's data, or may contain
+        //  * a challenge string indicating the next stage in the log-in process
+        //  */
+        // doSignIn: ({commit, getters}, {email, password}) => {
+        //     console.log('attempting sign-in with:', email, password);
+        //     return Auth.signIn(email, password)
+        //         .then(userData => {
+        //             // userData may contain a challenge, clients will have to check for this
+        //             console.log('sign-in to cognito okay', userData);
+        //             return userData
+        //         })
+        //         .catch(err => {
+        //             console.log('sign-in to cognito err', err);
+        //             throw err
+        //         })
+        // },
+        //
+        // /**
+        //  * signs up a new user with Cognito
+        //  * @param commit
+        //  * @param getters
+        //  * @param email - the users email address
+        //  * @param password - the users plaintext password
+        //  * @param firstName - users first name a.k.a given_name
+        //  * @param lastName - users last name a.k.a family name
+        //  * @param preferredUsername - users preferred nickname
+        //  * @returns {Promise<ISignUpResult>}
+        //  */
+        // doSignUp({commit, getters}, {email, password, firstName, lastName, preferredUsername}) {
+        //     const suData = {
+        //         username: email,
+        //         password: password,
+        //         attributes: {
+        //             given_name: firstName,
+        //             family_name: lastName,
+        //             preferred_username: preferredUsername,
+        //             'custom:avatar_file_name': 'avatar0.jpg'
+        //         }
+        //     }
+        //     console.log('cognito sign-up with:', suData)
+        //     return Auth.signUp(suData)
+        //         .then(data => {
+        //             console.log('cognito sign-up response:', data)
+        //             return data
+        //         })
+        //         .catch(err => {
+        //             console.log('cognito sign-up error:', err)
+        //             return err
+        //         })
+        // },
 
-        // TODO authenticator handles this now
-        //  submit a request to cognito for a password reset, cognito will email or sms a reset code
-        doForgotPassword: ({commit, getters}, email) => {
-            console.log('do forgot password for:', email)
-            return Auth.forgotPassword(email)
-                .then(data => {
-                    console.log('forgot password response', data)
-                    return data
-                })
-                .catch(err => {
-                    console.log('forgot password error:', err)
-                    throw err
-                })
-        },
-        // TODO handled by authenticator, submit the password reset code, and new password to Cognito
-        doForgotPasswordSubmit: ({commit, getters}, {email, confCode, newPassword}) => {
-            console.log('do forgot password submit for:', email)
-            return Auth.forgotPasswordSubmit(email, confCode, newPassword)
-                .then(data => {
-                    // NOTE: at this time Cognito is returning undefined if the password reset is successful
-                    console.log('forgot password submit response', data)
-                    return data
-                })
-                .catch(err => {
-                    console.log('forgot password submit error:', err)
-                    throw err
-                })
-        },
+        // /**
+        //  * performs a global logout of the currently logged-in user from Cognito, and also logs them
+        //  * out from this website
+        //  * @param commit
+        //  */
+        // doLogout: ({commit}) => {
+        //     commit('LOGOUT')
+        //     commit('RESET_USER')
+        //     // global sign-out
+        //     return Auth.signOut({global: true})
+        //         .then(data => console.log('cognito sign out:', data))
+        //         .catch(err => console.log('error during cognito sign out:', err))
+        // },
 
-
-
-        // TODO handled by authenticator
-        doCognitoChallenge: ({commit}, {cogUserData, userAttrs}) => {
-            // cogUserData is a cognito user object required by Auth.completeNewPassword
-            //  AWS Amplify returns it when Auth.signIn was originally called
-            // userAttrs are user attributes captured by the ChallengeForm, requested by the Cognito challenge
-            userAttrs.avatarImage = 'avatar0.jpg'
-            const reqAttrs = mapBlogenAttrsToCognitoAttrs(userAttrs)
-            console.log('doCognitoChallenge with required attributes:', reqAttrs)
-            return Auth.completeNewPassword(cogUserData, userAttrs.password, reqAttrs)
-                .then(data => {
-                    console.log('complete new password challenge:', data)
-                    return data
-                })
-                .catch(err => {
-                    console.log('newPasswordChallenge error', err)
-                    throw err
-                })
-        },
+        // // todo handled by authenticator sends a cognito confirmation code back to cognito
+        // doConfirmSignUp({commit, getters}, {email, confCode}) {
+        //     console.log('cognito confirm sign-up:', email, confCode)
+        //     return Auth.confirmSignUp(email, confCode)
+        //         .then(data => {
+        //             // returns 'SUCCESS' if correct code entered
+        //             console.log('cognito confirm response:', data)
+        //             return data
+        //         })
+        //         .catch(err => {
+        //             console.log('cognito confirm sign-up error:', err)
+        //             return err
+        //         })
+        // },
+        //
+        // // TODO authenticator handles this now
+        // //  submit a request to cognito for a password reset, cognito will email or sms a reset code
+        // doForgotPassword: ({commit, getters}, email) => {
+        //     console.log('do forgot password for:', email)
+        //     return Auth.forgotPassword(email)
+        //         .then(data => {
+        //             console.log('forgot password response', data)
+        //             return data
+        //         })
+        //         .catch(err => {
+        //             console.log('forgot password error:', err)
+        //             throw err
+        //         })
+        // },
+        // // TODO handled by authenticator, submit the password reset code, and new password to Cognito
+        // doForgotPasswordSubmit: ({commit, getters}, {email, confCode, newPassword}) => {
+        //     console.log('do forgot password submit for:', email)
+        //     return Auth.forgotPasswordSubmit(email, confCode, newPassword)
+        //         .then(data => {
+        //             // NOTE: at this time Cognito is returning undefined if the password reset is successful
+        //             console.log('forgot password submit response', data)
+        //             return data
+        //         })
+        //         .catch(err => {
+        //             console.log('forgot password submit error:', err)
+        //             throw err
+        //         })
+        // },
+        //
+        //
+        //
+        // // TODO handled by authenticator
+        // doCognitoChallenge: ({commit}, {cogUserData, userAttrs}) => {
+        //     // cogUserData is a cognito user object required by Auth.completeNewPassword
+        //     //  AWS Amplify returns it when Auth.signIn was originally called
+        //     // userAttrs are user attributes captured by the ChallengeForm, requested by the Cognito challenge
+        //     userAttrs.avatarImage = 'avatar0.jpg'
+        //     const reqAttrs = mapBlogenAttrsToCognitoAttrs(userAttrs)
+        //     console.log('doCognitoChallenge with required attributes:', reqAttrs)
+        //     return Auth.completeNewPassword(cogUserData, userAttrs.password, reqAttrs)
+        //         .then(data => {
+        //             console.log('complete new password challenge:', data)
+        //             return data
+        //         })
+        //         .catch(err => {
+        //             console.log('newPasswordChallenge error', err)
+        //             throw err
+        //         })
+        // },
 
     }
-}
+};
 
 export default userAuthenticationModule

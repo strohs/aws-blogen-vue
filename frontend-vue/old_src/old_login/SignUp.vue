@@ -18,73 +18,86 @@
 
         <b-card-body>
             <b-form>
-                <b-form-group id="emailGroup1" label="Email" label-for="email1"
+                <b-form-group
+id="emailGroup1" label="Email" label-for="email1"
                               :state="$v.form.email.email && !$v.form.email.$invalid"
                               :valid-feedback="emailValidText"
                               :invalid-feedback="emailInvalidText">
-                    <b-form-input id="email1"
-                                  type="email"
+                    <b-form-input
+id="email1"
                                   v-model="form.email"
+                                  type="email"
                                   placeholder="Email"
                                   @input="$v.form.email.$touch()"></b-form-input>
                 </b-form-group>
 
-                <b-form-group id="passwordGroup1" label="Password" label-for="password1"
+                <b-form-group
+id="passwordGroup1" label="Password" label-for="password1"
                               :state="!$v.form.password.$invalid"
                               :valid-feedback="passwordValidText"
                               :invalid-feedback="passwordInvalidText">
 
-                    <b-form-input id="password1"
-                                  type="password"
+                    <b-form-input
+id="password1"
                                   v-model="form.password"
+                                  type="password"
                                   @input="$v.form.password.$touch()"></b-form-input>
                 </b-form-group>
 
-                <b-form-group id="confPasswordGroup1" label="Confirm Password" label-for="confPassword1"
+                <b-form-group
+id="confPasswordGroup1" label="Confirm Password" label-for="confPassword1"
                               :state="!$v.form.confPassword.$invalid"
                               :valid-feedback="confPasswordValidText"
                               :invalid-feedback="confPasswordInvalidText">
 
-                    <b-form-input id="confPassword1"
-                                  type="password"
+                    <b-form-input
+id="confPassword1"
                                   v-model="form.confPassword"
+                                  type="password"
                                   @input="$v.form.confPassword.$touch()"></b-form-input>
                 </b-form-group>
 
-                <b-form-group id="prefUsernameGroup1" label="Preferred Username" label-for="prefUsername1"
+                <b-form-group
+id="prefUsernameGroup1" label="Preferred Username" label-for="prefUsername1"
                               :state="$v.form.preferredUsername.$dirty && !$v.form.preferredUsername.$invalid"
                               :valid-feedback="preferredUsernameValidText"
                               :invalid-feedback="preferredUsernameInvalidText">
 
-                    <b-form-input id="prefUsername1"
-                                  type="text"
+                    <b-form-input
+id="prefUsername1"
                                   v-model="form.preferredUsername"
+                                  type="text"
                                   @input="validatePrefUsername"></b-form-input>
                 </b-form-group>
 
-                <b-form-group id="firstNameGroup1" label="First Name" label-for="firstName1"
+                <b-form-group
+id="firstNameGroup1" label="First Name" label-for="firstName1"
                               :state="$v.form.firstName.$dirty && !$v.form.firstName.$invalid"
                               :valid-feedback="firstNameValidText"
                               :invalid-feedback="firstNameInvalidText">
 
-                    <b-form-input id="firstName1"
-                                  type="text"
+                    <b-form-input
+id="firstName1"
                                   v-model="form.firstName"
+                                  type="text"
                                   @input="$v.form.firstName.$touch()"></b-form-input>
                 </b-form-group>
 
-                <b-form-group id="lastNameGroup1" label="Last Name" label-for="lastName1"
+                <b-form-group
+id="lastNameGroup1" label="Last Name" label-for="lastName1"
                               :state="$v.form.lastName.$dirty && !$v.form.lastName.$invalid"
                               :valid-feedback="lastNameValidText"
                               :invalid-feedback="lastNameInvalidText">
 
-                    <b-form-input id="lastName1"
-                                  type="text"
+                    <b-form-input
+id="lastName1"
                                   v-model="form.lastName"
+                                  type="text"
                                   @input="$v.form.lastName.$touch()"></b-form-input>
                 </b-form-group>
 
-                <b-button block
+                <b-button
+block
                           :disabled="$v.form.$invalid"
                           size="lg"
                           type="submit"
@@ -105,7 +118,7 @@
 import { validationMixin } from 'vuelidate'
 import { required, email, minLength, alphaNum, sameAs } from 'vuelidate/lib/validators'
 import * as vt from '@/validators/validationText'
-import { prefUsernameIsUnique, emailIsUnique } from '../../common/awsCognito'
+import { prefUsernameIsUnique, emailIsUnique } from '../../src/common/awsCognito'
 import _ from 'lodash'
 
 export default {
@@ -193,6 +206,12 @@ export default {
     lastNameValidText () { return vt.lastNameValidText(this.$v.form.lastName) },
     lastNameInvalidText () { return vt.lastNameInvalidText(this.$v.form.lastName) }
   },
+  created () {
+    // create a debounced function that validates the preferred username field, need to limit the amount of calls to AWS
+    this.validatePrefUsername = _.debounce(() => {
+      this.$v.form.preferredUsername.$touch()
+    }, 1000)
+  },
   methods: {
     cancel (evt) {
       evt.preventDefault()
@@ -210,12 +229,6 @@ export default {
           this.$emit('error', { code: 400, message: err.message })
         })
     }
-  },
-  created () {
-    // create a debounced function that validates the preferred username field, need to limit the amount of calls to AWS
-    this.validatePrefUsername = _.debounce(() => {
-      this.$v.form.preferredUsername.$touch()
-    }, 1000)
   }
 }
 </script>
