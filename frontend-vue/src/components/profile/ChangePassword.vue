@@ -10,7 +10,7 @@
 <template>
   <div class="mx-1">
 
-    <b-button variant="danger" @click="isModalVisible = !isModalVisible">
+    <b-button variant="warning" @click="isModalVisible = !isModalVisible">
       Change Password
     </b-button>
 

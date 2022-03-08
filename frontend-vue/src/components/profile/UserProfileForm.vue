@@ -48,7 +48,7 @@
       ></b-form-input>
     </b-form-group>
 
-    <avatar-chooser v-model="v$.avatarImage"></avatar-chooser>
+    <avatar-chooser v-model="v$.avatarImage.$model"></avatar-chooser>
 
     <b-button :to="{ name: 'posts'}" type="button" variant="secondary">Cancel</b-button>
     <b-button type="submit" variant="primary">Submit</b-button>
@@ -57,7 +57,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed } from 'vue';
+import { reactive, computed } from 'vue';
 import useVuelidate from '@vuelidate/core'
 import {required, email, minLength, alphaNum, helpers} from '@vuelidate/validators'
 import {prefUsernameIsUnique, emailIsUnique} from '../../common/awsCognito'
@@ -135,7 +135,8 @@ const rules = {
   lastName: {
     required,
     alphaNum
-  }
+  },
+  avatarImage: {}
 };
 
 const v$ = useVuelidate(rules, form);
@@ -143,7 +144,7 @@ const v$ = useVuelidate(rules, form);
 // the validation message that is displayed for a form field that passed validation
 const validMessage = computed(() => 'Good');
 
-// the message that displays when any form field is invalid. This will simplu
+// the message that displays when any form field is invalid. This will simply
 //  concatentate all errors on the field with a comma
 function invalidMessage(vuelidateFormField) {
   return vuelidateFormField.$errors.map(error => error.$message).join(', ');
@@ -152,8 +153,7 @@ function invalidMessage(vuelidateFormField) {
 async function emitFormData(v$) {
   const isFormValid = await v$.$validate();
   if (isFormValid) {
-    console.log('form is valid', form);
-    //todo may need to make form unreactive before submitting
+    console.log('user profile form is valid', form);
     emit('validated', form);
   }
 }

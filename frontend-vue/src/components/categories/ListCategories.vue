@@ -1,42 +1,44 @@
 // form for creating new categories
 <template>
   <div>
-    <header id="categoryHeader" class="py-2 bg-success text-white">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-6">
-            <h1>
-              <font-awesome-icon class="mx-2" icon="folder" scale="2"></font-awesome-icon>
-              Categories
-            </h1>
-          </div>
+
+    <div class="container-fluid">
+      <header id="categoryHeader" class="row py-2 bg-success text-white">
+        <div class="col">
+          <h2>
+            <font-awesome-icon class="mx-2" icon="folder" scale="2"></font-awesome-icon>
+            Categories
+          </h2>
         </div>
-      </div>
-    </header>
+      </header>
+    </div>
 
     <!-- New Category Button -->
     <div class="container">
       <div class="row mt-4">
-        <div class="col-md-4 offset-md-4">
+        <div class="col">
           <app-new-category @submit="createCategory"></app-new-category>
         </div>
       </div>
-      <!-- category status message -->
-      <div class="row justify-content-center pt-2">
-        <app-status-alert v-bind="status" @dismissed="dismissStatusAlert"></app-status-alert>
-      </div>
+
 
       <div class="row my-4">
-        <div class="col">
+        <div class="col-6">
           <b-card no-body border-variant="success">
             <b-card-header>
-              <h2>Categories</h2>
+              <h3>Categories</h3>
             </b-card-header>
             <b-card-body>
+
+              <!-- category status message -->
+              <div class="row justify-content-center pt-2">
+                <app-status-alert v-bind="status" v-model="showStatus"></app-status-alert>
+              </div>
+
               <table class="table table-bordered table-striped table-hover">
                 <thead>
                 <tr>
-                  <th scope="col">Name</th>
+                  <th scope="col">Category Name</th>
                   <th scope="col"></th>
                 </tr>
                 </thead>
@@ -55,11 +57,10 @@
 
             <b-card-footer>
               <!-- PAGINATION -->
-              <b-pagination class="tpage"
-                            v-model="tableCurrentPage"
+              <b-pagination
+                            v-model="currentNavPage"
                             :total-rows="pageInfo.totalElements"
                             :per-page="pageInfo.pageSize"
-                            @change="fetchPage"
               >
               </b-pagination>
             </b-card-footer>
@@ -88,13 +89,15 @@ export default {
       category: '',
       status: {
         code: 200,
-        message: '',
-        show: false
+        message: ''
       },
-      tableCurrentPage: 1,
+      showStatus: false,
+      currentNavPage: 1,
+
       // a page of categories to display in the table
       categories: [],
-      // pageInfo holds the category 'page details' returned from the API
+
+      // pageInfo holds the category 'page details' object returned from the API
       pageInfo: {
         pageNumber: 0,
         totalElements: 0,
@@ -103,10 +106,15 @@ export default {
       }
     }
   },
-  computed: {
-  },
+  computed: {},
   created () {
     this.fetchCategories(0, this.pageInfo.pageSize)
+  },
+  watch: {
+      currentNavPage(newPageNum) {
+        console.log('fetch category page', newPageNum);
+        this.fetchPage(newPageNum)
+      }
   },
   methods: {
     async fetchCategories (pageNum, pageLimit) {
@@ -127,7 +135,7 @@ export default {
           this.status.code = 200;
           this.status.message = `Category: ${newCategory.name} created`;
           // display the first page of the table
-          this.tableCurrentPage = 1;
+          this.currentNavPage = 1;
           this.fetchPage(1)
         })
         .catch(error => {

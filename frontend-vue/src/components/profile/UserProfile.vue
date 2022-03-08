@@ -17,21 +17,18 @@
 
   <div id="userProfile" class="container">
 
-    <!-- alert message box -->
-    <div class="row my-4 justify-content-center">
-      <app-status-alert v-bind="status" @dismissed="dismissStatusAlert"></app-status-alert>
-    </div>
-
     <!-- Profile Card -->
     <div class="row my-4">
       <div class="col-6">
         <b-card no-body border-variant="warning">
-          <b-card-header class="text-start">
-            <h4>Profile for {{ this.user.email }}</h4>
+          <b-card-header header-class="d-flex justify-content-between align-items-center">
+            <h5>Profile for {{ this.user.email }}</h5>
+            <app-change-password @submit="doChangePassword"></app-change-password>
           </b-card-header>
 
           <b-card-body>
-<!--            <app-edit-password></app-edit-password>-->
+            <app-status-alert v-model="showStatus" v-bind="status"></app-status-alert>
+
             <app-user-profile-form v-bind="user" @validated="doChangeProfile"></app-user-profile-form>
           </b-card-body>
         </b-card>
@@ -45,14 +42,14 @@
 <script>
 import UserProfileForm from './UserProfileForm.vue'
 import StatusAlert from '../common/StatusAlert.vue'
-import EditPassword from './EditPassword.vue'
+import ChangePassword from './ChangePassword.vue'
 
 export default {
   name: 'UserProfile',
   components: {
     appUserProfileForm: UserProfileForm,
     appStatusAlert: StatusAlert,
-    appEditPassword: EditPassword
+    appChangePassword: ChangePassword
   },
   data () {
     return {
@@ -68,8 +65,8 @@ export default {
       status: {
         code: 200,
         message: '',
-        show: false
-      }
+      },
+      showStatus: false,
     }
   },
   methods: {
@@ -97,10 +94,10 @@ export default {
       this.status.code = code;
       this.status.message = message;
       // display the status code from CRUD request
-      this.status.show = true;
+      this.showStatus = true;
     },
     dismissStatusAlert () {
-      this.status.show = false;
+      //this.showStatus = false;
     }
   },
   created () {

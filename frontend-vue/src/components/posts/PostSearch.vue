@@ -1,17 +1,23 @@
 // PostSearch
-// This is a vue.js custom component that contains an input field and button.
+// This is a vue custom component that contains an input field and button.
 // The input field will capture the string to search for, the button, when clicked, will submit the contents of
 // the input field.
 //
 // Emits
-// input (search string) - will contain the string being searched for
+// search (search string) - will contain the string being searched for
+// clear - clears the search string input by setting it to the empty string
 //
 <template>
 
   <b-input-group id="postSearchGroup">
-    <b-form-input type="text" v-model="searchStr" placeholder="Search Posts"></b-form-input>
+    <b-form-input
+        type="text"
+        v-model="searchStr"
+        placeholder="Search All Posts"
+    ></b-form-input>
     <b-input-group-append>
       <b-button variant="primary" type="submit" @click="emitSearchStr">Search</b-button>
+      <b-button variant="secondary" :disabled="searchStr.length === 0" @click="emitClear">Clear</b-button>
     </b-input-group-append>
   </b-input-group>
 
@@ -26,7 +32,7 @@ export default {
       default: '',
     }
   },
-  emits: ['input'],
+  emits: ['search', 'clear'],
   data () {
     return {
       searchStr: ''
@@ -34,8 +40,12 @@ export default {
   },
   methods: {
     emitSearchStr () {
-      console.log('post search val:', this.searchStr)
-      this.$emit('input', this.searchStr)
+      console.log('post search val:', this.searchStr);
+      this.$emit('search', this.searchStr);
+    },
+    emitClear() {
+      this.searchStr = '';
+      this.$emit('clear');
     }
   }
 }

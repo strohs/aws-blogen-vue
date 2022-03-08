@@ -59,8 +59,9 @@ export function mapBlogenSignUpDataToCognito ({ email, password, firstName, last
 }
 
 /**
- * returns true if the preferredUsername is NOT already taken by another user in the cognito user pool
+ * returns true if the preferred_username is NOT already taken by another user in the cognito user pool
  * @param prefUsername
+ * @returns {Promise<boolean>}
  */
 export function prefUsernameIsUnique (prefUsername) {
   return listUsersByAttribute('preferred_username', prefUsername)
@@ -75,9 +76,9 @@ export function prefUsernameIsUnique (prefUsername) {
 }
 
 /**
- * returns true if email is NOT in use by another user
+ * returns true if email is NOT in use by another user. returns false if an email is in use
  * @param email - email address to search for
- * @returns {*}
+ * @returns {Promise<boolean>}
  */
 export function emailIsUnique (email) {
   return listUsersByAttribute('email', email)
@@ -99,7 +100,7 @@ export function emailIsUnique (email) {
  * @returns {Promise<Object>} the returned promise will resolve to an object with the following shape
  * if a user is found:
  * {
- *     Users: [ { Username, Enabled, UserStatus, Attributes }, ]
+ *     Users: [ { Username: '392zxc-123xcc', Enabled: true, UserStatus: 'active', Attributes: {...} }, ]
  * }
  *
  * if no user is NOT found, an empty Users array will be returned:

@@ -8,7 +8,7 @@ const blogenRestApiModule = {
     categories: [
       { name: '', categoryUrl: '' }
     ],
-    // holds a page worth of posts
+    // holds the current page of posts being viewed by the user
     posts: [{
       id: '',
       text: '',
@@ -22,7 +22,8 @@ const blogenRestApiModule = {
       postId: '',
       children: []
     }],
-    pageInfo: { // pageInfo is returned by the API on each page request
+    // pageInfo is returned by the API on each page request
+    pageInfo: {
       totalElements: 0, // total posts available using the current filter criteria
       totalPages: 0, // total pages available using the current filter criteria
       pageNumber: 0, // the page number of data that was requested (0 based indices)
@@ -163,8 +164,8 @@ const blogenRestApiModule = {
         }
       })
         .then(res => {
-          console.log(`fetchCategories response:`, res.data)
-          return res.data
+          console.log(`fetchCategories response:`, res.data);
+          return res.data;
         })
         .catch(error => {
           handleAxiosError(error)
@@ -293,6 +294,25 @@ const blogenRestApiModule = {
           handleAxiosError(error);
           throw (error);
         })
+    },
+
+    /**
+     * registers a newly signed up user into the "User" group within cognito.
+     * This group gives them permission to use the REST Api
+     * @param context
+     * @param userId - the users cognito id, called the 'username' by cognito
+     * @returns {AxiosInstance}
+     */
+    registerNewUser: (context, userId) => {
+      const url = `/api/v1/auth/register/${userId}`;
+      return axios.get(url)
+          .then(res => {
+            console.log('register new user', userId, res.status);
+            return res;
+          })
+          .catch(error => {
+            throw (error);
+          })
     }
   }
 };

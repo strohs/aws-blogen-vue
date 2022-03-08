@@ -79,7 +79,7 @@ export default {
   emits: ['cancelPost', 'submitPost'],
   data () {
     return {
-      // make a copy of the props so we don't mutate them
+      // make a copy of the props
       post: {
         title: this.title,
         text: this.text,

@@ -82,10 +82,10 @@ public class DynamoDbBootstrapper {
         //build posts for william - 2 parent posts
         threadId1 = UUID.randomUUID().toString();
         threadId2 = UUID.randomUUID().toString();
-        thread = buildBlogenPost(threadId1, threadId1, william.getPrimaryHash(), william.getUserName(), william.getAvatarFileName(),
+        thread = buildBlogenPost(threadId1, threadId1, william.getUserId(), william.getUserName(), william.getAvatarFileName(),
                 "Health & Fitness", "Started lifting today", "Trying to burn off these holiday calories. I hear resistance training is better than running",
                 sequentialImageUrl(), yesterday.plus(6, ChronoUnit.MINUTES));
-        post1 = buildBlogenPost(threadId2, threadId2, william.getPrimaryHash(), william.getUserName(), william.getAvatarFileName(),
+        post1 = buildBlogenPost(threadId2, threadId2, william.getUserId(), william.getUserName(), william.getAvatarFileName(),
                 "Business", "Bulls are on parade", "They stock markets won't stop running higher. When will the bubble burst?",
                 sequentialImageUrl(), yesterday.plus(7, ChronoUnit.MINUTES));
         failedBatches = dbMapper.batchSave(Arrays.asList(thread, post1));
@@ -93,35 +93,35 @@ public class DynamoDbBootstrapper {
 
         //build posts for maggie - 3 parent posts with 2 child posts each
         threadId1 = UUID.randomUUID().toString();
-        thread = buildBlogenPost(threadId1, threadId1, maggie.getPrimaryHash(), maggie.getUserName(), maggie.getAvatarFileName(),
+        thread = buildBlogenPost(threadId1, threadId1, maggie.getUserId(), maggie.getUserName(), maggie.getAvatarFileName(),
                 "Business", "Bitcoin or bust", "Forget about gold, I'm all in on bitcoin",
                 sequentialImageUrl(), yesterday.plus(8, ChronoUnit.MINUTES));
-        post1 = buildBlogenPost(threadId1, UUID.randomUUID().toString(), john.getPrimaryHash(), john.getUserName(), john.getAvatarFileName(),
+        post1 = buildBlogenPost(threadId1, UUID.randomUUID().toString(), john.getUserId(), john.getUserName(), john.getAvatarFileName(),
                 "Business", "probably buying it", "I'm game too. I just don't know where to but it from",
                 sequentialImageUrl(), yesterday.plus(9, ChronoUnit.MINUTES));
-        post2 = buildBlogenPost(threadId1, UUID.randomUUID().toString(), maggie.getPrimaryHash(), maggie.getUserName(), maggie.getAvatarFileName(),
+        post2 = buildBlogenPost(threadId1, UUID.randomUUID().toString(), maggie.getUserId(), maggie.getUserName(), maggie.getAvatarFileName(),
                 "Business", "beware the bubble", "If we've waited this long, I fear it's already too late",
                 sequentialImageUrl(), yesterday.plus(10, ChronoUnit.MINUTES));
 
         threadId1 = UUID.randomUUID().toString();
-        thread2 = buildBlogenPost(threadId1, threadId1, maggie.getPrimaryHash(), maggie.getUserName(), maggie.getAvatarFileName(),
+        thread2 = buildBlogenPost(threadId1, threadId1, maggie.getUserId(), maggie.getUserName(), maggie.getAvatarFileName(),
                 "Health & Fitness", "What ever happened to Ty Bo?", "It used to be all the rage, now I can't find a single gym that offers it",
                 sequentialImageUrl(), yesterday.plus(11, ChronoUnit.MINUTES));
-        post3 = buildBlogenPost(threadId1, UUID.randomUUID().toString(), william.getPrimaryHash(), william.getUserName(), william.getAvatarFileName(),
+        post3 = buildBlogenPost(threadId1, UUID.randomUUID().toString(), william.getUserId(), william.getUserName(), william.getAvatarFileName(),
                 "Health & Fitness", "sounds cool", "What do you do, fight each other until you pass out?",
                 sequentialImageUrl(), yesterday.plus(12, ChronoUnit.MINUTES));
-        post4 = buildBlogenPost(threadId1, UUID.randomUUID().toString(), william.getPrimaryHash(), william.getUserName(), william.getAvatarFileName(),
+        post4 = buildBlogenPost(threadId1, UUID.randomUUID().toString(), william.getUserId(), william.getUserName(), william.getAvatarFileName(),
                 "Health & Fitness", "on second thought...", "I changed my mind. It looks kinda fun. Someone get my leg warmers",
                 sequentialImageUrl(), yesterday.plus(13, ChronoUnit.MINUTES));
 
         threadId1 = UUID.randomUUID().toString();
-        thread3 = buildBlogenPost(threadId1, threadId1, maggie.getPrimaryHash(), maggie.getUserName(), maggie.getAvatarFileName(),
+        thread3 = buildBlogenPost(threadId1, threadId1, maggie.getUserId(), maggie.getUserName(), maggie.getAvatarFileName(),
                 "Web Design", "Is PHP dead?", "Does anyone have stats on PHP usage in the wild?",
                 sequentialImageUrl(), yesterday.plus(14, ChronoUnit.MINUTES));
-        post5 = buildBlogenPost(threadId1, UUID.randomUUID().toString(), william.getPrimaryHash(), william.getUserName(), william.getAvatarFileName(),
+        post5 = buildBlogenPost(threadId1, UUID.randomUUID().toString(), william.getUserId(), william.getUserName(), william.getAvatarFileName(),
                 "Web Design", "I doubt it", "PHP is everywhere. I'm pretty sure it still powers the internet!",
                 sequentialImageUrl(), yesterday.plus(15, ChronoUnit.MINUTES));
-        post6 = buildBlogenPost(threadId1, UUID.randomUUID().toString(), admin.getPrimaryHash(), admin.getUserName(), admin.getAvatarFileName(),
+        post6 = buildBlogenPost(threadId1, UUID.randomUUID().toString(), admin.getUserId(), admin.getUserName(), admin.getAvatarFileName(),
                 "Web Design", "We don't use it here", "...anymore. We switched to Kotlin/React, but a lot of companies are still powered by PHP",
                 sequentialImageUrl(), yesterday.plus(16, ChronoUnit.MINUTES));
 
@@ -131,52 +131,52 @@ public class DynamoDbBootstrapper {
 
         //Build Posts for elizabeth (10 parent posts for her)
         threadId1 = UUID.randomUUID().toString();
-        thread = buildBlogenPost(threadId1, threadId1, elizabeth.getPrimaryHash(), elizabeth.getUserName(), elizabeth.getAvatarFileName(),
+        thread = buildBlogenPost(threadId1, threadId1, elizabeth.getUserId(), elizabeth.getUserName(), elizabeth.getAvatarFileName(),
                 "Business", "Invest now", "Market returns are crazy, there is still time to jump on in",
                 sequentialImageUrl(), yesterday.plus(17, ChronoUnit.MINUTES));
 
         threadId1 = UUID.randomUUID().toString();
-        thread2 = buildBlogenPost(threadId1, threadId1, elizabeth.getPrimaryHash(), elizabeth.getUserName(), elizabeth.getAvatarFileName(),
+        thread2 = buildBlogenPost(threadId1, threadId1, elizabeth.getUserId(), elizabeth.getUserName(), elizabeth.getAvatarFileName(),
                 "Health & Fitness", "Proper Diet trumps all", "No matter what excercise you do, just remember you can never out-train a poor diet",
                 sequentialImageUrl(), yesterday.plus(18, ChronoUnit.MINUTES));
 
         threadId1 = UUID.randomUUID().toString();
-        thread3 = buildBlogenPost(threadId1, threadId1, elizabeth.getPrimaryHash(), elizabeth.getUserName(), elizabeth.getAvatarFileName(),
+        thread3 = buildBlogenPost(threadId1, threadId1, elizabeth.getUserId(), elizabeth.getUserName(), elizabeth.getAvatarFileName(),
                 "Technology", "About Alexa", "Does anyone own one of these? Is it any good?",
                 sequentialImageUrl(), yesterday.plus(19, ChronoUnit.MINUTES));
 
         threadId1 = UUID.randomUUID().toString();
-        thread4 = buildBlogenPost(threadId1, threadId1, elizabeth.getPrimaryHash(), elizabeth.getUserName(), elizabeth.getAvatarFileName(),
+        thread4 = buildBlogenPost(threadId1, threadId1, elizabeth.getUserId(), elizabeth.getUserName(), elizabeth.getAvatarFileName(),
                 "Web Development", "Bootstrap 4", "Hey you all. Would it be worth my time to learn Bootstrap 4?",
                 sequentialImageUrl(), yesterday.plus(20, ChronoUnit.MINUTES));
 
         threadId1 = UUID.randomUUID().toString();
-        thread5 = buildBlogenPost(threadId1, threadId1, elizabeth.getPrimaryHash(), elizabeth.getUserName(), elizabeth.getAvatarFileName(),
+        thread5 = buildBlogenPost(threadId1, threadId1, elizabeth.getUserId(), elizabeth.getUserName(), elizabeth.getAvatarFileName(),
                 "Business", "Buying gold", "I wanna buy some gold. Can someone point me in the right direction",
                 sequentialImageUrl(), yesterday.plus(21, ChronoUnit.MINUTES));
 
         threadId1 = UUID.randomUUID().toString();
-        thread6 = buildBlogenPost(threadId1, threadId1, elizabeth.getPrimaryHash(), elizabeth.getUserName(), elizabeth.getAvatarFileName(),
+        thread6 = buildBlogenPost(threadId1, threadId1, elizabeth.getUserId(), elizabeth.getUserName(), elizabeth.getAvatarFileName(),
                 "Health & Fitness", "HIIT Training", "Forget about running for hours on end. High Intensity Interval Training can give you all the benefits in half the time",
                 sequentialImageUrl(), yesterday.plus(22, ChronoUnit.MINUTES));
 
         threadId1 = UUID.randomUUID().toString();
-        thread7 = buildBlogenPost(threadId1, threadId1, elizabeth.getPrimaryHash(), elizabeth.getUserName(), elizabeth.getAvatarFileName(),
+        thread7 = buildBlogenPost(threadId1, threadId1, elizabeth.getUserId(), elizabeth.getUserName(), elizabeth.getAvatarFileName(),
                 "Technology", "Toys that teach Programming", "My nephew is showing an interest in programming. Can anyone recommend something for a ten year old?",
                 sequentialImageUrl(), yesterday.plus(23, ChronoUnit.MINUTES));
 
         threadId1 = UUID.randomUUID().toString();
-        thread8 = buildBlogenPost(threadId1, threadId1, elizabeth.getPrimaryHash(), elizabeth.getUserName(), elizabeth.getAvatarFileName(),
+        thread8 = buildBlogenPost(threadId1, threadId1, elizabeth.getUserId(), elizabeth.getUserName(), elizabeth.getAvatarFileName(),
                 "Web Development", "Clojure Script", "You guys need to try this http://clojure.org, It saved me hours of web dev work",
                 sequentialImageUrl(), yesterday.plus(24, ChronoUnit.MINUTES));
 
         threadId1 = UUID.randomUUID().toString();
-        thread9 = buildBlogenPost(threadId1, threadId1, elizabeth.getPrimaryHash(), elizabeth.getUserName(), elizabeth.getAvatarFileName(),
+        thread9 = buildBlogenPost(threadId1, threadId1, elizabeth.getUserId(), elizabeth.getUserName(), elizabeth.getAvatarFileName(),
                 "Technology", "Samsung Galaxy 8", "This phone is the greatest. Nice screen, good battery life, and tons of apps!",
                 sequentialImageUrl(), yesterday.plus(25, ChronoUnit.MINUTES));
 
         threadId1 = UUID.randomUUID().toString();
-        thread10 = buildBlogenPost(threadId1, threadId1, admin.getPrimaryHash(), admin.getUserName(), admin.getAvatarFileName(),
+        thread10 = buildBlogenPost(threadId1, threadId1, admin.getUserId(), admin.getUserName(), admin.getAvatarFileName(),
                 "Web Development", "Welcome to Web Design", "Please post any and all web design questions under this category",
                 sequentialImageUrl(), yesterday.plus(26, ChronoUnit.MINUTES));
 
@@ -185,19 +185,19 @@ public class DynamoDbBootstrapper {
 
         //  build posts for John - 1 thread with 4 child posts
         threadId1 = UUID.randomUUID().toString();
-        thread = buildBlogenPost(threadId1, threadId1, john.getPrimaryHash(), john.getUserName(), john.getAvatarFileName(),
+        thread = buildBlogenPost(threadId1, threadId1, john.getUserId(), john.getUserName(), john.getAvatarFileName(),
                 "Technology", "Love this tech", "Smart-phones are the greatest invention in the history of mankind",
                 sequentialImageUrl(), yesterday.plus(27, ChronoUnit.MINUTES));
-        post1 = buildBlogenPost(threadId1, UUID.randomUUID().toString(), john.getPrimaryHash(), john.getUserName(), john.getAvatarFileName(),
+        post1 = buildBlogenPost(threadId1, UUID.randomUUID().toString(), john.getUserId(), john.getUserName(), john.getAvatarFileName(),
                 "Technology", "Love it too", "I wish I could embed the phone into my head",
                 sequentialImageUrl(), yesterday.plus(28, ChronoUnit.MINUTES));
-        post2 = buildBlogenPost(threadId1, UUID.randomUUID().toString(), maggie.getPrimaryHash(), maggie.getUserName(), maggie.getAvatarFileName(),
+        post2 = buildBlogenPost(threadId1, UUID.randomUUID().toString(), maggie.getUserId(), maggie.getUserName(), maggie.getAvatarFileName(),
                 "Technology", "Not so fast", "Are they even greater than the Internet?",
                 sequentialImageUrl(), yesterday.plus(29, ChronoUnit.MINUTES));
-        post3 = buildBlogenPost(threadId1, UUID.randomUUID().toString(), william.getPrimaryHash(), william.getUserName(), william.getAvatarFileName(),
+        post3 = buildBlogenPost(threadId1, UUID.randomUUID().toString(), william.getUserId(), william.getUserName(), william.getAvatarFileName(),
                 "Technology", "Here today gone tomorrow", "They're the greatest for yesterday, but something better will come along",
                 sequentialImageUrl(), yesterday.plus(30, ChronoUnit.MINUTES));
-        post4 = buildBlogenPost(threadId1, UUID.randomUUID().toString(), admin.getPrimaryHash(), admin.getUserName(), admin.getAvatarFileName(),
+        post4 = buildBlogenPost(threadId1, UUID.randomUUID().toString(), admin.getUserId(), admin.getUserName(), admin.getAvatarFileName(),
                 "Technology", "No No No", "the greatest invention is velcro :)",
                 sequentialImageUrl(), yesterday.plus(31, ChronoUnit.MINUTES));
         failedBatches = dbMapper.batchSave(Arrays.asList(thread, post1, post2, post3, post4));
@@ -311,7 +311,7 @@ public class DynamoDbBootstrapper {
         return BlogenPrimaryKey.builder().primaryHash(hash).primaryRange(Blogen.RANGE_AVATAR).build();
     }
 
-    // the userName PRimary Key has a userId of the user assigned to the userName as the range key
+    // the userName Primary Key has a userId of the user assigned to the userName as the range key
     public static BlogenPrimaryKey buildUserNamePK(String userName, String userId) {
         return BlogenPrimaryKey.builder().primaryHash(userName).primaryRange(userId).build();
     }

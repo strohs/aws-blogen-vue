@@ -8,10 +8,10 @@
     <header id="post-header" class="container-fluid py-2 bg-primary">
       <div class="row">
         <div class="col-sm-6">
-          <h1 class="text-white">
+          <h2 class="text-white">
             <font-awesome-icon class="mx-2" icon="pencil-alt" scale="1.5"></font-awesome-icon>
             Posts (<small>{{ selectedCategory.name }}</small>)
-          </h1>
+          </h2>
         </div>
       </div>
     </header>
@@ -20,19 +20,19 @@
     <section id="search-posts" class="container-fluid bg-light">
       <div class="row py-2">
         <!-- Category Filter Dropdown Button -->
-        <div class="col-md-4">
+        <div class="col">
           <app-category-filter-button v-model="selectedCategory"></app-category-filter-button>
         </div>
         <!-- New Post Button -->
-        <div class="col-md-4">
+        <div class="col">
           <b-button block variant="primary" @click="showModal">
             <font-awesome-icon class="mx-2" icon="plus"/>
             New Post
           </b-button>
         </div>
         <!-- SEARCH Post input -->
-        <div class="col-md-4">
-          <app-post-search v-model="postSearchStr"></app-post-search>
+        <div class="col">
+          <app-post-search v-model="postSearchStr" @search="searchPosts" @clear="refreshPage"></app-post-search>
         </div>
       </div>
     </section>
@@ -125,7 +125,7 @@ export default {
   },
   data() {
     return {
-      selectedCategory: { name: 'All', categoryUrl: '' },
+      selectedCategory: {name: 'All', categoryUrl: ''},
       postSearchStr: '',
       pageLimit: 3,
       currentNavPage: 1,
@@ -152,16 +152,9 @@ export default {
       this.fetchPosts(0, this.pageLimit, newCategory.name);
       this.currentNavPage = 1;
     },
-    postSearchStr(newSearchStr) {
-      if (newSearchStr.length > 0) {
-        this.searchPosts(newSearchStr)
-      } else {
-        this.fetchPosts(this.pageInfo.pageNumber, this.pageLimit, this.selectedCategory.name)
-      }
-    },
     // when navigation page changes, select a new page
     currentNavPage(newPageNum) {
-      console.log('fetchPAGE:',newPageNum);
+      console.log('fetchPAGE:', newPageNum);
       this.fetchPosts(newPageNum - 1, this.pageLimit, this.selectedCategory.name)
     }
   },
@@ -170,14 +163,13 @@ export default {
   },
   methods: {
     fetchPosts(pageNum, pageLimit = 3, categoryName = 'All') {
-      this.$store.dispatch('fetchPosts', { pageNum, pageLimit, categoryName })
+      this.$store.dispatch('fetchPosts', {pageNum, pageLimit, categoryName})
     },
     // fetchPage() {
     //   console.log('fetchPAGE:', this.currentNavPage);
     //   this.fetchPosts(this.currentNavPage - 1, this.pageLimit, this.selectedCategory.name)
     // },
     searchPosts(searchStr, pageLimit = 3) {
-      // TODO possibly add to store
       axios.get(`/api/v1/posts/search/${searchStr}`, {
         params: {
           limit: pageLimit
@@ -193,7 +185,7 @@ export default {
           })
     },
     refreshPage() {
-      this.fetchPage(this.currentNavPage)
+      this.fetchPosts(this.currentNavPage - 1)
     },
     submitPost(postData) {
       this.$store.dispatch('createPost', {post: postData});

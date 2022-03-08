@@ -1,5 +1,4 @@
-// returns text validation messages for Form fields used throughout Blogen
-// Vuelidate is used as the validation library so all input parameters to each method expect a vuelidate object
+// A collection of functions that can be used to compute messages for use in vuelidate forms.
 
 export function emailValidText (email) {
   return !email.$error ? 'Good!' : ''

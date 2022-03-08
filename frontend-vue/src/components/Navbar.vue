@@ -21,7 +21,7 @@
             <router-link :to="{ name: 'users', params: { id: getAuthUser.id, userName: getAuthUser.userName, avatarImage: getAuthUser.avatarImage } }" class="nav-link" active-class="active" v-if="isAuthenticated">Your Posts</router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/categories" class="nav-link" active-class="active" v-if="isAuthenticated && isAdmin">Categories</router-link>
+            <router-link to="/categories" class="nav-link" active-class="active" v-if="isAuthenticated && isAdmin">Edit Categories</router-link>
           </li>
 
           <li v-if="isAuthenticated" class="nav-item dropdown">
@@ -93,7 +93,7 @@
 import { mapGetters } from 'vuex'
 import BlogenLogo from './common/BlogenLogo.vue'
 import Modal from "./common/Modal.vue";
-import BlogenAuthenticator from "./login/BlogenAuthenticator.vue";
+import BlogenAuthenticator from "./authentication/BlogenAuthenticator.vue";
 
 export default {
   name: 'Navbar',

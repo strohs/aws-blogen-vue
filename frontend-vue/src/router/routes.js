@@ -1,6 +1,6 @@
 import {createRouter, createWebHistory} from 'vue-router'
 import HomePage from '../components/home/HomePage.vue'
-import BlogenAuthenticator from '../components/login/BlogenAuthenticator.vue'
+import BlogenAuthenticator from '../components/authentication/BlogenAuthenticator.vue'
 import Signup from '../components/signup/Signup.vue'
 import UserProfile from '../components/profile/UserProfile.vue'
 import ListPosts from '../components/posts/ListPosts.vue'

@@ -1,7 +1,7 @@
 // Component for displaying application wide status/info/failure messages in an alert box
 <template>
 
-  <b-alert :variant="computeVariant" dismissible :show="show" @dismissed="$emit('dismissed')">
+  <b-alert :variant="computeVariant" dismissible @dismissed="$emit('dismissed')">
     {{ message }}
   </b-alert>
 
@@ -19,10 +19,6 @@ export default {
     code: {
       type: Number,
       required: true,
-    },
-    show: {
-      type: Boolean,
-      default: false,
     }
   },
   emits: ['dismissed'],

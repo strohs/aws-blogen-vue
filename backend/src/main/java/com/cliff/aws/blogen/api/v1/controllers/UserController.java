@@ -1,21 +1,15 @@
 package com.cliff.aws.blogen.api.v1.controllers;
 
 import com.cliff.aws.blogen.api.v1.model.PostListDTO;
-import com.cliff.aws.blogen.api.v1.model.UserDTO;
 import com.cliff.aws.blogen.api.v1.services.PostService;
-import com.cliff.aws.blogen.domain.BlogenCognitoUser;
 import com.cliff.aws.blogen.services.security.AuthenticationFacade;
-import com.cliff.aws.blogen.services.security.JwtAuthentication;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 /**
  * Controller for REST operations in {@link com.cliff.aws.blogen.domain.Blogen} users
@@ -31,12 +25,12 @@ public class UserController {
     public static final String BASE_URL = "/api/v1/users";
 
     private PostService postService;
-    private AuthenticationFacade af;
+    private AuthenticationFacade authFacade;
 
     @Autowired
-    public UserController( PostService postService, AuthenticationFacade af ) {
+    public UserController( PostService postService, AuthenticationFacade authFacade) {
         this.postService = postService;
-        this.af = af;
+        this.authFacade = authFacade;
     }
 
     // update user now done on clients with AWS.Amplify.Auth.updateUserAttributes()

@@ -2,14 +2,13 @@ package com.cliff.aws.blogen.api.v1.controllers;
 
 import com.cliff.aws.blogen.api.v1.model.PostListDTO;
 import com.cliff.aws.blogen.api.v1.services.PostService;
+import com.cliff.aws.blogen.api.v1.services.RegistrationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Controller for handling new-user sign-ups and user log-ins
@@ -26,9 +25,13 @@ public class AuthorizationController {
 
     private PostService postService;
 
+    private RegistrationService registrationService;
+
     @Autowired
-    public AuthorizationController( PostService postService ) {
+    public AuthorizationController( PostService postService,
+                                    RegistrationService registrationService ) {
         this.postService = postService;
+        this.registrationService = registrationService;
     }
 
 
@@ -39,5 +42,13 @@ public class AuthorizationController {
         return postService.getPosts( "ALL", 0, limit );
     }
 
+
+    @ApiOperation( value = "completes registration of a newly signed up user")
+    @GetMapping("/register/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void registerUser(@PathVariable("userId") String id) {
+        log.debug("register user {}", id);
+        registrationService.addUserToGroup(id, "User");
+    }
 
 }

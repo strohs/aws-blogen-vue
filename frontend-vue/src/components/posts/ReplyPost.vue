@@ -1,7 +1,7 @@
 // NewPost
 // This component encapsulates the logic for replying to a Blogen Post.
 // It provides a 'Reply to Post' button that, when clicked, will launch a modal containing
-// a form that can be used to enter a new post that will be a reply to another post.
+// a form that can be used to reply to another post.
 //
 // Props:
 // postId - the id of the post to reply to

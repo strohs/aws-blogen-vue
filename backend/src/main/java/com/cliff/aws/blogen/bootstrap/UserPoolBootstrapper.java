@@ -5,13 +5,13 @@ import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProvider;
 import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProviderClientBuilder;
 import com.amazonaws.services.cognitoidp.model.*;
 import com.cliff.aws.blogen.domain.Blogen;
+import com.cliff.aws.blogen.domain.BlogenGroup;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PreDestroy;
 import java.util.HashMap;
 
 /**
@@ -29,15 +29,7 @@ import java.util.HashMap;
 @Profile("dev")
 public class UserPoolBootstrapper {
 
-    // these are the roles (a.k.a  Cognito Groups) that can be assigned to Blogen users
-    enum BLOGEN_GROUP {
-        // the basic role for all Blogen users, this will give them access to the REST API
-        User,
-        // the admin role can edit and delete any posts, and create new categories
-        Admin
-    }
-
-    private String region;
+    private final String region;
 
     // this is the default password for all Cognito users created by this bootstrapper class
     private final String DEFAULT_USER_PASSWORD = "Password";
@@ -210,7 +202,7 @@ public class UserPoolBootstrapper {
         return res;
     }
 
-    private CreateGroupResult createGroup(String userPoolId, BLOGEN_GROUP group, int precedence) {
+    private CreateGroupResult createGroup(String userPoolId, BlogenGroup group, int precedence) {
         CreateGroupResult res = this.userPoolClient.createGroup(new CreateGroupRequest()
                 .withGroupName(group.toString())
                 .withUserPoolId(userPoolId)
@@ -225,7 +217,7 @@ public class UserPoolBootstrapper {
     private AdminAddUserToGroupResult addUserToGroup(
             String userPoolId,
             String userName,
-            BLOGEN_GROUP group) {
+            BlogenGroup group) {
         AdminAddUserToGroupResult res = this.userPoolClient.adminAddUserToGroup(
                 new AdminAddUserToGroupRequest()
                         .withGroupName(group.toString())
@@ -262,10 +254,10 @@ public class UserPoolBootstrapper {
         this.userPoolArn = userPoolRes.getUserPool().getArn();
 
         // create admin group
-        createGroup(this.userPoolId, BLOGEN_GROUP.Admin, 5);
+        createGroup(this.userPoolId, BlogenGroup.Admin, 5);
 
         // create user group
-        createGroup(this.userPoolId, BLOGEN_GROUP.User, 10);
+        createGroup(this.userPoolId, BlogenGroup.User, 10);
 
         // create user pool application client
         CreateUserPoolClientResult appClientRes = createUserPoolApplicationClient(this.userPoolId, APP_CLIENT_NAME);
@@ -274,26 +266,26 @@ public class UserPoolBootstrapper {
         // create an admin user
         AdminCreateUserResult adminRes = createUser(this.userPoolId, "admin@example.com", "FirstAdmin", "LastAdmin", "admin", "avatar7.jpg");
         // assign admin to admin group
-        addUserToGroup(userPoolRes.getUserPool().getId(), adminRes.getUser().getUsername(), BLOGEN_GROUP.Admin);
-        addUserToGroup(userPoolRes.getUserPool().getId(), adminRes.getUser().getUsername(), BLOGEN_GROUP.User);
+        addUserToGroup(userPoolRes.getUserPool().getId(), adminRes.getUser().getUsername(), BlogenGroup.Admin);
+        addUserToGroup(userPoolRes.getUserPool().getId(), adminRes.getUser().getUsername(), BlogenGroup.User);
 
         // create regular (non-admin) users, add them to user group and store their usernames in a HashMap for use by DynamoDB
 
         // create user "mcgill"
         AdminCreateUserResult userRes = createUser(this.userPoolId, "mcgill@example.com", "Maggie", "McGill", "mcgill", "avatar1.jpg");
-        addUserToGroup(userPoolRes.getUserPool().getId(), userRes.getUser().getUsername(), BLOGEN_GROUP.User);
+        addUserToGroup(userPoolRes.getUserPool().getId(), userRes.getUser().getUsername(), BlogenGroup.User);
 
         // create user "scotsman"
         userRes = createUser(this.userPoolId, "scotsman@example.com", "William", "Wallace", "scotsman", "avatar2.jpg");
-        addUserToGroup(userPoolRes.getUserPool().getId(), userRes.getUser().getUsername(), BLOGEN_GROUP.User);
+        addUserToGroup(userPoolRes.getUserPool().getId(), userRes.getUser().getUsername(), BlogenGroup.User);
 
         //create user "johndoe"
         userRes = createUser(this.userPoolId, "johndoe@example.com", "John", "Doe", "johndoe", "avatar3.jpg");
-        addUserToGroup(userPoolRes.getUserPool().getId(), userRes.getUser().getUsername(), BLOGEN_GROUP.User);
+        addUserToGroup(userPoolRes.getUserPool().getId(), userRes.getUser().getUsername(), BlogenGroup.User);
 
         //create user "lizreed"
         userRes = createUser(this.userPoolId, "lizreed@example.com", "Elizabeth", "Reed", "lizreed", "avatar4.jpg");
-        addUserToGroup(userPoolRes.getUserPool().getId(), userRes.getUser().getUsername(), BLOGEN_GROUP.User);
+        addUserToGroup(userPoolRes.getUserPool().getId(), userRes.getUser().getUsername(), BlogenGroup.User);
 
     }
 

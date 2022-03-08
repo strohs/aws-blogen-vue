@@ -20,8 +20,6 @@ import static com.cliff.aws.lambda.utils.StreamUtils.stringToOutputStream;
 
 /**
  * Adds a newly confirmed user, to the 'User' group of the Blogen User Pool
- *
- * @author Cliff
  */
 public class AddNewUserToUserGroup implements RequestStreamHandler {
 
