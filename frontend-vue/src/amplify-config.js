@@ -1,6 +1,6 @@
 // configures the AWS amplify library to use these configurations when accessing
 // a Cognito user pool and identity pool
-import Amplify, { Auth } from 'aws-amplify';
+import Amplify from "aws-amplify";
 
 Amplify.configure({
   Auth: {
@@ -35,9 +35,9 @@ Amplify.configure({
     // storage: new MyStorage(),
 
     // OPTIONAL - Manually set the authentication flow type. Default is 'USER_SRP_AUTH'
-    authenticationFlowType: 'USER_SRP_AUTH'
-  }
+    authenticationFlowType: "USER_SRP_AUTH",
+  },
 });
 
 // You can get the current config object
-const currentConfig = Auth.configure();
+// const currentConfig = Auth.configure();

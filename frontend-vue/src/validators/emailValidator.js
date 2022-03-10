@@ -1,31 +1,32 @@
 // functions to validate email
-export default validate
+export default validate;
 
-function validate (value) {
+function validate(value) {
   return {
     state: state(value),
     invalidFeedback: invalidFeedback(value),
-    validFeedback: validFeedback(value)
-  }
+    validFeedback: validFeedback(value),
+  };
 }
 
-function state (value) {
-  return validateEmail(value)
+function state(value) {
+  return validateEmail(value);
 }
 
-function invalidFeedback (value) {
+function invalidFeedback(value) {
   if (validateEmail(value)) {
-    return ''
+    return "";
   } else {
-    return 'Please enter a valid email address'
+    return "Please enter a valid email address";
   }
 }
 
-function validFeedback () {
-  return 'Looks Good'
+function validFeedback() {
+  return "Looks Good";
 }
 
-function validateEmail (email) {
-  let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-  return re.test(String(email).toLowerCase())
+function validateEmail(email) {
+  let re =
+    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(String(email).toLowerCase());
 }

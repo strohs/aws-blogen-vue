@@ -1,51 +1,52 @@
-// EditCategory
-// A Component that provides an edit button that when clicked opens a modal containing a form that
-// can be used to edit a category name
-//
-// Props:
-// name - the initial category name that will be used to populate the form
-//
-// Emits:
-// submit({ name, oldName }) - the submit event contains an object consisting of a 'name' property and a
-//                             'oldName' property. name is the new category name, oldName is the old category name
+// EditCategory // A Component that provides an edit button that when clicked
+opens a modal containing a form that // can be used to edit a category name //
+// Props: // name - the initial category name that will be used to populate the
+form // // Emits: // submit({ name, oldName }) - the submit event contains an
+object consisting of a 'name' property and a // 'oldName' property. name is the
+new category name, oldName is the old category name
 <template>
   <div class="mx-1">
-
-    <b-button size="sm" variant="outline-success" @click="isModalVisible = !isModalVisible">
+    <b-button
+      size="sm"
+      variant="outline-success"
+      @click="isModalVisible = !isModalVisible"
+    >
       Edit
     </b-button>
 
     <Teleport to="body">
       <transition name="modal-fade">
         <app-modal
-            v-show="isModalVisible"
-            header-bg-color="bg-success"
-            @cancel="dismissModal"
+          v-show="isModalVisible"
+          header-bg-color="bg-success"
+          @cancel="dismissModal"
         >
           <template #header>
             <h4 class="modal-title">Edit Category</h4>
           </template>
 
           <template #body>
-            <app-category-form v-bind="category" @cancel="dismissModal" @submit="submit"></app-category-form>
+            <app-category-form
+              v-bind="category"
+              @cancel="dismissModal"
+              @submit="submit"
+            ></app-category-form>
           </template>
 
-          <template #footer><br/></template>
-
+          <template #footer><br /></template>
         </app-modal>
       </transition>
     </Teleport>
-
   </div>
-
 </template>
 
 <script>
-import CategoryForm from './CategoryForm.vue';
-import Modal from "../common/Modal.vue";
+import CategoryForm from "./CategoryForm.vue";
+import Modal from "../common/BaseModal.vue";
+import logger from "../../configs/logger";
 
 export default {
-  name: 'EditCategory',
+  name: "EditCategory",
   components: {
     appCategoryForm: CategoryForm,
     appModal: Modal,
@@ -53,35 +54,35 @@ export default {
   props: {
     name: {
       type: String,
-      default: '',
+      default: "",
     },
     categoryUrl: {
       type: String,
-      default: '',
-    }
+      default: "",
+    },
   },
-  emits: ['submit'],
-  data () {
+  emits: ["submit"],
+  data() {
     return {
       category: {
         name: this.name,
-        oldName: this.name
+        oldName: this.name,
       },
       isModalVisible: false,
-    }
+    };
   },
   methods: {
-    submit (data) {
+    submit(data) {
       // submit the form data to parent component
-      console.log('edit category submitting data:', data);
-      this.$emit('submit', data);
-      this.dismissModal()
+      logger.debug("edit category submitting data:", data);
+      this.$emit("submit", data);
+      this.dismissModal();
     },
-    dismissModal () {
+    dismissModal() {
       this.isModalVisible = false;
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style scoped>

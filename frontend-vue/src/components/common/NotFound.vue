@@ -10,10 +10,8 @@
 
 <script>
 export default {
-  name: "NotFound"
-}
+  name: "NotFound",
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

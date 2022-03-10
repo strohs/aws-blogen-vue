@@ -128,14 +128,16 @@ const userAuthenticationModule = {
           return err
         })
     },
+
     doLogout: ({ commit }) => {
-      commit('LOGOUT')
-      commit('RESET_USER')
+      commit('LOGOUT');
+      commit('RESET_USER');
       // global sign-out
       Auth.signOut({ global: true })
         .then(data => console.log('cognito sign out:', data))
         .catch(err => console.log('error during cognito sign out:', err))
     },
+
     updateUserAttributes: ({ commit, getters }, userAttrs) => {
       return Auth.currentAuthenticatedUser()
         .then(authUser => {

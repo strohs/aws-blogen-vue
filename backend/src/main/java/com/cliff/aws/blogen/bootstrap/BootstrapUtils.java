@@ -104,23 +104,29 @@ public class BootstrapUtils {
     }
 
     public static void waitForDynamoDBTable(AmazonDynamoDB dynamoDB, String tableName, TableStatus tableStatus) {
-        do {
-            try {
+        String status = "";
+        try {
+            do {
                 log.info( "waiting 5 seconds for table......" );
                 Thread.sleep(5 * 1000L);
-            } catch (InterruptedException e) {
-                throw new RuntimeException("Couldn't wait detect table " + tableName);
-            }
-        } while (!dynamoDB.describeTable(tableName).getTable().getTableStatus()
-                .equals( tableStatus.name() ));
-        log.info( "Done... table {} is now {}", tableName, tableStatus.name() );
+                // see if table still exists by calling describe
+                status = dynamoDB.describeTable(tableName).getTable().getTableStatus();
+            } while (!status.equals( tableStatus.name()));
+            log.info( "Done... table {} is now {}", tableName, tableStatus.name() );
+        } catch (InterruptedException e) {
+            throw new RuntimeException("Couldn't wait detect table " + tableName);
+        } catch (ResourceNotFoundException e) {
+            log.debug("table not found {}, probably already deleted", tableName);
+        }
+
     }
 
     public static void deleteTable( AmazonDynamoDB dynamoDB, String tableName, boolean waitForTable ) {
         // delete the table if it exists
         dynamoDB.deleteTable( tableName );
-        if (waitForTable)
+        if (waitForTable) {
             waitForDynamoDBTable( dynamoDB, tableName, TableStatus.DELETING );
+        }
     }
 
     public static boolean tableExists( AmazonDynamoDB dynamoDB, String tableName ) {

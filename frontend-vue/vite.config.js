@@ -1,5 +1,5 @@
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
+import { defineConfig } from "vite";
+import vue from "@vitejs/plugin-vue";
 
 // https://vitejs.dev/config/
 // the resolve property (below) is required by amplifyUI
@@ -8,9 +8,9 @@ export default defineConfig({
   resolve: {
     alias: [
       {
-        find: './runtimeConfig',
-        replacement: './runtimeConfig.browser',
+        find: "./runtimeConfig",
+        replacement: "./runtimeConfig.browser",
       },
-    ]
-  }
-})
+    ],
+  },
+});

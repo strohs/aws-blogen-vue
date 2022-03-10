@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from "axios";
 
 /**
  * example of creating a custom axios instance that we can configure and then import into our modules where needed
@@ -11,13 +11,13 @@ import axios from 'axios'
 
 const instance = axios.create({
   baseURL: import.meta.env.VITE_API_SERVER_URL,
-  responseType: 'json'
+  responseType: "json",
   // headers: {
   // during development, these headers are now configured in the webpack dev server, proxy table config (in config/routes.js)
   //   'Access-Control-Allow-Origin': 'http://localhost:SOMEPORTHERE'
   // }
-})
+});
 
 // alter defaults after instance creation instance.defaults.headers.common['SOMETHING'] = 'something';
 
-export default instance
+export default instance;

@@ -9,7 +9,7 @@
     </header>
 
     <!-- HOME ICON SECTION -->
-    <section id="homeIcons" class="row py-2 bg-gray-200 justify-content-around">
+    <section id="homeIcons" class="row py-4 bg-gray-200 justify-content-around">
       <div class="col-md-3 text-center">
         <font-awesome-icon class="mb-2" icon="pencil-alt"></font-awesome-icon>
         <h3>Blogging:</h3>
@@ -35,63 +35,77 @@
       </div>
     </div>
 
-
-
     <!-- Mission Statement SECTION HEADER-->
     <section id="about-header" class="row justify-content-center">
       <div class="col text-center p-2">
         <h1>Our Mission</h1>
-        <p>We are a group of technology professionals that believe in connecting the world through the
-          power of words and images.
+        <p>
+          We are a group of technology professionals that believe in connecting
+          the world through the power of words and images.
         </p>
-        <br>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Odit, perspiciatis?</p>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quasi, saepe!</p>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Commodi, fuga!</p>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci, nihil.</p>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi, molestiae.</p>
-
+        <br />
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Odit,
+          perspiciatis?
+        </p>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quasi,
+          saepe!
+        </p>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Commodi,
+          fuga!
+        </p>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci,
+          nihil.
+        </p>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi,
+          molestiae.
+        </p>
 
         <b-button
-class="my-4" :to="{ name: 'clogin', params: { initialState: 'signUp'} }"
-                  type="button"
-                  variant="primary">
+          class="my-4"
+          :to="{ name: 'clogin', params: { initialState: 'signUp' } }"
+          type="button"
+          variant="primary"
+        >
           Sign-Up
         </b-button>
-
       </div>
     </section>
 
-    <blogen-footer class="d-flex py-2 justify-content-center align-items-center">
+    <blogen-footer
+      class="d-flex py-2 justify-content-center align-items-center"
+    >
     </blogen-footer>
-
   </div>
 </template>
 
 <script>
-import PostCarousel from './PostCarousel.vue';
+import PostCarousel from "./PostCarousel.vue";
 import BlogenFooter from "../BlogenFooter.vue";
 
 export default {
-  name: 'HomePage',
+  name: "HomePage",
   components: {
     PostCarousel,
-    BlogenFooter
+    BlogenFooter,
   },
   data() {
     return {
-      msg: ''
-    }
-  }
-}
+      msg: "",
+    };
+  },
+};
 </script>
 
 <style scoped>
 /*@import "src/scss/blogen-styles.scss";*/
 
-
 #about-header {
-  background: url('/images/image1.jpg');
+  background: url("/images/image1.jpg");
   background-position: center;
   background-attachment: fixed;
   background-size: cover;

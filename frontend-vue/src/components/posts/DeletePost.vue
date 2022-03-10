@@ -1,78 +1,74 @@
-// DeletePost
-// This component consists of a "delete" button that will launch a modal to confirm the deletion.
-// If confirmed, the vuex store will be called to actually perform the deletion
-//
-// Props:
-// postId - the post id to be deleted
+// DeletePost // This component consists of a "delete" button that will launch a
+modal to confirm the deletion. // If confirmed, the vuex store will be called to
+actually perform the deletion // // Props: // postId - the post id to be deleted
 <template>
   <div>
-
-    <b-button size="sm" variant="outline-danger" @click="isModalVisible = !isModalVisible">
+    <b-button
+      size="sm"
+      variant="outline-danger"
+      @click="isModalVisible = !isModalVisible"
+    >
       Delete
     </b-button>
 
     <Teleport to="body">
       <transition name="modal-fade">
         <app-modal
-            v-show="isModalVisible"
-            header-bg-color="bg-danger"
-            header-text-color="text-white"
-            @cancel="dismissModal"
-            @confirm="deletePost"
+          v-show="isModalVisible"
+          header-bg-color="bg-danger"
+          header-text-color="text-white"
+          @cancel="dismissModal"
+          @confirm="deletePost"
         >
           <template #header>
             <h4 class="modal-title">Delete Post</h4>
           </template>
 
-          <template #body>
-            Are You Sure?
-          </template>
-
+          <template #body> Are You Sure? </template>
         </app-modal>
       </transition>
     </Teleport>
-
   </div>
-
 </template>
 
 <script>
-import constants from '../../common/constants.js';
-import Modal from "../common/Modal.vue";
+import constants from "../../common/constants.js";
+import Modal from "../common/BaseModal.vue";
+import logger from "../../configs/logger";
 
 export default {
-  name: 'DeletePost',
+  name: "DeletePost",
   components: {
-    appModal: Modal
+    appModal: Modal,
   },
   props: {
     // the post id to delete
     postId: {
       type: String,
       required: true,
-    }
+    },
   },
-  data () {
+  data() {
     return {
       post: {
-        title: '',
-        text: '',
+        title: "",
+        text: "",
         imageUrl: constants.API_SERVER_URL + constants.DEFAULT_IMAGE_PATH,
-        categoryName: ''
+        categoryName: "",
       },
       isModalVisible: false,
-    }
+    };
   },
   methods: {
-    deletePost () {
-      console.log(`delete post with id:${this.postId}`);
-      this.$store.dispatch('deletePost', this.postId);
+    deletePost() {
+      logger.debug(`delete post with id:${this.postId}`);
+      this.$store.dispatch("deletePost", this.postId);
     },
-    dismissModal () {
+    dismissModal() {
       this.isModalVisible = false;
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style scoped>

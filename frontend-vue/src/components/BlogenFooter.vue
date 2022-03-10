@@ -6,10 +6,8 @@
 
 <script>
 export default {
-  name: 'BlogenFooter'
-}
+  name: "BlogenFooter",
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
