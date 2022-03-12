@@ -73,7 +73,7 @@ Spring Boot 2 is used as the application server. It performs four roles:
 - serves the (secured) Blogen REST API requests
 - makes API calls to DynamoDB to retrieve data
 - validates JSON Web Tokens (JWT) passed to the REST API
-  -Blogen uses the *ID-Tokens* issued by Cognito for REST API Access
+  - Blogen re-uses the *ID-Tokens* issued by Cognito for REST API Access
 
 ### Elastic Beanstalk (EB)
 EB is used to run the Spring Boot application servers in EC2. Currently Blogen uses the default Java 8 environment 
@@ -131,9 +131,9 @@ The structure of the primary key for each item type is as follows:
 * Java installed on your machine, at least java 8, newer version of java were not tested 
 * You must have a pre-existing AWS account and have the AWS command line interface (CLI) installed and configured. You
 should also be familiar with using the AWS console.
-* If you plan to do any development on the frontend, you must have node.js and npm installed, at least version 8.11 of 
+* If you plan to do any development on the frontend, you must have node.js and npm installed, at least version 14 of 
 node is recommended. The [/frontend/pom.xml](./frontend/pom.xml) is configured to download and temporarily install 
-node 8.11.3 so that users that don't have node installed can compile and run the frontend code when using maven
+node 14.17.5 so that users that don't have node installed can compile and run the frontend code when using maven
 * If you don't have maven installed locally on your machine, replace the `mvn` commands below with `mvnw` (for *nix systems) 
 or `mvnw.cmd` (on windows systems)
 * Be aware that AWS resources will be created that will incur charges. Specifically the Elastic Beanstalk template 
@@ -166,13 +166,12 @@ used in this project will create two t2.micro instances running behind a load ba
             ability to lookup users in the Blogen user pool. 
     2. **NOTE**: there are currently a couple of known bugs between CloudFormation and Cognito that will require you to 
     perform the following steps manually in the Cognito Web console:
-        1. You must manually add the Admin user to the "Admin" and "User" groups.
-        2. You must manually re-add the lambda function created by this template to the user pool's *Post Confirmation
+       1. You must manually re-add the lambda function created by this template to the user pool's *Post Confirmation
         Trigger*. The function will appear in the web console, and it seems properly configured, but it is not. You
         must manually reselect it and then click the *Save Changes* button
 
 4. Build and deploy the Blogen Application Server(s)
-    1. configure `frontend/.env` with the ID's of your Cognito User Pool, Identity Pool, App Client ID
+    1. configure `frontend-vue/.env` with the ID's of your Cognito User Pool, Identity Pool, App Client ID
         * you can find these IDs in the Cognito Web Console or in the CloudFormation web console when looking at the cognito 
         stack outputs
     2. likewise configure `backend/src/main/resources/application.properties` with the ID's of your User Pool, Identity

@@ -8,10 +8,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 /**
  * This configuration will enable cross origin requests Globally. This is typically needed by
  * javascript single page applications that run on their own (separate) development servers
- * Author: Cliff
+ *
  */
 @Configuration
-@Profile( {"dev"} )
+//@Profile( {"dev"} )
 public class WebMvcConfig implements WebMvcConfigurer {
 
     private final long MAX_AGE_SECS = 3600;

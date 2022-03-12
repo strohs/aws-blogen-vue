@@ -10,7 +10,7 @@
     <packaging>pom</packaging>
 
     <name>aws-blogen</name>
-    <description>Blogen micro-blog project using Vue.js and Spring Boot and running in AWS</description>
+    <description>Blogen, an example micro-blog project using Vue.js and Spring Boot, running on AWS</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -26,7 +26,7 @@
     </properties>
 
     <modules>
-        <module>frontend</module>
+        <module>frontend-vue</module>
         <module>backend</module>
         <module>lambdas</module>
     </modules>

@@ -52,7 +52,7 @@ public class SpringSecConfig extends WebSecurityConfigurerAdapter implements Ord
         //this will allow swagger UI and h2-console through spring-security
         web.ignoring().antMatchers("/v2/api-docs", "/swagger-resources/configuration/ui", "/swagger-resources",
                 "/swagger-resources/configuration/security", "/swagger-ui.html", "/webjars/**", "/console/*",
-                "/actuator/**","/favicon.ico");
+                "/actuator/**","/assets/**","/favicon.ico");
     }
 
 
@@ -74,7 +74,8 @@ public class SpringSecConfig extends WebSecurityConfigurerAdapter implements Ord
                             "/cognito-signin*",
                             "/cognito-signout*")
                         .permitAll()
-                    .antMatchers("/api/v1/**").authenticated() //all other API paths need to be authenticated
+                    .antMatchers("/api/v1/**")
+                        .authenticated() //all other API paths need to be authenticated
                     .antMatchers(
                         "/**/*.png",
                         "/**/*.gif",

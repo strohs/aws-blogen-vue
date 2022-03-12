@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import axios from "../../../src/axios-auth";
+import axios from "../../../src/configs/axios-auth";
 import SignupForm from "./SignupForm.vue";
 import { handleAxiosError } from "../../../src/common/errorHandlers";
 

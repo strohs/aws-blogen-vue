@@ -11,7 +11,7 @@
 
 <script>
 import PostCard from "./PostCard.vue";
-import axios from "../../axios-auth";
+import axios from "../../configs/axios-auth";
 import { handleAxiosError } from "../../common/errorHandlers";
 import logger from "../../configs/logger";
 

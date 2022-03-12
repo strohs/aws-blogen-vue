@@ -1,5 +1,5 @@
 // functions to check if a UserName Exists
-import axios from "../axios-auth";
+import axios from "../configs/axios-auth";
 import logger from "../configs/logger";
 
 export default validate;

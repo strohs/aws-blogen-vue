@@ -10,37 +10,33 @@ alert box
   </b-alert>
 </template>
 
-<script>
-// TODO possibly make this an app wide component and move its state into VUEX
-export default {
-  name: "StatusAlert",
-  props: {
-    message: {
-      type: String,
-      default: "",
-    },
-    code: {
-      type: Number,
-      required: true,
-    },
+<script setup>
+import {computed} from "vue";
+
+const props = defineProps({
+  message: {
+    type: String,
+    default: "",
   },
-  emits: ["dismissed"],
-  data() {
-    return {};
-  },
-  computed: {
-    // computes the alert box variant based on the status code passed into the component
-    computeVariant() {
-      if (this.code >= 200 && this.code < 300) {
-        return "success";
-      } else if (this.code >= 400 && this.code <= 500) {
-        return "danger";
-      } else {
-        return "info";
-      }
-    },
-  },
-};
+  code: {
+    type: Number,
+    required: true,
+  }
+});
+
+const emit = defineEmits(['dismissed']);
+
+
+const computeVariant = computed(() => {
+  if (props.code >= 200 && props.code < 300) {
+    return "success";
+  } else if (props.code >= 400 && props.code <= 500) {
+    return "danger";
+  } else {
+    return "info";
+  }
+});
+
 </script>
 
 <style scoped></style>

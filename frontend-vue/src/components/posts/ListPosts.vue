@@ -119,7 +119,7 @@
 // It provides the ability to filter posts by category, to search post titles and test,
 // as well as functionality for perform CRUD operations on Posts
 //
-import axios from "../../axios-auth";
+import axios from "../../configs/axios-auth";
 import { mapState } from "vuex";
 import { handleAxiosError } from "../../common/errorHandlers";
 import CategoryFilterButton from "./CategoryFilterButton.vue";

@@ -1,4 +1,4 @@
-import axios from "../../axios-auth";
+import axios from "../../configs/axios-auth";
 import { handleAxiosError } from "../../common/errorHandlers.js";
 import constants from "../../common/constants.js";
 import logger from "../../configs/logger";

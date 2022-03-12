@@ -1,4 +1,4 @@
-import CognitoIdentityServiceProvider from "aws-sdk/clients/cognitoidentityserviceprovider";
+import { CognitoIdentityProvider } from "@aws-sdk/client-cognito-identity-provider";
 import { Auth } from "aws-amplify";
 import jwtDecode from "jwt-decode";
 import logger from "../configs/logger";
@@ -67,20 +67,38 @@ export function mapBlogenSignUpDataToCognito({
 }
 
 /**
+ * builds a CognitoIdentityProvider client using the current user's credentials as
+ * stored in the amplify Auth object. Therefore, when this function is called, the user
+ * must be logged in to AWS amplify in order for the client to be successfully created.
+ * @returns {Promise<CognitoIdentityProvider>}
+ */
+function buildClient() {
+  return Auth.currentCredentials()
+      .then(credentials => {
+        const cip = new CognitoIdentityProvider({
+          region: import.meta.env.VITE_AWS_REGION,
+          credentials: Auth.essentialCredentials(credentials),
+        });
+        return cip;
+      })
+      .catch(err => err);
+}
+
+/**
  * returns true if the preferred_username is NOT already taken by another user in the cognito user pool
  * @param prefUsername
  * @returns {Promise<boolean>}
  */
 export function prefUsernameIsUnique(prefUsername) {
   return listUsersByAttribute("preferred_username", prefUsername)
-    .then((user) => {
-      logger.debug("pref_username unique?:", user, user.Users.length === 0);
-      return user.Users.length === 0;
-    })
-    .catch((err) => {
-      logger.debug("error fetching preferred username from ListUsers", err);
-      return false;
-    });
+      .then((user) => {
+        logger.debug("pref_username unique?:", user, user.Users.length === 0);
+        return user.Users.length === 0;
+      })
+      .catch((err) => {
+        logger.debug("error fetching preferred username from ListUsers", err);
+        return false;
+      });
 }
 
 /**
@@ -90,14 +108,14 @@ export function prefUsernameIsUnique(prefUsername) {
  */
 export function emailIsUnique(email) {
   return listUsersByAttribute("email", email)
-    .then((userInfo) => {
-      logger.debug("email unique?", email, userInfo.Users.length === 0);
-      return userInfo.Users.length === 0;
-    })
-    .catch((err) => {
-      logger.debug("error fetching email from ListUsers", err);
-      return false;
-    });
+      .then((userInfo) => {
+        logger.debug("email unique?", email, userInfo.Users.length === 0);
+        return userInfo.Users.length === 0;
+      })
+      .catch((err) => {
+        logger.debug("error fetching email from ListUsers", err);
+        return false;
+      });
 }
 
 /**
@@ -117,31 +135,18 @@ export function emailIsUnique(email) {
  * }
  *
  */
-function listUsersByAttribute(attributeName, attributeValue) {
-  // will only work after user is authenticated
-  // configure the CognitoIdentitiyServiceProvider using Amplify Auth credentials
-  return Auth.currentCredentials().then((credentials) => {
-    // logger.debug('essential credentials', Auth.essentialCredentials(credentials))
-    const cisp = new CognitoIdentityServiceProvider({
-      apiVersion: "2016-04-18",
-      region: import.meta.env.VITE_AWS_REGION,
-      credentials: Auth.essentialCredentials(credentials),
-    });
-    const params = {
+async function listUsersByAttribute(attributeName, attributeValue) {
+  try {
+    const cognitoIdentityProvider = await buildClient();
+    const matchingUsers = await cognitoIdentityProvider.listUsers({
       UserPoolId: import.meta.env.VITE_AWS_USER_POOL_ID,
       AttributesToGet: [attributeName],
       Filter: `${attributeName} = "${attributeValue}"`,
       Limit: 1,
-    };
-    return new Promise((resolve, reject) => {
-      cisp.listUsers(params, function (err, data) {
-        if (err !== null) {
-          reject(err);
-        } else {
-          logger.debug("listUsers data is:", data);
-          resolve(data);
-        }
-      });
     });
-  });
+    logger.debug(`listUsers ${attributeName} = ${attributeValue} returned`, matchingUsers);
+    return matchingUsers;
+  } catch (err) {
+    throw err;
+  }
 }

@@ -26,9 +26,10 @@ import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue-3/dist/bootstrap-vue-3.css";
 import "./assets/styles/blogen-styles.scss";
 // trigger Amplify configurations
-import "./amplify-config";
+import "./configs/amplify-config";
 // trigger amplify hub
 import "./configs/amplify-hub";
+import logger from "./configs/logger";
 
 const app = createApp(App);
 
@@ -55,3 +56,5 @@ library.add(
 app.component("FontAwesomeIcon", FontAwesomeIcon);
 
 app.mount("#app");
+
+logger.info('user pool id:',import.meta.env.VITE_AWS_USER_POOL_ID);

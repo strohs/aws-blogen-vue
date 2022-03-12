@@ -8,6 +8,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="blogen-lambdas" />
+        <module name="blogen-frontend-vue" />
       </profile>
       <profile name="Annotation profile for aws-blogen" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -40,6 +41,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="blogen-appserver" options="-parameters -Amapstruct.defaultComponentModel=spring" />
       <module name="blogen-frontend" options="-parameters" />
+      <module name="blogen-frontend-vue" options="-parameters" />
       <module name="blogen-lambdas" options="-parameters" />
     </option>
   </component>

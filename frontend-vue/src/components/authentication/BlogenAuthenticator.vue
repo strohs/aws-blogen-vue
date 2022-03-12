@@ -1,5 +1,8 @@
 <template>
   <div class="container">
+
+    <status-alert v-show="statusCode >= 400" :code="statusCode" :message="statusMessage" @dismissed="statusCode = 0"></status-alert>
+
     <div class="row mt-4">
       <div class="col">
         <authenticator
@@ -43,7 +46,9 @@ import { Authenticator, useAuthenticator } from "@aws-amplify/ui-vue";
 import { Auth } from "aws-amplify";
 import "@aws-amplify/ui-vue/styles.css";
 import BlogenLogo from "../common/BlogenLogo.vue";
-import {watch, toRefs} from "vue";
+import StatusAlert from "../common/StatusAlert.vue";
+import {mapCodeToMessage} from "../../common/errorHandlers";
+import {watch, toRefs, computed, ref} from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 
@@ -57,6 +62,10 @@ const props = defineProps({
     type: String,
     default: "signIn",
   },
+  code: {
+    type: String,
+    default: '0',
+  }
 });
 
 // override Amplify's default signUp call to use our custom one that sets the users default avatar image
@@ -105,6 +114,10 @@ watch(route, async (newRoute, oldRoute) => {
     await router.push({ name: "posts" });
   }
 });
+
+const statusCode = ref(parseInt(props.code));
+// compute the error message to display in the status alert box (if any)
+const statusMessage = computed(() => mapCodeToMessage(statusCode.value));
 
 // sign out user from Cognito and this website
 async function doSignOut() {

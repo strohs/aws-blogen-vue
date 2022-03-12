@@ -2,7 +2,7 @@ AWSTemplateFormatVersion: "2010-09-09"
 Description: >
   This is the root parent stack for creating the Blogen application. This stack will create all the resources
   needed by Blogen, including: Cognito User Pool (and Groups), Cognito Identity Pool,
-  a Lambda function that adds newly registered users to the User Group, and finally an two EC2 t1.micro instances
+  a Lambda function that adds newly registered users to the User Group, and lastly, two EC2 t1.micro instances
   running on ElasticBeanstalk behind an application load balancer
 
 Parameters:

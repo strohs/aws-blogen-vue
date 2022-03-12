@@ -114,13 +114,22 @@ Resources:
       UserPoolId: !Ref UserPool
 
   # assign the Admin user to the Admin group, NOTE: not currently working, possible bug with Cognito and CloudFormation
-#  BlogenAdminUserToAdminGroup:
-#    Type: AWS::Cognito::UserPoolUserToGroupAttachment
-#    DependsOn: BlogenAdmin
-#    Properties:
-#      GroupName: 'Admin'
-#      Username: !Ref BlogenAdmin
-#      UserPoolId: !Ref UserPool
+  BlogenAdminUserToAdminGroup:
+    Type: AWS::Cognito::UserPoolUserToGroupAttachment
+    DependsOn: BlogenAdmin
+    Properties:
+      GroupName: 'Admin'
+      Username: !Ref BlogenAdmin
+      UserPoolId: !Ref UserPool
+
+  # assign the Admin user to the User group
+  BlogenAdminUserToUserGroup:
+    Type: AWS::Cognito::UserPoolUserToGroupAttachment
+    DependsOn: BlogenAdmin
+    Properties:
+      GroupName: 'User'
+      Username: !Ref BlogenAdmin
+      UserPoolId: !Ref UserPool
 
 Outputs:
   UserPoolId:

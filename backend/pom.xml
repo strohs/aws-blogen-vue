@@ -200,12 +200,12 @@
                             <overwrite>true</overwrite>
                             <resources>
                                 <resource>
-                                    <!-- ${project.parent.basedir} no longer works in this version of maven
-                                     have to set path manually -->
-                                    <directory>${project.basedir}/../frontend/target/dist</directory>
+                                    <!-- vite puts its generated assets in the 'dist' directory -->
+                                    <directory>${project.basedir}/../frontend-vue/dist</directory>
                                     <includes>
-                                        <include>avatars/</include>
+                                        <include>assets/</include>
                                         <include>images/</include>
+                                        <include>avatars/</include>
                                         <include>css/</include>
                                         <include>js/</include>
                                         <include>favicon.ico</include>

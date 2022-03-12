@@ -6,8 +6,7 @@
  * cognito token is also used to make REST API calls to the Blogen API
  */
 
-import axios from "../../axios-auth.js";
-// import CognitoIdentityServiceProvider from 'aws-sdk/clients/cognitoidentityserviceprovider';
+import axios from "../../configs/axios-auth.js";
 import { Auth } from "aws-amplify";
 import {
   mapBlogenAttrsToCognitoAttrs,
@@ -197,6 +196,13 @@ const userAuthenticationModule = {
         });
     },
 
+    /**
+     * uses the aws sdk to change a users password
+     * @param context
+     * @param curPassword - users current password
+     * @param newPassword - users new password
+     * @returns {Promise<"SUCCESS">}
+     */
     changeUserPassword: (context, { curPassword, newPassword }) => {
       logger.debug("change password:", curPassword, newPassword);
       return Auth.currentAuthenticatedUser()
@@ -207,7 +213,11 @@ const userAuthenticationModule = {
           // todo check the result strings Cognito returns:
           //   'SUCCESS' if update succeeded
           logger.debug("change password result:", res);
-          return res;
+          if (res.toUpperCase() === "SUCCESS") {
+            return res;
+          } else {
+            throw new Error(res);
+          }
         })
         .catch((err) => {
           logger.error("error from changeUserPassword", err);
