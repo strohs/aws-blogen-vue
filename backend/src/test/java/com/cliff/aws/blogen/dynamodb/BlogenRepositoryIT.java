@@ -24,7 +24,7 @@ import static org.hamcrest.Matchers.*;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@ActiveProfiles( {"dynamodb-local","dev"})
+@ActiveProfiles( {"dynamodb-local"})
 @Ignore
 public class BlogenRepositoryIT {
 

@@ -8,7 +8,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@ActiveProfiles( {"dynamodb-local","dev"})
+@ActiveProfiles({"dynamodb-local"})
 public class ApplicationTests {
 
     @Test
