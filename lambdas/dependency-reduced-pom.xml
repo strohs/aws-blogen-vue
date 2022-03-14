@@ -91,7 +91,7 @@
   </dependencies>
   <properties>
     <java.version>1.8</java.version>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <aws.sdk.version>1.11.416</aws.sdk.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 </project>
