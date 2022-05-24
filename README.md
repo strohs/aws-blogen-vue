@@ -1,96 +1,178 @@
-AWS-Blogen-Vue.js
+AWS-Blogen-Vue
 ======================================================================================================
-This is an Amazon Web Services (AWS) version of my [Blogen](https://github.com/strohs/springboot-blogen) demo website. 
-Blogen is a very simple, micro-blogging site / message board, that lets users post short text "blurbs" along 
-  with a (optional) link to an image. The site provides user sign-up/sign-in via AWS Cognito integration. Users can 
-  create new threads of discussion and perform CRUD ops on their threads.  They can also update their user profile 
-  information after its been created.  
- 
-This version of Blogen uses Vue.js with Bootstrap 4 on the frontend, while the backend has been changed to use (mostly)
-AWS. Specifically, AWS Cognito is used for user management, DynamoDB is used to store user messages, AWS
-Lambda is used to perform some post user registration steps. 
-Spring Boot 2 is still used, but it mainly serves as the controller for the Blogen REST API. 
-The Spring Boot servers are run on Elastic Beanstalk.
+
+AWS-Blogen-Vue is another iteration of my fictitious website called "Blogen". Blogen is described
+in more detail ["here"](https://github.com/strohs/springboot-blogen). In short, Blogen is a simple message board
+that allows users to start threaded discussions on different topics. It's a fullstack web application that I use to
+learn different technologies.
+
+This version of Blogen uses Vue.js for the frontend web pages, Spring Boot for the REST Api,  
+and incorporates AWS Cognito (for user management) along with AWS DynamoDB (to store user messages).
+
+
+More specifically, it uses the following technologies:
+- On the frontend
+    - Vue.js (Vue3)
+    - Bootstrap 5
+    - Vuelidate (for form validations)
+    - Vite (as the bundler)
+    - Axios (to make calls to the Blogen REST Api)
+    - AWS Javascript SDK
+    - [AWS Amplify](https://docs.amplify.aws/) (to interact with AWS Cognito)
+    - [AWS Amplify UI](https://ui.docs.amplify.aws/?platform=vue) (for custom Vue components that enable user sign-in, sign-up)
+- On the backend
+  - AWS
+    - Cognito (for user management, authentication and authorization)
+    - DynamoDB (to store the messages created by users)
+
+  - Spring Boot
+    - serves a custom REST API and integrates with DynamoDB
+    - Spring Security (to authenticate access to the REST Api using JSON Web Tokens issued by Cognito)
+    - [Spring Data DynamoDB](https://derjust.github.io/spring-data-dynamodb/) (to use Spring Data with DynamoDB)
+    - AWS Java SDK (to access DynamoDB)
+
+
+<img src="./images/blogen-front-page.png" alt="blogen" title="blogen front page" width="320"/>
+<br/>
+
+
+<img src="./images/blogen-main.png" alt="blogen" title="blogen main page" width="320"/>
+<br/>
+
+<img src="./images/blogen-new-post.png" alt="blogen" title="blogen new post" width="320"/>
+
+
+    
+## Building and Running
+
+### Prerequisites
+You should be familiar with and have the following technologies installed on your machine:
+- Node.js (at least version 14) and npm
+- Java at least version 8 up to 11 (version 11 was used during development)
+- Spring Boot
+- Apache Maven (at least version 3)
+
+
+- Familiarity with AWS: web console, IAM
+- AWS cli. You must have the aws cli installed and [configured](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html)
+locally on your machine with an access key and secret access key.
+During development, I used a IAM user with the "AdministratorAccess" policy, which grants full access to AWS resources and services.
+These access keys are needed by Spring Boot in order to bootstrap a Cognito User Pool, Identity Pool and five dummy users.
+There shouldn't be any charges incurred if you are a new Cognito user as this amount of users is well below their free-tier limit. 
+Nonetheless, Cognito pricing is described [here](https://aws.amazon.com/cognito/pricing/).
+DynamoDB will also be bootstrapped with dummy data, but when running the project using the `dynmodb-local` profile, the local server version of
+DynamoDB is used rather than the cloud version. See the [Building](#building) section below for info on the different Spring Boot profiles 
+
+
+### Building
+1. build the project
+    - from a terminal, make sure your in the project base directory, `aws-blogen-vue`, and run:
+    > mvn clean install
+
+2. start the spring boot embedded server using the `dev` AND `dynamodb-local` profiles:
+    > mvn spring-boot:run -Dspring-boot.run.profiles=dev,dynamodb-local -pl backend
+
+This will start the spring boot on port 8080. The `dev` and `dynamodb-local` profiles will perform the following actions:
+    - The `dev` profile will bootstrap a Congito User Pool, Identity Pool, and an application client. As well as create 5 sample users within the user pool.
+    - The `dev` profile will also create the "Blogen" table and bootstrap it with some sample messages for each user.
+    - The `dynamodb-local` profile will start a locally running instance of dynamodb. NOTE: If you omit this profile, then the `dev` profile will create 
+    the table within the REAL (i.e. cloud) version of DynamoDB (assuming your AWS user has permission to use DynamoDB)
+    - The code that performs the bootstrapping is located [here](./backend/src/main/java/com/cliff/aws/blogen/bootstrap)
+
+3. Check the spring boot console to verify that the cognito resources where configured correctly. Search for lines that begin with the string 
+"COGNITO". You will need to find the following four ID's:
+```
+COGNITO REGION us-east-1
+COGNITO USER POOL ID: us-east-1_SOME_USER_POOL_ID
+COGNITO IDENTITY POOL ID: us-east-1:SOME_IDENTITIY_POOL_ID
+COGNITO APPLICATION CLIENT ID: SOME_APP_CLIENT_ID
+```
+If these IDs are missing, or `null`, then the bootstrap process failed. Either your aws credentials are missing or they do not have the correct
+permissions to create the required resources.
+
+4. Configure the frontend to use the cognito resources
+    - copy the four Cognito IDs into the frontend's [.env.local file](./frontend-vue/.env.local), you must set these properties:
+      ```
+      VITE_AWS_REGION=us-east-1
+      VITE_AWS_USER_POOL_ID=user_pool_id_here
+      VITE_AWS_IDENTITY_POOL_ID=identity_pool_id_here
+      VITE_AWS_USER_POOL_WEB_CLIENT_ID=application_client_id_here
+      ```
+
+5. in a separate terminal, cd into the `frontend-vue` directory and start the frontend dev server (it will run on port 3000 by default)
+    > npm run dev
+
+6. Open your web-browser to:  `http://localhost:3000`
+7. login using one of the bootstrapped users. Try either `admin@example.com` or `lizreed@example.com` with a password of "Password".
+8. try creating new posts or navigating the site using the top nav bar.
+9. When you are finished, stop the spring boot server, using CTRL-C. This will cleanup all Bootstrapped resources that where created.
+
+
+
+
 
 
 ## Blogen Project Directory Structure
-This is a Maven "multi-module" project, inspired by this blog post 
-[here](https://blog.codecentric.de/en/2018/04/spring-boot-vuejs/)  
-
-The project structure is as follows:
-* **backend** module - contains the Spring Boot backend code. Spring Boot is used to run the Blogen REST API 
-that performs the CRUD operations on the Blogen table in DynamoDB. Spring Boot is also used to validate Cognito 
-ID Tokens that must be sent with each request to the REST API. Aditionally, Spring Boot is also used as a web server, 
-it serves the initial Vue.js index page and associated javascript files
-* **frontend** module - contains all the Vue.js code for the Blogen frontend
-* **lambdas** module - contains AWS lambda function code used by Blogen.
-* **aws** directory - this directory contains the CloudFormation templates for deploying Blogen onto AWS as well as some
-script files for bootstrapping data into dynamoDB (located at `/aws/dynamodb`)
-* **native-libs** - this folder contains the sql-lite libraries required by dynamodb-local. These are only used
-during development/testing
-* **.mvn** - contains maven wrapper .jar used by `mvnw` (Linux/MacOS) and `mvnw.cmd` (Windows). Maven wrapper is a
+- **backend** directory - contains the Spring Boot backend code. Spring Boot is used to serve the Blogen REST API 
+that performs the CRUD operations on the Blogen table within DynamoDB. 
+Spring Security has been configured to validate the JWT Tokens issued by cognito. These tokens are sent with each request 
+to the REST API.
+- **frontend-vue** directory - contains all the Vue.js code for the Blogen frontend
+- **lambdas** directory - contains and example AWS lambda function that performs a "Post Confirmation Trigger". This would be used
+in a production environement to perform user maintenance on each new user that signs-up with Blogen. This lambda is
+not used when running the project locally, in "dev" mode.
+- **aws** directory - this directory contains example CloudFormation templates that could be used to create the Cognito and DynamoDB
+resources required by Blogen.
+- **native-libs** - this folder contains the sql-lite (.dlls and .so) required by dynamodb-local. If this directory is missing, dynamodb-local
+will not start.
+- **.mvn** - contains the maven wrapper .jar used by `mvnw` (Linux/MacOS) and `mvnw.cmd` (Windows) commands. Maven wrapper is a
 local version of Apache Maven for users that don't have maven installed on their machines. 
 
 
-## Blogen Technology Stack Overview
+## AWS-Blogen-Vue High Level Architecture
 
-### Vue.JS and Bootstrap4
-The Blogen frontend was written using Vue.js and styled with Bootstrap 4 
-(via the [BootstrapVue](https://bootstrap-vue.js.org/)) project. API call to Cognito are done using the
-[AWS Amplify API](https://aws-amplify.github.io/) and some occasional calls to 
-[AWS SDK for JavaScript](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/index.html).
-REST API calls are made (using axios) to the Blogen backend server (Spring Boot) to retrieve user threads and posts.
+### Vue.JS and Bootstrap5
+Blogen's view layer uses Vue.js and is styled with Bootstrap 5. 
+It uses the [AWS Amplify API](https://aws-amplify.github.io/) to interact with AWS Cognito.
+The [Axios](https://axios-http.com/) library is used to retrieve user threads and posts from the Blogen REST API.
   
 ### AWS Cognito
-Amazon Cognito lets you add user sign-up, sign-in, and access control to your web and/or mobile apps. Blogen is using
-cognito for user authentication/authorization and to store user details in a Cognito User Pool 
+Amazon Cognito provides user sign-up, sign-in, and access control. It provides "user pools" to store user information and
+"identity pools" to grant users access to some AWS resources.
 
 #### Blogen Cognito User Pool
-* A Cognito *User Pool* is used to store user registration details. The pool has been configured to allow users
+- A Cognito *User Pool* is used to store user registration details. The pool has been configured to allow users
 to sign into Blogen using their email address.
-* The user pool also stores the following user attributes:
+- The user pool also stores the following user attributes:
     * first-name
     * last-name
     * password
-    * preferred-username 
+    * preferred-username (e.g. the user's handle)
     * *avatar image name* - a custom attribute that stores the avatar image filename that a user has chosen for themselves
 
 #### Blogen Cognito Identity Pool
-* A Cognito identity pool is used to federate authenticated and unauthenticated users with AWS and give them 
+A Cognito identity pool is used to federate authenticated and unauthenticated users with AWS and give them 
 temporary access to AWS resources. An identity pool is being used because Blogen users need access to some Cognito 
-API Calls, specifically the *ListUsers* API so that users can query the user pool in order to find out which preferred-usernames 
+API Calls, specifically the *ListUsers* API so that the web application can query the user pool in order to find out which preferred-usernames 
 and email addresses have been taken.
-
-### AWS Lambda
-Blogen currently uses AWS Lambda to assign newly registered Blogen users to the "User"group within Cognito. 
-The lambda is written using the AWS Java SDK and is triggered by a Cognito *Post Registration Trigger*.
-This trigger runs when a user signs-up for Blogen and then completes their registration by entering the sign-up 
-confirmation code that gets emailed to them.
 
 ### Spring Boot
 Spring Boot 2 is used as the application server. It performs four roles:
-- serves the web resources for the front-end (html,javascript,css,images)
-- serves the (secured) Blogen REST API requests
+- serves the Blogen REST API
 - makes API calls to DynamoDB to retrieve data
 - validates JSON Web Tokens (JWT) passed to the REST API
-  - Blogen re-uses the *ID-Tokens* issued by Cognito for REST API Access
-
-### Elastic Beanstalk (EB)
-EB is used to run the Spring Boot application servers in EC2. Currently Blogen uses the default Java 8 environment 
-provided by EB so that the embedded Spring Boot tomcat server can be used without having to configure a separate 
-tomcat server in EB. The EB environment itself is configured to start two t2.micro instances running behind a 
-single load balancer.
+  - specifically, the api requires that authenticated clients send the *ID-Tokens* issued by Cognito with each request to the REST Api
 
 ### DynamoDB
-Blogen stores all data used by the website (minus user details) in a single DynamoDB table. It primarily stores
-the details of a user's threads and posts, which consist of the following attributes:
+Blogen stores all data used by the website (other than user details) in a single DynamoDB table. It primarily stores
+the threads and posts created by users, which consist of the following attributes:
 - threadID, postID, post-title, post-text, image-url, userID, category-name
 
 The Blogen table also stores other "types" of items as explained below..
 
-#### Blogen Primary Key Structure(s)
+#### Blogen DynamoDB Primary Key Structure(s)
 The Blogen DynamoDB table uses a composite primary key (range + hash) to store various items. There are four "types" of items 
-being stored in a single table. Each of these items use a different primary key "structure". 
+being stored in a single table. Each of these items use a different primary key structure. 
 The structure of the primary key for each item type is as follows:
 
 * thread start item - stores the first "post" of a thread. Its primary key structure is as follows:
@@ -124,68 +206,3 @@ The structure of the primary key for each item type is as follows:
 | userIdIndex                   | *userId*       | *primaryRange* | this GSI is used to find all posts made by a specific user                                                                        |
 | rangeIndex                    | *primaryRange* | *primaryHash*  | this GSI is used in a number of queries: to get recently posted threads (by timestamp) and to get a list of all avatar file names |
 
-
-## Blogen Set-Up and Deployment onto AWS
-
-### Prerequisites
-* Java installed on your machine, at least java 8, newer version of java were not tested 
-* You must have a pre-existing AWS account and have the AWS command line interface (CLI) installed and configured. You
-should also be familiar with using the AWS console.
-* If you plan to do any development on the frontend, you must have node.js and npm installed, at least version 14 of 
-node is recommended. The [/frontend/pom.xml](./frontend/pom.xml) is configured to download and temporarily install 
-node 14.17.5 so that users that don't have node installed can compile and run the frontend code when using maven
-* If you don't have maven installed locally on your machine, replace the `mvn` commands below with `mvnw` (for *nix systems) 
-or `mvnw.cmd` (on windows systems)
-* Be aware that AWS resources will be created that will incur charges. Specifically the Elastic Beanstalk template 
-used in this project will create two t2.micro instances running behind a load balancer
-
-1. Create the Blogen DynamoDB table 
-    1. run the `aws/blogen-dynamodb.yaml` template in CloudFormation. This will create the *Blogen* table
-    2. cd into the `/aws/dynamodb/` directory and run the `bootstrap-dynamodb` script. This script will load some 
-    default category names and avatar file names into the Blogen table
-    
-2. Build and Upload the Blogen lambda jar file to AWS S3
-    1. build the lambda .jar file by running `mvn install -pl lambdas` from the project root directory
-        * this will create a .jar artifact in `/lambdas/target/blogen-lambdas-0.0.1.jar`
-        * this lambda function listens for a Cognito `PostConfirmationTrigger` and adds newly 
-        signed up users to a "User" group within the Blogen User Pool. The handler for this function is located at:
-        [com.cliff.aws.lambda.blogen.AddNewUserToUserGroup](./lambdas/src/main/java/com/cliff/aws/lambda/blogen/AddNewUserToUserGroup.java)
-    2. upload the `blogen-lambdas-0.0.1.jar` file to a bucket in S3 (with versioning enabled). This bucket will be used
-    later on by our CloudFormation Template(s)
-
-3. Create the Blogen Cognito resources
-    1. create the Cognito User Pool, Identity Pool and groups by running the `/aws/blogen-cognito.yaml` template 
-    in CloudFormation.
-        * the template will create the following:
-            * an "Admin" user (make sure to enter a valid email address as the admin's temporary password will be
-            emailed to it)
-            * a "User" group and "Admin Group"
-            * deploy the lambda function from step 2 into AWS with a default memory size of 246MB 
-            (make sure you enter the correct bucket name that contains the lambda .jar file)
-            * two roles in IAM: *blogen-unauthenticated* and *blogen-authenticated* that grants users of Blogen the 
-            ability to lookup users in the Blogen user pool. 
-    2. **NOTE**: there are currently a couple of known bugs between CloudFormation and Cognito that will require you to 
-    perform the following steps manually in the Cognito Web console:
-       1. You must manually re-add the lambda function created by this template to the user pool's *Post Confirmation
-        Trigger*. The function will appear in the web console, and it seems properly configured, but it is not. You
-        must manually reselect it and then click the *Save Changes* button
-
-4. Build and deploy the Blogen Application Server(s)
-    1. configure `frontend-vue/.env` with the ID's of your Cognito User Pool, Identity Pool, App Client ID
-        * you can find these IDs in the Cognito Web Console or in the CloudFormation web console when looking at the cognito 
-        stack outputs
-    2. likewise configure `backend/src/main/resources/application.properties` with the ID's of your User Pool, Identity
-    Pool and the AWS region that your pools are located in 
-    3. build the `/backend/target/blogen-appserver-0.0.1.jar` file by running `mvn install -pl backend`. This will 
-    build the .jar file containing the Spring Boot code that serves the Blogen REST API and frontend resources
-    4. upload `blogen-appserver-0.0.1.jar` to a bucket in S3 (that has versioning enabled). You can use the same bucket
-    that contains the lambda .jar file if you wish
-    5. deploy the blogen application servers to Elastic Beanstalk by running the `/aws/blogen-beanstalk.yaml` 
-    CloudFormation template
-        * this will create two blogen appservers (on t2.micro instances), running behind a load-balancer
-    6. the URL for the website can be found in the Elastic Beanstalk web console for the newly created environment. 
-    It will end with **elasticbeanstalk.com** and can be found in the upper right side of the console:
-        * for example: `Environment ID: e-dgrp5zm4ts, URL: blogen.us-east-1.elasticbeanstalk.com`
-    7. you should now be able to access the website in your browser via the URL in step 6. 
-    **Note** that it will be a regular HTTP (unsecure) connection. The elastic beanstalk environment is configured 
-    for HTTPS but you will need to configure your own domain and SSL certificate to point to the beanstalk environment

@@ -17,61 +17,61 @@
   </properties>
 
   <build>
-    <plugins>
-      <plugin>
-        <groupId>com.github.eirslett</groupId>
-        <artifactId>frontend-maven-plugin</artifactId>
-        <version>${frontend-maven-plugin.version}</version>
-        <executions>
-          <!-- Install our node and npm version to run npm/node scripts-->
-          <execution>
-            <id>install node and npm</id>
-            <goals>
-              <goal>install-node-and-npm</goal>
-            </goals>
-            <configuration>
-              <nodeVersion>v14.17.5</nodeVersion>
-            </configuration>
-          </execution>
-          <!-- Install all project dependencies -->
-          <execution>
-            <id>npm install</id>
-            <goals>
-              <goal>npm</goal>
-            </goals>
-            <!-- optional: default phase is "generate-resources" -->
-            <phase>generate-resources</phase>
-            <!-- Optional configuration which provides for running any npm command -->
-            <configuration>
-              <arguments>install</arguments>
-            </configuration>
-          </execution>
-          <!-- Build and minify static files -->
-          <execution>
-            <id>npm run build</id>
-            <goals>
-              <goal>npm</goal>
-            </goals>
-            <configuration>
-              <arguments>run build</arguments>
-            </configuration>
-          </execution>
+<!--    <plugins>-->
+<!--      <plugin>-->
+<!--        <groupId>com.github.eirslett</groupId>-->
+<!--        <artifactId>frontend-maven-plugin</artifactId>-->
+<!--        <version>${frontend-maven-plugin.version}</version>-->
+<!--        <executions>-->
+<!--          &lt;!&ndash; Install our node and npm version to run npm/node scripts&ndash;&gt;-->
+<!--          <execution>-->
+<!--            <id>install node and npm</id>-->
+<!--            <goals>-->
+<!--              <goal>install-node-and-npm</goal>-->
+<!--            </goals>-->
+<!--            <configuration>-->
+<!--              <nodeVersion>v14.17.5</nodeVersion>-->
+<!--            </configuration>-->
+<!--          </execution>-->
+<!--          &lt;!&ndash; Install all project dependencies &ndash;&gt;-->
+<!--          <execution>-->
+<!--            <id>npm install</id>-->
+<!--            <goals>-->
+<!--              <goal>npm</goal>-->
+<!--            </goals>-->
+<!--            &lt;!&ndash; optional: default phase is "generate-resources" &ndash;&gt;-->
+<!--            <phase>generate-resources</phase>-->
+<!--            &lt;!&ndash; Optional configuration which provides for running any npm command &ndash;&gt;-->
+<!--            <configuration>-->
+<!--              <arguments>install</arguments>-->
+<!--            </configuration>-->
+<!--          </execution>-->
+<!--          &lt;!&ndash; Build and minify static files &ndash;&gt;-->
+<!--          <execution>-->
+<!--            <id>npm run build</id>-->
+<!--            <goals>-->
+<!--              <goal>npm</goal>-->
+<!--            </goals>-->
+<!--            <configuration>-->
+<!--              <arguments>run build</arguments>-->
+<!--            </configuration>-->
+<!--          </execution>-->
 
-          <!-- Run Unit tests -->
-          <!--<execution>-->
-          <!--<id>npm run test</id>-->
-          <!--<goals>-->
-          <!--<goal>npm</goal>-->
-          <!--</goals>-->
-          <!--&lt;!&ndash; optional: default phase is "generate-resources" &ndash;&gt;-->
-          <!--<phase>test</phase>-->
-          <!--&lt;!&ndash; Optional configuration which provides for running any npm command &ndash;&gt;-->
-          <!--<configuration>-->
-          <!--<arguments>run unit</arguments>-->
-          <!--</configuration>-->
-          <!--</execution>-->
-        </executions>
-      </plugin>
-    </plugins>
+<!--          &lt;!&ndash; Run Unit tests &ndash;&gt;-->
+<!--          &lt;!&ndash;<execution>&ndash;&gt;-->
+<!--          &lt;!&ndash;<id>npm run test</id>&ndash;&gt;-->
+<!--          &lt;!&ndash;<goals>&ndash;&gt;-->
+<!--          &lt;!&ndash;<goal>npm</goal>&ndash;&gt;-->
+<!--          &lt;!&ndash;</goals>&ndash;&gt;-->
+<!--          &lt;!&ndash;&lt;!&ndash; optional: default phase is "generate-resources" &ndash;&gt;&ndash;&gt;-->
+<!--          &lt;!&ndash;<phase>test</phase>&ndash;&gt;-->
+<!--          &lt;!&ndash;&lt;!&ndash; Optional configuration which provides for running any npm command &ndash;&gt;&ndash;&gt;-->
+<!--          &lt;!&ndash;<configuration>&ndash;&gt;-->
+<!--          &lt;!&ndash;<arguments>run unit</arguments>&ndash;&gt;-->
+<!--          &lt;!&ndash;</configuration>&ndash;&gt;-->
+<!--          &lt;!&ndash;</execution>&ndash;&gt;-->
+<!--        </executions>-->
+<!--      </plugin>-->
+<!--    </plugins>-->
   </build>
 </project>

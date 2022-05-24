@@ -1,12 +1,34 @@
 # Vue 3 + Vite
+This directory contains the vue.js frontend code. It uses [Vite](https://vitejs.dev/) as the javascript bundler.
 
+Node.js v14.17.5 was used during development
+
+
+## Running the Dev Server 
+
+- to start the Vite development server (defaults to port 3000)
+
+> npm run dev
+
+
+## Building for production
+- to build and bundle the frontend resources for production
+> npm run build
+
+the bundled assets will be placed in the "dist" directory. To serve these assets from Spring Boot you must copy all files and sub-directories under "dist"
+to Spring Boot's [resources/public directory](../backend/src/main/resources/public)
+
+
+
+
+## Vite Notes
 This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
 
-## Recommended IDE Setup
+### Recommended IDE Setup
 
 - [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar)
 
-## the public directory
+### the public directory
 
 if you have assets that are:
 
@@ -23,38 +45,3 @@ Note that:
   referenced in source code as `/icon.png`.
 - Assets in public cannot be imported from JavaScript.
 
-# TODO
-
-- DONE configure vue-fontawesome then find/replace usages of <icon
-- DONE find/replace vuelidate usages to @vuelidate/core and @vuelidate/validators
-- make sure vue router is configured correctly and still works
-- make sure vuex is configured correctly
-- correct the slot= attributes in templates with new vue3 syntax
-- DONE vue filters may be deprecated, search for filter javascript files: dateFormatFilter
-
-## Bootstrap Vue 4 to 5
-
-Using the following
-
-- b-alert
-- b-button
-- b-card
-  - b-card-body
-  - b-card-header
-  - b-card-footer
-  - b-card-group
-- b-collapse
-- b-dropdown-item
-- b-dropdown-divider
-- b-dropdown-item-button
-- b-input
-  - b-input-group-append
-- b-img
-- b-form
-  - b-form-group
-  - b-form-input
-  - b-form-textarea
-  - b-form-select
-- b-link
-
-- b-pagination
